@@ -3,9 +3,6 @@
 
 import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-
 
 URL = "https://efdsearch.senate.gov/search/home/"
 HOME = "https://efdsearch.senate.gov/search/"
@@ -19,32 +16,33 @@ def get_csrf(response):
 
 def scrape(site):
 
-    # Open a requests session to the search homepage
-    # and get csrftoken in cookies and csrfmiddlewaretoken in form
-    # both are required to connect
-    r = requests.Session()
-    landing = r.get(site)
-    
-    # Send a post request to accept the terms of use
-    resp = r.post(URL, data = {'prohibition_agreement':'1', 'csrfmiddlewaretoken':get_csrf(landing)},
-                    headers={'Referer':URL})
+    # Open a requests session with persistent cookies
+    with requests.Session() as session:
+        landing = session.get(site)
 
-    results = r.post(SEARCH,
-                    data={"start":"0",
-                          "length":"25",
-                          "report_types":"[11]",
-                          "filer_types":"[]",
-                          "submitted_start_date":"01/01/2012 00:00:00",
-                          "submitted_end_date":"",
-                          "candidate_state":"",
-                          "senator_state":"",
-                          "office_id":"",
-                          "first_name":"",
-                          "last_name":"",
-                          "csrfmiddlewaretoken": get_csrf(resp)
-                        },
-                     headers={'Referer':HOME})
+        # Send a post request to accept the terms of use
+        # with csrf token from landing site
+        resp = session.post(URL, data = {'prohibition_agreement':'1', 'csrfmiddlewaretoken':get_csrf(landing)},
+                        headers={'Referer':URL})
 
-    print(results.json()['data'])
+        # POST the JSON data from the site
+        # with csrf token from search site
+        results = session.post(SEARCH,
+                        data={"start":"0",
+                              "length":"25",
+                              "report_types":"[11]",
+                              "filer_types":"[]",
+                              "submitted_start_date":"01/01/2012 00:00:00",
+                              "submitted_end_date":"",
+                              "candidate_state":"",
+                              "senator_state":"",
+                              "office_id":"",
+                              "first_name":"",
+                              "last_name":"",
+                              "csrfmiddlewaretoken": get_csrf(resp)
+                            },
+                         headers={'Referer':HOME})
 
-scrape(URL)
+    return results.json()['data']
+
+print(scrape(URL))
