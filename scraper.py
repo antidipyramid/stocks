@@ -2,19 +2,20 @@
 # required of all sitting U.S. Senators.
 
 import requests
-from bs4 import BeautifulSoup
 import pandas as pd
 import pdb
 import time
+from functools import partial
+from bs4 import BeautifulSoup
+
 
 BASE = "https://efdsearch.senate.gov/"
-
 URL = "https://efdsearch.senate.gov/search/home/"
 HOME = "https://efdsearch.senate.gov/search/"
 SEARCH = "https://efdsearch.senate.gov/search/report/data/"
 
 ENTRIES = 100
-STARTDATE = "01/01/2020 00:00:00"
+STARTDATE = "06/01/2020 00:00:00"
 SLEEPLENGTH = 2
 
 def get_csrf(response):
@@ -74,22 +75,15 @@ def scrape_results(session, site, startDate):
 
 def extract_data(html):
     # Get table from html
+    soup = BeautifulSoup(html, 'lxml')
 
-    soup = BeautifulSoup(html,'lxml')
-    raw_rows = soup.find_all('tr')[1:]
-    rows = []
+    if soup('table'):
+        dfs = pd.read_html(html)
+        print(dfs[0])
 
-    if not raw_rows:
+        return dfs[0]
+    else:
         return None
-
-    for line in raw_rows:
-        rows.append([x.get_text().strip() for x in line.find_all('td')])
-
-
-    df = pd.DataFrame(rows)
-    print(df)
-
-    return df
 
 def parse(session, json):
 
@@ -104,8 +98,8 @@ def parse(session, json):
         time.sleep(SLEEPLENGTH)
 
         data = extract_data(report.text)
-
-        if data is not pd.DataFrame:
+ 
+        if type(data) is not pd.DataFrame:
             pics.append(report_url)
 
     print(len(pics))
@@ -113,9 +107,8 @@ def parse(session, json):
 
 def main():
     with requests.Session() as session:
-        json = scrape_results(session,URL,STARTDATE)
-        #print(json)
-        parse(session,json)
+        json = scrape_results(session=session,site=URL,startDate=STARTDATE)
+        parse(session=session,json=json)
 
 
 if __name__ == '__main__':
