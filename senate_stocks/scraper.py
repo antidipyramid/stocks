@@ -14,7 +14,7 @@ URL = "https://efdsearch.senate.gov/search/home/"
 HOME = "https://efdsearch.senate.gov/search/"
 SEARCH = "https://efdsearch.senate.gov/search/report/data/"
 
-ENTRIES = 100
+ENTRIES = 25
 SLEEPLENGTH = 2
 
 class SenateDataScraper:
@@ -23,13 +23,13 @@ class SenateDataScraper:
         self.start_date = start_date
         self.session = session
 
-    def get_csrf(response):
+    def get_csrf(self, response):
         soup = BeautifulSoup(response.text, 'lxml')
         return soup.find(lambda tag: tag.name == 'input' and
                             tag.get("name") == 'csrfmiddlewaretoken').get("value")
 
 
-    def getURLS(token, start):
+    def getURLS(self, token, start):
 
         # POST the JSON data from the site
         # with csrf token from search site
@@ -52,7 +52,7 @@ class SenateDataScraper:
 
         return results.json()['data']
 
-    def scrape_results(site):
+    def scrape_results(self, site):
         # Record keeping begins on 01/01/2012 00:00:00
 
         landing = self.session.get(site)
@@ -62,23 +62,31 @@ class SenateDataScraper:
 
         resp = self.session.post(URL, data = {
                 'prohibition_agreement':'1',
-                'csrfmiddlewaretoken':get_csrf(landing)
+                'csrfmiddlewaretoken':self.get_csrf(landing)
                 },
             headers={'Referer':URL})
 
+
         start = 0
         fullResults = []
-        nextResults = getURLS(get_csrf(resp),start)
+        nextResults = self.getURLS(self.get_csrf(resp),start)
         while nextResults:
             fullResults.extend(nextResults)
-            nextResults = getURLS(session,get_csrf(resp),start+ENTRIES)
+            nextResults = self.getURLS(self.get_csrf(resp),start+ENTRIES)
             start += ENTRIES
 
             time.sleep(SLEEPLENGTH)
 
+        #for nextResult in iter(partial(self.getURLS,self.get_csrf(resp),start+ENTRIES),[]):
+        #    print(nextResult)
+        #    fullResults.extend(nextResult)
+        #    start += ENTRIES
+
+        #    time.sleep(SLEEPLENGTH)
+
         return fullResults
 
-    def extract_data(html):
+    def extract_data(self, html):
         # Get table from html
         soup = BeautifulSoup(html, 'lxml')
 
@@ -90,7 +98,7 @@ class SenateDataScraper:
         else:
             return None
 
-    def parse(json):
+    def parse(self, json):
 
         # The search data is received as a list of results
         # with links to the report for each senator
@@ -102,7 +110,7 @@ class SenateDataScraper:
 
             time.sleep(SLEEPLENGTH)
 
-            data = extract_data(report.text)
+            data = self.extract_data(report.text)
 
             if type(data) is not pd.DataFrame:
                 pics.append(report_url)
@@ -116,11 +124,13 @@ class SenateDataScraper:
 
 def main():
     with requests.Session() as session:
-        scraper = SenateDataScraper(session=session, 
-                                    start_date="06/01/2020 00:00:00")
+        start_date = "01/01/2020 00:00:00"
 
-        json = scraper.scrape_results(session=session,site=URL,startDate=STARTDATE)
-        scraper.parse(session=session,json=json)
+        scraper = SenateDataScraper(session=session, 
+                                    start_date=start_date)
+
+        json = scraper.scrape_results(URL)
+        scraper.parse(json)
 
 
 if __name__ == '__main__':
