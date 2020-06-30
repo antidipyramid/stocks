@@ -110,6 +110,10 @@ class SenateDataScraper:
         print(len(pics))
         print(pics)
 
+
+
+
+
 def main():
     with requests.Session() as session:
         scraper = SenateDataScraper(session=session, 
