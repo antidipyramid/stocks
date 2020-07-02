@@ -5,6 +5,7 @@ import requests
 import pandas as pd
 import pdb
 import time
+from collections import defaultdict
 from functools import partial
 from bs4 import BeautifulSoup
 
@@ -49,6 +50,7 @@ class SenateDataScraper:
                 "csrfmiddlewaretoken":token 
                 },
             headers={'Referer':HOME})
+        print(results.json()['data'])
 
         return results.json()['data']
 
@@ -77,13 +79,6 @@ class SenateDataScraper:
 
             time.sleep(SLEEPLENGTH)
 
-        #for nextResult in iter(partial(self.getURLS,self.get_csrf(resp),start+ENTRIES),[]):
-        #    print(nextResult)
-        #    fullResults.extend(nextResult)
-        #    start += ENTRIES
-
-        #    time.sleep(SLEEPLENGTH)
-
         return fullResults
 
     def extract_data(self, html):
@@ -102,10 +97,13 @@ class SenateDataScraper:
 
         # The search data is received as a list of results
         # with links to the report for each senator
+
         pics = [] #remember what filings must be entered manually
+        frames = defaultdict(list)
         for result in json:
             # Get the URL
             report_url = f'{BASE}{result[3].split(" ",2)[1][6:-1]}'
+            senator_name = f'{result[1]}, {result[0]}'
             report = self.session.get(report_url)
 
             time.sleep(SLEEPLENGTH)
@@ -114,12 +112,17 @@ class SenateDataScraper:
 
             if type(data) is not pd.DataFrame:
                 pics.append(report_url)
-
+            else:
+                frames[senator_name].append(data)
         print(len(pics))
         print(pics)
 
+        return frames
 
 
+    def scrape(self):
+        json = self.scrape_results(URL)
+        return self.parse(json)
 
 
 def main():
@@ -129,9 +132,7 @@ def main():
         scraper = SenateDataScraper(session=session, 
                                     start_date=start_date)
 
-        json = scraper.scrape_results(URL)
-        scraper.parse(json)
-
+        scraper.scrape()
 
 if __name__ == '__main__':
     main()
