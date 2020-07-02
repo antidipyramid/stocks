@@ -50,7 +50,7 @@ class SenateDataScraper:
                 "csrfmiddlewaretoken":token 
                 },
             headers={'Referer':HOME})
-        print(results.json()['data'])
+        #print(results.json()['data'])
 
         return results.json()['data']
 
@@ -87,7 +87,7 @@ class SenateDataScraper:
 
         if soup('table'):
             dfs = pd.read_html(html)
-            print(dfs[0])
+            #print(dfs[0])
 
             return dfs[0]
         else:
@@ -114,8 +114,8 @@ class SenateDataScraper:
                 pics.append(report_url)
             else:
                 frames[senator_name].append(data)
-        print(len(pics))
-        print(pics)
+        #print(len(pics))
+        #print(pics)
 
         return frames
 

@@ -16,13 +16,15 @@ class Senator(models.Model):
 
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    state = USStateField()
-    incumbent = models.CharField(max_length=1,choices=Answer.choices)
-    party = models.CharField(max_length=2,
-                            choices=PartyChoices.choices)
+    #state = USStateField()
+    #incumbent = models.CharField(max_length=1,choices=Answer.choices)
+    #party = models.CharField(max_length=2,
+    #                        choices=PartyChoices.choices)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.party}-{self.state})'
+        #return f'{self.first_name} {self.last_name} ({self.party}-{self.state})'
+
+        return f'{self.first_name} {self.last_name}'
 
 class Trade(models.Model):
     transaction_date = models.DateField()
@@ -30,8 +32,9 @@ class Trade(models.Model):
                                 on_delete=models.CASCADE,default=1)
 
     class TradeOwner(models.TextChoices):
-        SELF = 'S'
-        SPOUSE = 'SP'
+        SELF = 'S', _('Self')
+        SPOUSE = 'SP', _('Spouse')
+        JOINT = 'J', _('Joint')
 
     owner = models.CharField(max_length=6,
                              choices=TradeOwner.choices)
@@ -49,10 +52,11 @@ class Trade(models.Model):
                                   choices=AssetType.choices)
 
     class TransactionType(models.TextChoices):
-        PURCHASE = 'P'
-        SALE = 'S'
+        PURCHASE = 'P', _('Purchase')
+        FULL_SALE = 'FS', _('Sale (Full)')
+        PART_SALE = 'PS', _('Sale (Partial)')
 
-    transaction_type = models.CharField(max_length=5,
+    transaction_type = models.CharField(max_length=10,
                                         choices=TransactionType.choices)
 
     class TransactionAmount(models.TextChoices):

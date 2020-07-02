@@ -1,8 +1,11 @@
 import requests
 import re
-import stocks.models
+import pandas as pd
+from stocks.models import Trade, Senator
 from django.core.management.base import BaseCommand, CommandError
 from ._scraper import SenateDataScraper
+
+import pdb
 
 
 class Command(BaseCommand):
@@ -26,20 +29,34 @@ class Command(BaseCommand):
             scraper = SenateDataScraper(session=session,
                                         start_date=start_date)
 
-            trades = scraper.scrape()
-            print(trades)
-            '''
-            for trade in trades:
-                entry = Trade(owner= ,
-                              transaction_date= ,
-                              senator= ,
-                              ticker= ,
-                              asset_name= ,
-                              asset_type= ,
-                              transaction_type= ,
-                              amount= ,
-                              comments = ,
-                              )
-                entry.save()
-                print(trade)
+            trades_dict = scraper.scrape()
+            for senator, frame_list in trades_dict.items():
+                *last_name, first_name = senator.split(',')
+                print(f'{" ".join(last_name)} {first_name}')
+
+                results = Senator.objects.filter(
+                            first_name=first_name, 
+                            last_name=" ".join(last_name))
+
+                if not results:
+                    senator_entry = Senator(first_name=first_name,
+                                            last_name=" ".join(last_name))
+
+                    senator_entry.save()
                 '''
+                for frame in frame_list:
+                    for trade in frame.iloc:
+                        if Senator.objects.filter(first_name=se)
+
+                        print(trade)
+                        entry = Trade(transaction_date=trade[1],
+                                      owner=trade[2],
+                                      ticker=trade[3],
+                                      asset_name=trade[4],
+                                      asset_type=trade[5],
+                                      transaction_type=trade[6],
+                                      amount=trade[7],
+                                      comments =trade[8],
+                                      )
+                        print(entry)
+                        '''
