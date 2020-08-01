@@ -1,0 +1,16 @@
+{% extends 'stocks/base.html' %}
+
+{% block content %}
+
+<div class="container-fluid content">
+	<div class="col" style="background-color: #848c8e; width: inherit; border-radius: 25px;">
+		<h1>List of Trades for {{ ticker }}: </h1>
+		<ul>
+			{% for trade in trades %}
+			<li>{{ trade }} {{ trade.senator }}</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+
+{% endblock content %}

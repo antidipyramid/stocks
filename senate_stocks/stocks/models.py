@@ -1,8 +1,4 @@
 from django.db import models
-from localflavor.us.models import USStateField
-from django.utils.translation import gettext_lazy as _
-
-# Create your models here.
 
 class Senator(models.Model):
     class Answer(models.TextChoices):
@@ -27,10 +23,10 @@ class Senator(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 class Trade(models.Model):
-    transaction_date = models.DateField()
+    transaction_date = models.CharField(max_length=20)
     senator = models.ForeignKey('Senator',
                                 on_delete=models.CASCADE,default=1)
-
+    '''
     class TradeOwner(models.TextChoices):
         SELF = 'S', _('Self')
         SPOUSE = 'SP', _('Spouse')
@@ -38,10 +34,14 @@ class Trade(models.Model):
 
     owner = models.CharField(max_length=6,
                              choices=TradeOwner.choices)
+    '''
+
+    owner = models.CharField(max_length=10)
 
     ticker = models.CharField(max_length=5)
-    asset_name = models.CharField(max_length=100)
+    asset_name = models.TextField()
 
+    '''
     class AssetType(models.TextChoices):
         STOCK = 'ST', _('Stock')
         MUNSEC = 'MS', _('Municipal Security')
@@ -50,7 +50,9 @@ class Trade(models.Model):
 
     asset_type = models.CharField(max_length=10,
                                   choices=AssetType.choices)
-
+    '''
+    asset_type = models.CharField(max_length=25)
+    '''
     class TransactionType(models.TextChoices):
         PURCHASE = 'P', _('Purchase')
         FULL_SALE = 'FS', _('Sale (Full)')
@@ -58,7 +60,10 @@ class Trade(models.Model):
 
     transaction_type = models.CharField(max_length=10,
                                         choices=TransactionType.choices)
+    '''
+    transaction_type = models.CharField(max_length=20)
 
+    '''
     class TransactionAmount(models.TextChoices):
         ONE = '1', _('1,001 - $15,000')
         TWO = '2', _('$15,001 - $50,000')
@@ -73,6 +78,11 @@ class Trade(models.Model):
 
     amount = models.CharField(max_length=10,
                               choices=TransactionAmount.choices)
+    '''
+
+    amount = models.CharField(max_length=45)
 
     comments = models.TextField()
 
+    def __str__(self):
+        return f'{self.transaction_date} {self.ticker} {self.asset_name} {self.amount}'

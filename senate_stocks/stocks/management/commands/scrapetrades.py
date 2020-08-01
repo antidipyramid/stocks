@@ -30,6 +30,7 @@ class Command(BaseCommand):
                                         start_date=start_date)
 
             trades_dict = scraper.scrape()
+            print(trades_dict.items())
             for senator, frame_list in trades_dict.items():
                 *last_name, first_name = senator.split(',')
                 print(f'{" ".join(last_name)} {first_name}')
@@ -43,20 +44,25 @@ class Command(BaseCommand):
                                             last_name=" ".join(last_name))
 
                     senator_entry.save()
-                '''
-                for frame in frame_list:
-                    for trade in frame.iloc:
-                        if Senator.objects.filter(first_name=se)
 
-                        print(trade)
+                for entry in frame_list:
+                    for trade in entry.frame.iloc:
+                        senator = Senator.objects.filter(
+                                    first_name=first_name,
+                                    last_name=" ".join(last_name))[0]
+
+                        print(senator)
+                        print(trade[3])
                         entry = Trade(transaction_date=trade[1],
+                                      senator=senator,
                                       owner=trade[2],
                                       ticker=trade[3],
                                       asset_name=trade[4],
                                       asset_type=trade[5],
                                       transaction_type=trade[6],
                                       amount=trade[7],
-                                      comments =trade[8],
+                                      comments=trade[8],
                                       )
+
+                        entry.save()
                         print(entry)
-                        '''

@@ -5,7 +5,7 @@ import requests
 import pandas as pd
 import pdb
 import time
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from functools import partial
 from bs4 import BeautifulSoup
 
@@ -99,25 +99,27 @@ class SenateDataScraper:
         # with links to the report for each senator
 
         pics = [] #remember what filings must be entered manually
-        frames = defaultdict(list)
+        entries = defaultdict(list)
         for result in json:
             # Get the URL
             report_url = f'{BASE}{result[3].split(" ",2)[1][6:-1]}'
             senator_name = f'{result[1]}, {result[0]}'
+
+            Entry = namedtuple('Entry', ['url', 'frame'])
+
             report = self.session.get(report_url)
 
             time.sleep(SLEEPLENGTH)
 
-            data = self.extract_data(report.text)
-
-            if type(data) is not pd.DataFrame:
+            data = Entry(report_url, self.extract_data(report.text))
+            if type(data.frame) is not pd.DataFrame:
                 pics.append(report_url)
             else:
-                frames[senator_name].append(data)
+                entries[senator_name].append(data)
         #print(len(pics))
         #print(pics)
 
-        return frames
+        return entries
 
 
     def scrape(self):
