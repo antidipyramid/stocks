@@ -18,7 +18,7 @@ class Command(BaseCommand):
         cond = re.match('\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}',
                         options['start_date'])
         if not cond:
-            raise CommandError('Invalid input')
+            raise CommandError('Invalid input! Date must be in form \'MM/DD/YYYY HH:MM:SS\'')
             return
 
         start_date = options['start_date']
@@ -43,7 +43,10 @@ class Command(BaseCommand):
                     senator_entry = Senator(first_name=first_name,
                                             last_name=" ".join(last_name))
 
-                    senator_entry.save()
+                    try:
+                        senator_entry.save()
+                    except:
+                        print("Exception!")
 
                 for entry in frame_list:
                     for trade in entry.frame.iloc:
@@ -64,5 +67,8 @@ class Command(BaseCommand):
                                       comments=trade[8],
                                       )
 
-                        entry.save()
+                        try:
+                            entry.save()
+                        except:
+                            print("Exception!")
                         print(entry)

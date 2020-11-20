@@ -2,9 +2,20 @@
 
 {% block content %}
 
+
+
+
 <div class="container-fluid content">
 	<div class="col" style="background-color: #848c8e; width: inherit; border-radius: 25px;">
-		<h1>List of Trades for {{ ticker }}: </h1>
+		{% if figure %}
+		{{ figure|safe }}
+		{% else %}
+		<p>No graph provided.</p>
+		{% endif %}
+
+
+
+				<h1>List of Trades for {{ company_name }}: </h1>
 		<ul>
 			{% for trade in trades %}
 			<li>{{ trade }} {{ trade.senator }}</li>

@@ -1,0 +1,11 @@
+{% extends 'stocks/base.html' %}
+
+{% block content %}
+
+<h1>Search Results</h1>
+
+{% for result in results %}
+<li><a href=/trades/companies/{{ result.ticker }}>{{ result.ticker }} - {{ result.asset_name }}</a></li>
+{% endfor %}
+
+{% endblock content %}

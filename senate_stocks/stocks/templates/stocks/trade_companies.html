@@ -7,7 +7,7 @@
 		<h1>List of Companies</h1>
 		<ul>
 			{% for company in companies %}
-			<li><a href="/trades/companies/{{ company.ticker }}">{{ company.ticker }}</a></li>
+			<li><a href="/trades/companies/{{ company.ticker }}">{{ company.ticker }} - {{ company.asset_name }}</a></li>
 			{% endfor %}
 		</ul>
 	</div>
