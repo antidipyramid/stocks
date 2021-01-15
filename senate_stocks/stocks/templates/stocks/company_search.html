@@ -4,8 +4,12 @@
 
 <h1>Search Results</h1>
 
-{% for result in results %}
-<li><a href=/trades/companies/{{ result.ticker }}>{{ result.ticker }} - {{ result.asset_name }}</a></li>
-{% endfor %}
+{% if not results %}
+	<p>No results found.<p>
+{% else %}
+	{% for result in results %}
+	<li><a href=/trades/companies/{{ result.ticker }}>{{ result.ticker }} - {{ result.asset_name }}</a></li>
+	{% endfor %}
+{% endif %}
 
 {% endblock content %}

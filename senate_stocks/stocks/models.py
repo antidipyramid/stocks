@@ -17,12 +17,18 @@ class Senator(models.Model):
     #party = models.CharField(max_length=2,
     #                        choices=PartyChoices.choices)
 
+    @property
+    def trades():
+        return Trade.objects.filter(senator=self)
+
+
     def __str__(self):
         #return f'{self.first_name} {self.last_name} ({self.party}-{self.state})'
 
         return f'{self.first_name} {self.last_name}'
 
 class Trade(models.Model):
+
     transaction_date = models.CharField(max_length=20)
     senator = models.ForeignKey('Senator',
                                 on_delete=models.CASCADE,default=1)

@@ -1,21 +1,27 @@
 {% extends 'stocks/base.html' %}
 
-
-
-
 {% block content %}
 
 <div class="container-fluid content">
-	<div class="col" style="background-color: #445175; width: inherit; border-radius: 25px;">
-		<p>My first page</p>
-		<p>ggfdg</p>
-		<p>ggfdg</p>
-		<p>ggfdg</p>
-		<p>ggfdg</p>
-		<p>ggfdg</p>
-		<p>ggfdg</p>
-		<p>ggfdg</p>
-		<p>My page</p>
+	<div class="col" style="background-color: transparent; width: inherit; border-radius: 25px;">
+
+		<div class="mx-auto" style="width: 400px;">
+			<div class="btn-group" role="group" aria-label="timespan">
+				<button type="button" class="btn btn-secondary">1 Month</button>
+				<button type="button" class="btn btn-secondary">6 Months</button>
+				<button type="button" class="btn btn-secondary">1 Year</button>
+				<button type="button" class="btn btn-secondary">1 Year</button>
+				<button type="button" class="btn btn-secondary">All Time</button>
+			</div>
+		</div>
+
+		{% if most_active_senators %}
+		{{ most_active_senators|safe }}
+		{% else %}
+		<p>No graph provided.</p>
+		{% endif %}
+
+
 	</div>
 </div>
 
