@@ -1,5 +1,5 @@
 {% extends 'stocks/base.html' %}
-
+{% load static %}
 {% block content %}
 
 <div class="container-fluid content">
@@ -21,7 +21,8 @@
 		<p>No graph provided.</p>
 		{% endif %}
 
-
+		<div id="heatmap"></div>
+		<script src="{% static 'js/home_heatmap.js' %}"></script>
 	</div>
 </div>
 
