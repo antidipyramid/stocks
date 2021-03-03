@@ -29,7 +29,7 @@ class Senator(models.Model):
 
 class Trade(models.Model):
 
-    transaction_date = models.CharField(max_length=20)
+    transaction_date = models.DateField()
     senator = models.ForeignKey('Senator',
                                 on_delete=models.CASCADE,default=1)
     '''

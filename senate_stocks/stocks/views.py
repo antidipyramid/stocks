@@ -1,15 +1,21 @@
-from django.shortcuts import render
-from django.db.models import Q
-from .forms import CompanySearchForm
-from collections import defaultdict as defaultdict
-from django.http import HttpResponse
-from .models import Senator, Trade
-from .stock_data import get_data as get_data
-from django.views.decorators.cache import cache_page
+from collections import defaultdict
+
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+from rest_framework import generics
+from psycopg2.extras import DateRange
 
+from django.shortcuts import render
+from django.db.models import Q
+from django.http import HttpResponse
+from django.views.decorators.cache import cache_page
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
+from .forms import CompanySearchForm
+from .models import Senator,Trade
+from .stock_data import get_data
 """
 View for the homepage
 
@@ -153,7 +159,7 @@ def ticker_detail(request, ticker):
                             showline=False,
                             showticklabels=False))
 
-    trade_dates = list(map(convert_date,[x.transaction_date for x in trades]))
+    trade_dates = [x.transaction_date for x in trades]
 
     fig2.add_trace(go.Scatter(x=trade_dates,
                               y=[price_dict[x]['4. close'] for x in trade_dates],
@@ -166,7 +172,7 @@ def ticker_detail(request, ticker):
 
 
     senator_obj = trades.distinct('senator')
-    
+
     return render(request,
                   'stocks/ticker_detail.html',
                   {'trades': Trade.objects.filter(ticker=ticker.upper()),
@@ -176,3 +182,4 @@ def ticker_detail(request, ticker):
                    'ticker': ticker.upper(),
                    'figure': graph,
                    'figure2': graph2})
+

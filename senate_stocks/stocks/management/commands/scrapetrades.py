@@ -1,5 +1,6 @@
 import requests
 import re
+from datetime import date
 import pandas as pd
 from stocks.models import Trade, Senator
 from django.core.management.base import BaseCommand, CommandError
@@ -15,6 +16,12 @@ class Command(BaseCommand):
         parser.add_argument('start_date', type=str)
 
     def handle(self, *args, **options):
+
+        # Converts date string from scrape to a python datetime object
+        def convert_date(d):
+            s = d.split('/')
+            return date(int(s[2]),int(s[0]),int(s[1]))
+
         cond = re.match('\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}',
                         options['start_date'])
         if not cond:
@@ -56,7 +63,7 @@ class Command(BaseCommand):
 
                         print(senator)
                         print(trade[3])
-                        entry = Trade(transaction_date=trade[1],
+                        entry = Trade(transaction_date=convert_date(trade[1]),
                                       senator=senator,
                                       owner=trade[2],
                                       ticker=trade[3],
