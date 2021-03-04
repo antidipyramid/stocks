@@ -1,2 +1,3 @@
 #Ignore environment files
 /stocks_venv
+*.pyc
