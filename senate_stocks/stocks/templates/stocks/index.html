@@ -2,29 +2,34 @@
 {% load static %}
 {% block content %}
 
-<div class="container-fluid content">
-	<div class="col" style="background-color: #fff1e6; width: inherit; border-radius: 25px;">
+<script src="{% static 'js/search.js' %}"></script>
 
-		<div class="mx-auto" style="width: 400px;">
-			<div class="btn-group" role="group" aria-label="timespan">
-				<button type="button" class="btn btn-secondary">1 Month</button>
-				<button type="button" class="btn btn-secondary">6 Months</button>
-				<button type="button" class="btn btn-secondary">1 Year</button>
-				<button type="button" class="btn btn-secondary">1 Year</button>
-				<button type="button" class="btn btn-secondary">All Time</button>
-			</div>
-		</div>
+<div class="container-fluid">
+  <div class="col" style="background-color: #fff1e6; width: inherit; border-radius: 25px;">
 
-		{% if most_active_senators %}
-		{{ most_active_senators|safe }}
-		{% else %}
-		<p>No graph provided.</p>
-		{% endif %}
-
-		<div id="heatmap"></div>
-		<script src="{% static 'js/datejs/date-en-US.js' %}"></script>
-		<script src="{% static 'js/home_heatmap1.js' %}"></script>
+	<div class="row mb-3 justify-content-center">
+	  <div class="col-sm-8">
+		<input type="search" oninput="executeSearch()" class="form-control form-control-sm"
+		id="searchbox" placeholder="Search for a senator or company...">
+	  </div>
 	</div>
+
+	<div class="row mb-3 justify-content-center">
+	  	<div id="anchor" class="col-sm-8">
+		  <ul class="list-group" id="results">
+			</ul>
+			</div>
+	</div>
+	{% if most_active_senators %}
+	{{ most_active_senators|safe }}
+	{% else %}
+	<p>No graph provided.</p>
+	{% endif %}
+
+	<div id="heatmap"></div>
+	<script src="{% static 'js/datejs/date-en-US.js' %}"></script>
+	<script src="{% static 'js/home_heatmap1.js' %}"></script>
+  </div>
 </div>
 
 {% endblock content %}
