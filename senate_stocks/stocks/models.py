@@ -27,6 +27,13 @@ class Senator(models.Model):
 
         return f'{self.first_name} {self.last_name}'
 
+class Asset(models.Model):
+    ticker = models.CharField(max_length=5)
+    name = models.TextField()
+
+    def __str__(self):
+        return f'{self.name}'
+
 class Trade(models.Model):
 
     transaction_date = models.DateField()
@@ -43,7 +50,7 @@ class Trade(models.Model):
     '''
 
     owner = models.CharField(max_length=10)
-
+    asset = models.ForeignKey(Asset,on_delete=models.CASCADE,null=True)
     ticker = models.CharField(max_length=5)
     asset_name = models.TextField()
 

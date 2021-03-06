@@ -1,6 +1,6 @@
 # Contains serializers for Django REST framework
 from rest_framework import serializers
-from stocks.models import Senator, Trade
+from stocks.models import Senator, Trade, Asset
 
 class TradeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,3 +8,17 @@ class TradeSerializer(serializers.ModelSerializer):
         fields = ('id','transaction_date','senator','owner','ticker',
                   'asset_name','asset_type','transaction_type',
                   'amount','comments',)
+
+class AssetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Asset
+        fields = ('id','ticker', 'name')
+
+class SenatorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Senator
+        fields = ('id','first_name','last_name')
+
+class SearchSerializer(serializers.Serializer):
+    assets = AssetSerializer(many=True)
+    senators = SenatorSerializer(many=True)
