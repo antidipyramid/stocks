@@ -7,19 +7,22 @@
 <div class="container-fluid">
   <div class="col" style="background-color: #fff1e6; width: inherit; border-radius: 25px;">
 
-	<div class="row mb-3 justify-content-center">
+	<div class="row mb-1 justify-content-center">
 	  <div class="col-sm-8">
-		<input type="search" oninput="executeSearch()" class="form-control form-control-sm"
+		<input type="search" oninput="delayedSearch()" class="form-control form-control-sm"
 		id="searchbox" placeholder="Search for a senator or company...">
 	  </div>
 	</div>
 
 	<div class="row mb-3 justify-content-center">
-	  	<div id="anchor" class="col-sm-8">
-		  <ul class="list-group" id="results">
-			</ul>
+		<div class="col-sm-8">
+			<div id="anchor">
+			  <ul class="list-group" id="results"></ul>
 			</div>
+		</div>
 	</div>
+
+
 	{% if most_active_senators %}
 	{{ most_active_senators|safe }}
 	{% else %}

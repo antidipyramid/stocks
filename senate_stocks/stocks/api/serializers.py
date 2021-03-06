@@ -12,12 +12,12 @@ class TradeSerializer(serializers.ModelSerializer):
 class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
-        fields = ('ticker', 'name')
+        fields = ('id','ticker', 'name')
 
 class SenatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Senator
-        fields = ('first_name','last_name')
+        fields = ('id','first_name','last_name')
 
 class SearchSerializer(serializers.Serializer):
     assets = AssetSerializer(many=True)
