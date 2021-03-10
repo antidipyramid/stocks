@@ -1,7 +1,7 @@
 // contains the D3 code to create the homepage heatmap
-var margin = {top: 80, right: 25, bottom: 30, left:40},
-	width = 500-margin.left-margin.right,
-	height = 300-margin.top-margin.bottom;
+var margin = {top: 30, right: 25, bottom: 30, left:40},
+	width = 700-margin.left-margin.right,
+	height = 500-margin.top-margin.bottom;
 
 var svg = d3.select("#heatmap")
 	.append("svg")
@@ -11,7 +11,7 @@ var svg = d3.select("#heatmap")
 		.attr("transform",
 			"translate(" + margin.left + "," + margin.top + ")");
 
-var yAxis = ["4", "3", "2", "1"]
+var yAxis = ["5", "4", "3", "2", "1"]
 var xAxis = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 var x = d3.scaleBand()
@@ -20,9 +20,9 @@ var x = d3.scaleBand()
 	.padding(0.01);
 
 var x_Axis = svg.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(d3.axisBottom(x)
-				.tickSize(0))
+				.call(d3.axisTop(x)
+					.tickSize(0)
+					.tickValues(xAxis));
 
 x_Axis.select('.domain').remove()
 
@@ -33,8 +33,8 @@ var y = d3.scaleBand()
 
 var y_Axis = svg.append("g")
 				.call(d3.axisLeft(y)
-				.tickSize(0)
-				.tickValues([]));
+					.tickSize(0)
+					.tickValues([]));
 
 y_Axis.select('.domain').remove()
 
