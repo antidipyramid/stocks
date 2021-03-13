@@ -1,15 +1,36 @@
 {% extends 'stocks/base.html' %}
-
 {% block content %}
+{% load static %}
 
 <div class="container-fluid content">
-	<div class="col" style="background-color: #445175; width: inherit; border-radius: 25px;">
-		<h1>List of Trades for Senator {{ senator }}: </h1>
-		<ul>
-			{% for trade in trades %}
-			<li>{{ trade }}</li>
-			{% endfor %}
+	<div class="col" style="background-color: #ffffff; width: inherit; border-radius: 25px;">
+		<!--
+	  <h1>List of Trades for Senator {{ senator }}: </h1>
+	  <ul>
+	  {% for trade in trades %}
+	  <li>{{ trade }}</li>
+	  {% endfor %}
+	  </ul>
+		-->
+
+		<h1 class="mt-3 mb-4">Senator {{ senator }}</h1>
+
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">Overview</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="trades-tab" data-bs-toggle="tab" data-bs-target="#trades" type="button" role="tab" aria-controls="trades" aria-selected="false">All Trades</button>
+			</li>
 		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+				<figure id="histogram"></figure>
+				<script src="{% static 'js/histogram.js' %}"></script>
+			</div>
+			<div class="tab-pane fade" id="trades" role="tabpanel" aria-labelledby="trades-tab">...</div>
+		</div>
+
 	</div>
 </div>
 

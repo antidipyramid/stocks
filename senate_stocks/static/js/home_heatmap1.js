@@ -1,7 +1,55 @@
 // contains the D3 code to create the homepage heatmap
-var margin = {top: 30, right: 25, bottom: 30, left:40},
-	width = 700-margin.left-margin.right,
-	height = 500-margin.top-margin.bottom;
+
+
+/**
+ * Returns an array of empty data points to serve as 
+ * placeholders in heatmap for days of the month
+ *
+ * @param {number} month
+ * @param {number} year
+ * @return {array}
+ */
+function emptyMonth(month, year) {
+	let days = Date.getDaysInMonth(year,month);
+	//get the first day of the month
+	let curr_day = new Date((month+1) + "/1/" + year);
+	let week = 0; let data = [];
+	for(let i = 0; i < days; i++) {
+		dayOfWeek = curr_day.getDay();
+		data.push({x: xAxis[curr_day.getDay()], y: week});
+		if (dayOfWeek == 6) {
+			week++;
+		}
+		curr_day.addDays(1);
+	}
+	return data;
+}
+
+/**
+ * Given a trade date, return the corresponding row (i.e. week)
+ * of the heatmap
+ *
+ * @param {string} date - Date string as stored in Trade model in Django db
+ * @return {number}
+ *
+ */
+function getWeekNumber(date) {
+	let tradeDate = Date.parse(date)
+	let curr = new Date.parse(date)
+						.moveToFirstDayOfMonth()
+						.next().sunday();
+	for(let week = 0; week < 5; week++) {
+		if (tradeDate.getDate() < curr.getDate()) {
+			return y(yAxis[5-week]); 
+		}
+		curr.addDays(7);
+	}
+	return y(yAxis[0]);
+}
+
+var margin = {top: 30, right: 30, bottom: 30, left:30},
+	width = 600-margin.left-margin.right,
+	height = 450-margin.top-margin.bottom;
 
 var svg = d3.select("#heatmap")
 	.append("svg")
@@ -11,8 +59,8 @@ var svg = d3.select("#heatmap")
 		.attr("transform",
 			"translate(" + margin.left + "," + margin.top + ")");
 
-var yAxis = ["5", "4", "3", "2", "1"]
-var xAxis = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+const yAxis = ["0", "1", "2", "3", "4", "5"]
+const xAxis = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
 var x = d3.scaleBand()
 	.range([0, width])
@@ -42,21 +90,13 @@ var myColor = d3.scaleLinear()
 	.range(['white', 'red'])
 	.domain([1,100])
 
-empty_data = []
-for(let i = 0; i < xAxis.length; i++) {
-	for(let j=0; j < yAxis.length; j++) {
-		console.log(xAxis[i],yAxis[j])
-		empty_data.push([xAxis[i],yAxis[j]])
-	}
-}
-
 var empty = svg.selectAll(".myEmpty")
-				.data(empty_data)
+				.data(emptyMonth(0,Date.today().getFullYear()))
 				.enter()
 				.append("rect");
 
-empty.attr("x", (d) => {return x(d[0])})
-	.attr("y", (d) => {return y(d[1])})
+empty.attr("x", (d) => {return x(d.x)})
+	.attr("y", (d) => {return y(5-d.y)})
 	.attr("width", x.bandwidth())
 	.attr("height", y.bandwidth())
 	.attr("fill", "#ced4da");
@@ -66,46 +106,27 @@ var div = d3.select("body").append("div")
 				.style("opacity",0)
 
 d3.json("http://127.0.0.1:8000/api").then(function(data) {
-
-	const dayOfWeek = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"] 
-
 	svg.selectAll()
-		.data(data, function(d) {
-
-			//return d.day+":"+d.week;})
-			return d.ticker})
-
-
+		.data(data, (d) => d.ticker)
 		.enter()
 		.append("rect")
-		.attr("x", function(d) {
-			let dateList = d.transaction_date.split('-').map((x) => Number(x))
-			let date = new Date(dateList[0],dateList[1],dateList[2])
-			return x(dayOfWeek[date.getDay()]) })
-		.attr("y", function(d) {
-			let date2 = Date.parse(d.transaction_date)
-	
-			let firstSun = Date.today().last().sunday()
-			let mil = firstSun.toDateString()
-			if (date2.between(firstSun,Date.today())) { return y("4") }
-			
-			let secSun = firstSun.last().sunday()
-			if (date2.between(secSun,Date.parse(mil))) { return y("3") } 
-
-			mil = secSun.toDateString()
-			let thirdSun = secSun.last().sunday()
-			if (date2.between(thirdSun,Date.parse(mil))) { return y("2") } 
-			else { return y("1") } })
+		.attr("x", (d) => x(xAxis[Date.parse(d.transaction_date).getDay()]) )
+		.attr("y", (d) => getWeekNumber(d.transaction_date))	
 		.attr("width", x.bandwidth())
 		.attr("height", y.bandwidth())
-		.style("fill", function(d) {return myColor(d.value) })
+		.style("fill", (d) => "red")
 		.on("mouseover", function(d) {
+			/**
 			div.transition()
 				.duration(200)
 				.style("opacity", .9);
 			div.html(d.transaction_date)
 				.style("left", (d3.event.pageX) + "px")
 				.style("top", (d3.event.pageY-50) + "px");
+				*/
+
+			displayTradeInfo(d);			
+			rect.style("fill", (d) => "yellow")
 			})
 		.on("mouseout", function(d) {
 			div.transition()
