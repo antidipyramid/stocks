@@ -1,5 +1,55 @@
+// takes json data returned from query to db api
+// and parses it for use by D3
+function process_data(json_data) {
+	let assets = new Map();
+	console.log(json_data)
+	for (let trade of json_data) {
+		if (assets.has(trade.asset)) {
+			let val = assets.get(trade.asset)
+			val.freq++;
+			assets.set(trade.asset,val); 
+		}
+		else {
+			let val = {freq: 1,
+				name: trade.asset_name }
+			assets.set(trade.asset,val);
+		}
+	}
+	const compareTrades = function(a,b) {
+		if (a[1] < b[1]) {
+			return -1;
+		}
+		if (a[1] == b[1]) {
+			return 0;
+		}
+		else {
+			return 1;
+		}
+	}
+
+	trades_by_freq = [...assets].sort(compareTrades);
+	console.log(trades_by_freq);
+	return trades_by_freq;
+}
+
+// get graph data
+function fetch_data() {
+	return new Promise( (resolve,reject) => {
+		let data;
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				data = JSON.parse(this.response).related_trades;		
+				resolve(data);
+			}
+		}
+		xhttp.open('GET','http://127.0.0.1:8000/api/senators/73', true);
+		xhttp.send();
+	});
+}
+
 // set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 40},
+var margin = {top: 20, right: 30, bottom: 40, left: 150},
 	width = 460 - margin.left - margin.right,
 	height = 400 - margin.top - margin.bottom;
 
@@ -12,42 +62,54 @@ var svg = d3.select("#histogram")
 	.attr("transform",
 		"translate(" + margin.left + "," + margin.top + ")");
 
+let suffix = document.documentURI.split("/");
+
 // get the data
-d3.csv("http://127.0.0.1:8000/static/js/price.csv").then(function(data) {
+let url = "http://127.0.0.1:8000/api/";
+url = url.concat(suffix[suffix.length-2],'s/',suffix[suffix.length-1])
+d3.json(url)
+	.then( function(data) { return process_data(data.related_trades); })
+	.then(function(data) {
+		// Add X axis
+		var x = d3.scaleLinear()
+			.domain([0, 20])
+			.range([ 0, width]);
+		svg.append("g")
+			.attr("transform", "translate(0," + height + ")")
+			.call(d3.axisBottom(x))
+			.selectAll("text")
+			.attr("transform", "translate(-10,0)rotate(-45)")
+			.style("text-anchor", "end");
 
-	// X axis: scale and draw:
-	var x = d3.scaleLinear()
-		.domain([0, 1000])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-		.range([0, width]);
-	svg.append("g")
-		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x));
+		// Y axis
+		var y = d3.scaleBand()
+			.range([ 0, height ])
+			.domain(data.map(function(d) { return d[1].name; }))
+			.padding(.1);
+		svg.append("g")
+			.call(d3.axisLeft(y))
 
-	// set the parameters for the histogram
-	var histogram = d3.histogram()
-		.value(function(d) { return d.price; })   // I need to give the vector of value
-		.domain(x.domain())  // then the domain of the graphic
-		.thresholds(x.ticks(70)); // then the numbers of bins
+		//Bars
+		svg.selectAll("myRect")
+			.data(data)
+			.enter()
+			.append("rect")
+			.attr("x", x(0) )
+			.attr("y", function(d) { return y(d[1].name); })
+			.attr("width", function(d) { return x(0); })
+			.attr("height", y.bandwidth() )
+			.attr("fill", "#69b3a2")
 
-	// And apply this function to data to get the bins
-	var bins = histogram(data);
-
-	// Y axis: scale and draw:
-	var y = d3.scaleLinear()
-		.range([height, 0]);
-	y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-	svg.append("g")
-		.call(d3.axisLeft(y));
-
-	// append the bar rectangles to the svg element
-	svg.selectAll("rect")
-		.data(bins)
-		.enter()
-		.append("rect")
-		.attr("x", 1)
-		.attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-		.attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-		.attr("height", function(d) { return height - y(d.length); })
-		.style("fill", "#69b3a2")
-
-});
+		// Animation
+		svg.selectAll("rect")
+			.transition()
+			.duration(800)
+			.attr("y", function(d) { return y(d[1].name); })
+			.attr("width", function(d) { return x(d[1].freq); })
+			.delay(function(d,i){console.log(i) ; return(i*100)})
+		// .attr("x", function(d) { return x(d.Country); })
+		// .attr("y", function(d) { return y(d.Value); })
+		// .attr("width", x.bandwidth())
+		// .attr("height", function(d) { return height - y(d.Value); })
+		// .attr("fill", "#69b3a2")
+	});

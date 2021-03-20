@@ -105,13 +105,14 @@ class SenateDataScraper:
             report_url = f'{BASE}{result[3].split(" ",2)[1][6:-1]}'
             senator_name = f'{result[1]}, {result[0]}'
 
-            Entry = namedtuple('Entry', ['url', 'frame'])
+            Entry = namedtuple('Entry', ['url', 'frame', 'first_name', 'last_name'])
 
             report = self.session.get(report_url)
 
             time.sleep(SLEEPLENGTH)
 
-            data = Entry(report_url, self.extract_data(report.text))
+            data = Entry(report_url, self.extract_data(report.text),
+                         result[0].title(), result[1].title())
             if type(data.frame) is not pd.DataFrame:
                 pics.append(report_url)
             else:

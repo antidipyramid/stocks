@@ -38,6 +38,7 @@ class Trade(models.Model):
 
     transaction_date = models.DateField()
     senator = models.ForeignKey('Senator',
+                                related_name="related_trades",
                                 on_delete=models.CASCADE,default=1)
     '''
     class TradeOwner(models.TextChoices):
@@ -50,7 +51,9 @@ class Trade(models.Model):
     '''
 
     owner = models.CharField(max_length=10)
-    asset = models.ForeignKey(Asset,on_delete=models.CASCADE,null=True)
+    asset = models.ForeignKey(Asset,
+                              related_name='asset_related_trades',
+                              on_delete=models.CASCADE,null=True)
     ticker = models.CharField(max_length=5)
     asset_name = models.TextField()
 
@@ -96,6 +99,8 @@ class Trade(models.Model):
     amount = models.CharField(max_length=45)
 
     comments = models.TextField()
+
+    url = models.URLField()
 
     def __str__(self):
         return f'{self.transaction_date} {self.ticker} {self.asset_name} {self.amount}'

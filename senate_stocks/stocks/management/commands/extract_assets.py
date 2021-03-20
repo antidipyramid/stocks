@@ -11,13 +11,28 @@ class Command(BaseCommand):
 
         trades = Trade.objects.all()
         for trade in trades:
+            name = trade.asset_name.strip()
             ticker = trade.ticker.strip()
-            print(Trade.objects.filter(ticker=ticker))
-            if not Asset.objects.filter(ticker=ticker):
-                new_asset = Asset(ticker=ticker,
-                                  name=trade.asset_name.strip())
-                print(new_asset)
+            if ticker != "--":
+                if Asset.objects.get(ticker__iexact=ticker):
+                    trade.asset_id = Asset.objects.get(ticker__iexact).id
+                else:
+                    new_asset = Asset(ticker=ticker,
+                                      name="")
+
                 try:
                     new_asset.save()
                 except:
-                    print("Exception for: " + trade)
+                    print("Exception for: " + str(trade))
+
+            elif not Asset.objects.filter(name=name):
+                new_asset = Asset(ticker=trade.ticker.strip(),
+                                  name=name)
+                try:
+                    new_asset.save()
+                except:
+                    print("Exception for: " + str(trade))    
+
+            print(Asset.objects.get(name=name))
+            trade.asset_id = Asset.objects.get(name=name).id
+            trade.save() 

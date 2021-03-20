@@ -6,6 +6,8 @@ from rest_framework import permissions
 from stocks.models import Trade, Senator, Asset
 from .serializers import TradeSerializer, SearchSerializer, SenatorSerializer, AssetSerializer
 from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
+import django_filters as filters
 
 from collections import namedtuple
 from datetime import date, timedelta
@@ -48,19 +50,37 @@ class SenatorListApiView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 """
 
+class SenatorFilter(filters.FilterSet):
+    first_name = filters.CharFilter(lookup_expr='icontains')
+    last_name = filters.CharFilter(lookup_expr='icontains')
+
+    class Meta:
+        model = Senator
+        fields = ('first_name', 'last_name')
+
 class SenatorViewSet(viewsets.ModelViewSet):
     """
     A viewset for viewing the senator models.
     """
     queryset = Senator.objects.all()
     serializer_class = SenatorSerializer
+    filterset_class = SenatorFilter
+
+    def filter_queryset(self,queryset):
+        filter_backends = [DjangoFilterBackend]
+        for backend in list(filter_backends):
+            queryset = backend().filter_queryset(self.request,queryset,view=self)
+
+        return queryset
 
     def list(self, request):
-        serializer = self.serializer_class(self.queryset,many=True)
+        queryset = self.get_queryset()
+        serializer = self.get_serializer_class()(self.filter_queryset(queryset),many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        senator = get_object_or_404(self.queryset,pk=pk)
+        queryset = self.get_queryset()
+        senator = get_object_or_404(queryset,pk=pk)
         serializer = SenatorSerializer(senator)
         return Response(serializer.data)
 
