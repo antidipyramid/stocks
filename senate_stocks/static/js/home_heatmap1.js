@@ -116,15 +116,6 @@ d3.json("http://127.0.0.1:8000/api").then(function(data) {
 		.attr("height", y.bandwidth())
 		.style("fill", (d) => "red")
 		.on("mouseover", function(d) {
-			/**
-			div.transition()
-				.duration(200)
-				.style("opacity", .9);
-			div.html(d.transaction_date)
-				.style("left", (d3.event.pageX) + "px")
-				.style("top", (d3.event.pageY-50) + "px");
-				*/
-
 			displayTradeInfo(d);			
 			rect.style("fill", (d) => "yellow")
 			})

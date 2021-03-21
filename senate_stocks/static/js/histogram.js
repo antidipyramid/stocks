@@ -99,6 +99,16 @@ d3.json(url)
 			.attr("width", function(d) { return x(0); })
 			.attr("height", y.bandwidth() )
 			.attr("fill", "#69b3a2")
+			.on("mouseover", function(d) {
+				d3.select(this)
+					.style("fill", "yellow");
+
+				//rect.style("fill", (d) => "yeddllow")
+				})
+			.on("mouseout", function(d) {
+				d3.select(this)
+					.style("fill", "#69b3a2")
+				});
 
 		// Animation
 		svg.selectAll("rect")
@@ -107,9 +117,6 @@ d3.json(url)
 			.attr("y", function(d) { return y(d[1].name); })
 			.attr("width", function(d) { return x(d[1].freq); })
 			.delay(function(d,i){console.log(i) ; return(i*100)})
-		// .attr("x", function(d) { return x(d.Country); })
-		// .attr("y", function(d) { return y(d.Value); })
-		// .attr("width", x.bandwidth())
-		// .attr("height", function(d) { return height - y(d.Value); })
-		// .attr("fill", "#69b3a2")
+					
+			
 	});
