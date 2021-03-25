@@ -62,6 +62,8 @@ var svg = d3.select("#histogram")
 	.attr("transform",
 		"translate(" + margin.left + "," + margin.top + ")");
 
+const BAR_HEIGHT = 25;
+
 let suffix = document.documentURI.split("/");
 
 // get the data
@@ -79,7 +81,7 @@ d3.json(url)
 			.call(d3.axisBottom(x))
 			.selectAll("text")
 			.attr("transform", "translate(-10,0)rotate(-45)")
-			.style("text-anchor", "end");
+			.style("text-anchor", "end")
 
 		// Y axis
 		var y = d3.scaleBand()
@@ -89,7 +91,7 @@ d3.json(url)
 		svg.append("g")
 			.call(d3.axisLeft(y))
 
-		//Bars
+				//Bars
 		svg.selectAll("myRect")
 			.data(data)
 			.enter()
@@ -97,18 +99,17 @@ d3.json(url)
 			.attr("x", x(0) )
 			.attr("y", function(d) { return y(d[1].name); })
 			.attr("width", function(d) { return x(0); })
-			.attr("height", y.bandwidth() )
+			.attr("height", BAR_HEIGHT )
 			.attr("fill", "#69b3a2")
 			.on("mouseover", function(d) {
 				d3.select(this)
 					.style("fill", "yellow");
-
-				//rect.style("fill", (d) => "yeddllow")
 				})
 			.on("mouseout", function(d) {
 				d3.select(this)
 					.style("fill", "#69b3a2")
 				});
+
 
 		// Animation
 		svg.selectAll("rect")

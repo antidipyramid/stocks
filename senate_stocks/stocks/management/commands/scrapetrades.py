@@ -17,7 +17,7 @@ class Command(BaseCommand):
         parser.add_argument('start_date', type=str)
 
     def handle(self, *args, **options):
-
+        # Just make sure the input is in MM/DD/YYYY HH:MM:SS format
         cond = re.match('\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}',
                         options['start_date'])
 
