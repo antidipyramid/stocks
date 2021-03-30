@@ -7,7 +7,7 @@ class TradeSerializer(serializers.ModelSerializer):
         model = Trade
         fields = ('id','transaction_date','senator','owner','ticker',
                   'asset','asset_name','asset_type','transaction_type',
-                  'amount','comments',)
+                  'amount','comments','url',)
 
 class AssetSerializer(serializers.ModelSerializer):
     asset_related_trades = serializers.StringRelatedField(many=True)

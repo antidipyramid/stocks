@@ -2,6 +2,8 @@
 {% block content %}
 {% load static %}
 
+<script src="{% static 'js/datejs/date-en-US.js' %}"></script>
+
 <div class="container-fluid content">
 	<div class="col" style="background-color: #ffffff; width: inherit; border-radius: 25px;">
 
@@ -20,13 +22,61 @@
 				<div class="row">
 					<div class="row align-items-start">
 						<div class="col-3">
+							<div class="card mt-3">
+							  <img width="220" height="330" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress.jpg/220px-Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress.jpg" class="card-img-top" alt="...">
+							  <div class="card-body">
+								<h5 class="card-title">Card title</h5>
+								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+								<a href="#" class="btn btn-primary">Go somewhere</a>
+							  </div>
+							</div>
+							<!--
 							<figure id="histogram"></figure>
+							-->
 							<script src="{% static 'js/histogram.js' %}"></script>
 						</div>
 						<div class="col">
-								<h3 class="text-center">Heatmap</h3>
-								<figure id="heatmap"></figure>
-								<script src="{% static 'js/detail_heatmap.js' %}"></script>
+							<div class="row justify-content-center">
+								<div class="col-3">
+									<div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic radio toggle button group">
+									  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+									  <label class="btn btn-outline-primary" for="btnradio1">2019</label>
+
+									  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" onclick=update(2020) autocomplete="off">
+									  <label class="btn btn-outline-primary" for="btnradio2">2020</label>
+
+									  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" onclick=update(2021) autocomplete="off" checked>
+									  <label class="btn btn-outline-primary" for="btnradio3">2021</label>
+									</div>
+								</div>
+							</div>
+							<div class="row justify-content-center">
+								<div class="col">
+									<figure id="heatmap"></figure>
+									<script src="{% static 'js/detail_heatmap.js' %}"></script>
+								</div>
+							</div>
+								<div id="selected-trades">
+									<h5 class="mt-5" id="selected-date">Trades on </h5>
+									<table class= "table table-hover table-sm mt-3">
+										<thead>
+											<tr>
+												<th scope="col">Transaction Date</th>
+												<th scope="col">Owner</th>
+												<th scope="col">Ticker</th>
+												<th scope="col">Asset Name</th>
+												<th scope="col">Asset Type</th>
+												<th scope="col">Transaction Type</th>
+												<th scope="col">Amount</th>
+												<th scope="col">Comments</th>
+												<th scope="col">Original URL</th>
+											</tr>
+										</thead>
+										<tbody id="selected-trades-table">
+										</tbody>
+									</table>
+									<div id = "no-trades-alert" class="alert alert-dark" role="alert">No trades on this day.</div>
+								</div>
 						</div>
 					</div>
 				</div>

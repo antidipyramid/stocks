@@ -48,6 +48,21 @@ function fetch_data() {
 	});
 }
 
+/**
+ *
+ * Returns the url used by API to get senator's trades
+ *
+ * @return url
+ *
+ */
+function getApiUrl() {
+	let suffix = document.documentURI.split("/");
+	let url = "http://127.0.0.1:8000/api/";
+	url = url.concat(suffix[suffix.length-2],'s/',suffix[suffix.length-1]);
+
+	return url;
+}
+
 // set the dimensions and margins of the graph
 var margin = {top: 20, right: 30, bottom: 40, left: 150},
 	width = 460 - margin.left - margin.right,
@@ -64,12 +79,8 @@ var svg = d3.select("#histogram")
 
 const BAR_HEIGHT = 25;
 
-let suffix = document.documentURI.split("/");
-
-// get the data
-let url = "http://127.0.0.1:8000/api/";
-url = url.concat(suffix[suffix.length-2],'s/',suffix[suffix.length-1])
-d3.json(url)
+//get the data
+d3.json(getApiUrl())
 	.then( function(data) { return process_data(data.related_trades); })
 	.then(function(data) {
 		// Add X axis
