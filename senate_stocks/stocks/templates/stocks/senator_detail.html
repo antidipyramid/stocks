@@ -2,6 +2,8 @@
 {% block content %}
 {% load static %}
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker.min.css">
+<script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/js/datepicker-full.min.js"></script>
 <script src="{% static 'js/datejs/date-en-US.js' %}"></script>
 
 <div class="container-fluid content">
@@ -17,75 +19,159 @@
 				<button class="nav-link" id="trades-tab" data-bs-toggle="tab" data-bs-target="#trades" type="button" role="tab" aria-controls="trades" aria-selected="false">All Trades</button>
 			</li>
 		</ul>
+
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
 				<div class="row">
 					<div class="row align-items-start">
+
+						<!-- Senator Card -->
 						<div class="col-3">
 							<div class="card mt-3">
-							  <img width="220" height="330" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress.jpg/220px-Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress.jpg" class="card-img-top" alt="...">
-							  <div class="card-body">
-								<h5 class="card-title">Card title</h5>
-								<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-								<a href="#" class="btn btn-primary">Go somewhere</a>
-							  </div>
+								<img width="220" height="330" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress.jpg/220px-Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress.jpg" class="card-img-top" alt="...">
+								<div class="card-body">
+									<h5 class="card-title">Card title</h5>
+									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+									<a href="#" class="btn btn-primary">Go somewhere</a>
+								</div>
 							</div>
-							<!--
-							<figure id="histogram"></figure>
-							-->
+
+
 							<script src="{% static 'js/histogram.js' %}"></script>
 						</div>
+
+						<!-- Overview tab -->	
 						<div class="col">
 							<div class="row justify-content-center">
 								<div class="col-3">
 									<div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic radio toggle button group">
-									  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
-									  <label class="btn btn-outline-primary" for="btnradio1">2019</label>
+										<input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+										<label class="btn btn-outline-primary" for="btnradio1">2019</label>
 
-									  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" onclick=update(2020) autocomplete="off">
-									  <label class="btn btn-outline-primary" for="btnradio2">2020</label>
+										<input type="radio" class="btn-check" name="btnradio" id="btnradio2" onclick=update(2020) autocomplete="off">
+										<label class="btn btn-outline-primary" for="btnradio2">2020</label>
 
-									  <input type="radio" class="btn-check" name="btnradio" id="btnradio3" onclick=update(2021) autocomplete="off" checked>
-									  <label class="btn btn-outline-primary" for="btnradio3">2021</label>
+										<input type="radio" class="btn-check" name="btnradio" id="btnradio3" onclick=update(2021) autocomplete="off" checked>
+										<label class="btn btn-outline-primary" for="btnradio3">2021</label>
 									</div>
 								</div>
 							</div>
+
+							<!-- Trades heatmap -->
 							<div class="row justify-content-center">
 								<div class="col">
 									<figure id="heatmap"></figure>
 									<script src="{% static 'js/detail_heatmap.js' %}"></script>
+									<script src="{% static 'js/all_trades.js' %}"></script>
 								</div>
 							</div>
-								<div id="selected-trades">
-									<h5 class="mt-5" id="selected-date">Trades on </h5>
-									<table class= "table table-hover table-sm mt-3">
-										<thead>
-											<tr>
-												<th scope="col">Transaction Date</th>
-												<th scope="col">Owner</th>
-												<th scope="col">Ticker</th>
-												<th scope="col">Asset Name</th>
-												<th scope="col">Asset Type</th>
-												<th scope="col">Transaction Type</th>
-												<th scope="col">Amount</th>
-												<th scope="col">Comments</th>
-												<th scope="col">Original URL</th>
-											</tr>
-										</thead>
-										<tbody id="selected-trades-table">
-										</tbody>
-									</table>
-									<div id = "no-trades-alert" class="alert alert-dark" role="alert">No trades on this day.</div>
-								</div>
+
+							<!-- Table with trades for date selected in heatmap -->
+							<div id="selected-trades">
+								<h5 class="mt-5" id="selected-date">Trades on </h5>
+								<table class= "table table-hover table-sm mt-3">
+									<thead>
+										<tr>
+											<th scope="col">Transaction Date</th>
+											<th scope="col">Owner</th>
+											<th scope="col">Ticker</th>
+											<th scope="col">Asset Name</th>
+											<th scope="col">Asset Type</th>
+											<th scope="col">Transaction Type</th>
+											<th scope="col">Amount</th>
+											<th scope="col">Comments</th>
+											<th scope="col">Original URL</th>
+										</tr>
+									</thead>
+									<tbody id="selected-trades-table">
+									</tbody>
+								</table>
+								<div id = "no-trades-alert" class="alert alert-dark" role="alert">No trades on this day.</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+
+			<!-- All Trades tab -->
 			<div class="tab-pane fade" id="trades" role="tabpanel" aria-labelledby="trades-tab">
-				<table class="table table-striped table-hover">
+
+				<!-- Options to filter trades -->
+				<div class="mt-3 p-3 border light">
+					<div class="row mx-3">
+						<div class="col-3">
+							<div class="input-group input-group-sm">
+								<input type="text" id="dateStartInput" class="form-control form-control-sm" placeholder="Start" aria-label="search start date">
+								<span class="input-group-text" id="dateInputLabel">to</span>
+								<input type="text" id="dateEndInput" class="form-control form-control-sm" placeholder="End" aria-label="search end date">
+							</div>
+						</div>
+						<div class="col-2">
+							<div class="input-group input-group-sm">
+								<span class="input-group-text" id="tickerInputLabel">Ticker</span>
+								<input type="text" id="ticker" class="form-control form-control-sm" placeholder="All" aria-label="ticker search">
+							</div>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-sm">
+								<span class="input-group-text" id="assetNameInputLabel">Asset Name</span>
+								<input type="text" id="asset_name" class="form-control form-control-sm" placeholder="All" aria-label="asset name search">
+							</div>
+						</div>
+					</div>
+					<div class="row mt-3 mx-3 justify-content-evenly align-items-center">
+						<div class="col-2">
+							<div class="form-floating">
+								<select id="owner" class="form-select form-select-sm" aria-label="Owner select">
+									<option value="All" selected>All</option>
+									<option value="Self">Self</option>
+									<option value="Spouse">Spouse</option>
+									<option value="Child">Child</option>
+								</select>
+								<label for="owner">Owner</label>
+							</div>
+						</div>
+						<div class="col-2">
+							<div class="form-floating">
+								<select class="form-select form-select-sm" id="asset_type" aria-label="asset type select">
+									<option value="All" selected>All</option>
+									<option value="Stock">Stock</option>
+									<option value="Non-Public Stock">Non-Public Stock</option>
+									<option value="Stock Option">Stock Option</option>
+									<option value="Corporate Bond">Corporate Bond</option>
+									<option value="Municipal Security">Municipal Security</option>
+									<option value="Other Securities">Other Securities</option>
+								</select>
+								<label for="asset_type">Asset Type</label>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="form-floating">
+								<select class="form-select form-select-sm" id="amount" aria-label"trade amount select">
+									<option value="All" selected>All</option>
+									<option value="$1,001 - $15,000">$1,001 - $15,000</option>
+									<option value="$15,001 - $50,000">$15,001 - $50,000</option>							
+									<option value="$50,000 - $100,000">$50,000 - $100,000</option>
+									<option value="$100,001 - $250,000">$100,001 - $250,000</option>
+									<option value="$251,001 - $500,000">$251,001 - $500,000</option>
+									<option value="$500,001 - $1,000,000">$500,001 - $1,000,000</option>
+									<option value="$1,000,001 - 5,000,000">$1,000,001 - 5,000,000</option>
+									<option value="$5,000,001 - $25,000,000">$5,000,001 - $25,000,000</option>
+									<option value="$25,000,001 - $50,000,000">$25,000,001 - $50,000,000</option>
+									<option value="Over $50,000,0000">Over $50,000,000</option>
+								</select>
+								<label for="amount">Transaction Amount</label>
+							</div>
+						</div>
+						<div class="col-1">
+								<button onclick="displaySenatorResults()" type="button" class="btn btn-primary">Filter</button>
+						</div>
+					</div>
+				</div>
+				<table class= "table table-hover table-striped table-sm mt-3">
 					<thead>
 						<tr>
-							<th scope="col">Transaction Date</th>
+							<th scope="col">All Transaction Dates</th>
 							<th scope="col">Owner</th>
 							<th scope="col">Ticker</th>
 							<th scope="col">Asset Name</th>
@@ -96,7 +182,7 @@
 							<th scope="col">Original URL</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="allTrades">
 						{% for trade in trades %}
 						<tr>
 							<th scope="row">{{ trade.transaction_date }}</th>
@@ -112,6 +198,7 @@
 						{% endfor %}
 					</tbody>
 				</table>
+				<div id="no-filter-trades-alert" hidden="true" class="alert alert-dark" role="alert">No trades found.</div>
 			</div>
 		</div>
 

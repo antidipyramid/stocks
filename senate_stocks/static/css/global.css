@@ -1,0 +1,34 @@
+h1, h2, h3, h4, h5, h6, .navbar {
+	font-family: 'Roboto Slab', serif !important;
+}
+
+.navbar {
+	font-size: medium;
+}
+
+body {
+	font-family: 'Roboto Mono', serif !important;
+	font-size: small;
+	padding-top: 65px;
+	background-color: #ffffff;
+}
+
+#no-filter-trades-alert {
+	opacity: 0;
+	transition: all 1s;
+}
+
+tr, #no-trades-alert {
+	animation-name: fadeIn;
+	animation-duration: 1s;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
