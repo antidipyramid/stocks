@@ -178,7 +178,7 @@ function loadGraph() {
 						}
 					}
 					else {
-						clearDisplayedTrades();
+						clearDisplayedTrades("selected-trades-table");
 						document.getElementById("no-trades-alert").hidden = false;
 					}
 				})

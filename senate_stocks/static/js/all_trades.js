@@ -1,4 +1,4 @@
-var filterFields = ["owner","ticker","asset_type","amount"];
+var filterFields = ["owner","ticker","asset_type","asset_name","amount"];
 
 /**
  * Generic function to filter trades based on the provided
@@ -15,20 +15,15 @@ function filterFunc(list, fields) {
 		for (let field of fields) {
 			let e = document.getElementById(field);
 			console.log(field);
-			if (e.value) {
+      if (e.value) {
 				if (e.value != "All") {
-					if (e.value != list[i][field]) {
-						match = false;
-						break;
+					if (e.value.toLowerCase() != list[i][field].toLowerCase()) {
+            if (list[i][field].toLowerCase().indexOf(e.value.toLowerCase()) < 0) {
+              match = false;
+              break;
+            }
 					}
 				}
-			}
-			if (e.placeholder) {
-				if (e.placeholder != "All")
-					if (e.placeholder != list[i][field]) {
-						match = false;
-						break;
-					}
 			}
 		}
 		if (match) {
@@ -45,7 +40,7 @@ function filterFunc(list, fields) {
  *
  */
 function filterTrades() {
-	return filteredResults = filterFunc(allTrades,filterFields);
+	return filterFunc(allTrades,filterFields);
 }
 
 function displaySenatorResults() {
@@ -56,13 +51,59 @@ function displaySenatorResults() {
 	if (trades.length == 0) {
 
 		alert.hidden = false;	
-		alert.setAttribute("style","opacity: 1;")
+		alert.setAttribute("style","opacity: 1;");
 	}
 	else {
-		alert.setAttribute("style","opacity: 0;")
+		alert.setAttribute("style","opacity: 0;");
 		alert.hidden = true;	
 		for (let trade of filterTrades()) {
 			displaySelectedTrade(trade,"allTrades");
 		}			
 	}
+}
+
+/**
+ * Resets dropdown select form back to first option (all)
+ *
+ * @param id
+ *
+ */
+function clearOptionInput(id) {
+  let form = document.getElementById(id)
+  for(let child of form.children) {
+    if (child.value == "All") {
+      form.value = child.value;
+      form.setAttribute("selected","")
+    }
+    else {
+      form.removeAttribute("selected");
+    }
+  }
+}
+
+/**
+ * Resets text input form to empty
+ *
+ * @param id
+ *
+ */
+function clearTextInput(id) {
+  document.getElementById(id).value = "";
+}
+
+/**
+ * Resets all input forms for all trades table on detail page.
+ *
+ */
+function clearTradesFilterForms() {
+  for(let name of filterFields) {
+    form = document.getElementById(name);
+    
+    if (form.tagName.toLowerCase() == "select") {
+      clearOptionInput(name);
+    }
+    else if (form.tagName.toLowerCase() == "input") {
+      clearTextInput(name)
+    }
+  }
 }
