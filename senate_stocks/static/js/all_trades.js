@@ -1,4 +1,43 @@
 var filterFields = ["owner","ticker","asset_type","asset_name","transaction_type","amount"];
+var dates = ["dateStartInput","dateEndInput"];
+
+/**
+ * Uses vanillajs-datepicker to make a date range picker
+ */
+function makeDatePicker(id) {
+  let e = document.getElementById(id);
+	let rangepicker = new DateRangePicker(e, {
+		// ...options
+	});
+}
+
+/**
+ * Filters trades by date and returns results
+ *
+ *
+ */
+function filterDates(list, start, end) {
+	var results = [];
+	for(let ele of list) {
+		let date = new Date(ele.transaction_date);
+		
+		if (start != "") {
+			if (date.compareTo(Date.parse(start)) < 0) {
+				continue;
+			}
+		}	
+
+		if (end != "") {
+			if (date.compareTo(Date.parse(end)) > 0) {
+				continue;
+			}
+		}
+		results.push(ele);
+	}	
+	return results;
+}
+
+
 
 /**
  * Generic function to filter trades based on the provided
@@ -14,7 +53,6 @@ function filterFunc(list, fields) {
 		let match = true;
 		for (let field of fields) {
 			let e = document.getElementById(field);
-			console.log(field);
       if (e.value) {
 				if (e.value != "All") {
 					if (e.value.toLowerCase() != list[i][field].toLowerCase()) {
@@ -40,7 +78,15 @@ function filterFunc(list, fields) {
  *
  */
 function filterTrades() {
-	return filterFunc(allTrades,filterFields);
+	let startInput = document.getElementById("dateStartInput").value,
+			endInput = document.getElementById("dateEndInput").value;
+
+	let trades = allTrades;
+	if (startInput != "" || endInput != "") {
+		trades = filterDates(allTrades,startInput,endInput);
+	}
+
+	return filterFunc(trades,filterFields);
 }
 
 function displaySenatorResults() {
@@ -103,7 +149,14 @@ function clearTradesFilterForms() {
       clearOptionInput(name);
     }
     else if (form.tagName.toLowerCase() == "input") {
-      clearTextInput(name)
+      clearTextInput(name);
     }
   }
+
+	for(let name of dates) {
+		clearTextInput(name);
+	}
+
+  filterTrades();
+  displaySenatorResults();
 }

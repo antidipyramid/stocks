@@ -69,7 +69,7 @@ function displaySelectedTrade(trade, tableId) {
 	let row = document.createElement("tr");
 	let datum = document.createElement("th")
 	datum.setAttribute("scope","col");
-	datum.innerHTML = trade.transaction_date
+	datum.innerHTML = new Date(trade.transaction_date).toString("MMMM dS, yyyy");
 	row.appendChild(datum);
 
 	// cycle through attribute names
