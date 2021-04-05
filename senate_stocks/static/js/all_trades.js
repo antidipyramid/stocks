@@ -1,4 +1,4 @@
-var filterFields = ["owner","ticker","asset_type","asset_name","amount"];
+var filterFields = ["owner","ticker","asset_type","asset_name","transaction_type","amount"];
 
 /**
  * Generic function to filter trades based on the provided
