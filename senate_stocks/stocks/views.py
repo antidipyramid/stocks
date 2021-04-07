@@ -27,30 +27,9 @@ def index(request):
         s = date.split('/')
         return '-'.join([s[2],s[0],s[1]])
 
-
     #Get trades by company
     companies = Trade.objects.all().distinct('ticker')
     senators = Trade.objects.all().distinct('senator')
-    """
-    #Store lower bound for transaction value per company in dicyt
-    value = defaultdict(int)
-    for trade in trades:
-        #Strip out all commas and dollars signs from lower bound
-        amt = int(trade.amount.split(" ")[0]
-                  .translate({36: None, 44: None}))
-        value[trade.ticker] += amt
-
-
-    #Get dates
-    dates = []
-    for trade in trades:
-        dates.append(convert_date(trade.transaction_date))
-
-    fig = go.Figure(data=[go.Scatter(x=dates,
-                                     y=)])
-
-    """
-
     activity = []
     for senator in Senator.objects.all():
         activity.append(len(Trade.objects.all().filter(senator=senator)))
@@ -70,7 +49,7 @@ def index(request):
                             showgrid=False,
                             showline=False,
                             showticklabels=False))
-    
+
     senators_by_activity = fig1.to_html(full_html=False,default_height=500)
 
 
@@ -81,7 +60,7 @@ def about(request):
     return render(request, 'stocks/about.html')
 
 def senators(request):
-    context = {'senators': Senator.objects.all()}
+    context = {'senators_list': Senator.objects.all()}
     return render(request, 'stocks/senators.html', context)
 
 def senator_detail(request, senator_id):

@@ -2,49 +2,34 @@
 
 {% block content %}
 
-<div class="container-fluid pb-3">
-	<div class="col py-3" style="background-color: transparent: inherit; border-radius: 25px;">
-		<table id="table" data-toggle="table" class="table table-sm table-striped table-borderless">
-			<thead>
-				<tr>
-					<th data-field="senator" data-sortable="true" data-sorter="nameSorter">Senator</th>
-					<th data-field="state" data-sortable="true">State</th>
-					<th data-field="party" data-sortable="true">Party</th>
-					<th data-field="trades" data-sortable="true">Number of Trades</th>
-					<th data-field="volume" data-sortable="true">Trade Volume This Year</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for senator in senators %}
-				<tr>
-					<th scope="row">
-						<a href='/senator/{{ senator.id }}'>{{ senator }}</a>
-					</th>
-				</tr>
-				{% endfor %}
-		</table>
+<div class="container-fluid">
 
-		<script>
-			function checkEnd(str) {
-				arr = "Jr. Sr. I II III IV"
-				return arr.includes(str)
-			}
+  <div class="mt-3 p-3 border light">
+    <div class="row mx-3">
+    </div>
+  </div>
 
-			function nameSorter(a,b) {
-				var aa = a.split(' ')
-				console.log(aa)
-				var bb = b.split(' ')
-				var offsetA = aa.filter(checkEnd)
-				var offsetB = bb.filter(checkEnd)
-				
-				lastNameA = aa[aa.length-1-offsetA.length]
-				lastNameB = bb[bb.length-1-offsetB.length]
-				console.log(lastNameA)
-				console.log(lastNameB)
-				return lastNameA-lastNameB
-			}
-		</script>
-	</div>
+  <div class="row justify-content-evenly">
+    {% for senator in senators_list %}
+    <div class="col">
+      <div class="card m-3 " style="width: 15rem;">
+        <img src={{ senator.photo_url }} class="card-img-top " alt="">
+        <div class="card-body">
+        <div class="col" style="text-align:center;">
+          <a class="btn btn-info btn-sm" style="display:inline-block;" href="/senator/{{ senator.id }}" role="button">{{ senator }}</a>
+          </div>
+        </div>
+
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><b>State:</b> </li>
+          <li class="list-group-item"><b>Party:</b> {{ senator.get_party_display }}</li>
+          <li class="list-group-item"><b>Years In Senate:</b> </li>
+        </ul>
+        </ul>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 
 {% endblock content %}

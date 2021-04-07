@@ -26,14 +26,17 @@
 					<div class="row align-items-start">
 
 						<!-- Senator Card -->
-						<div class="col-3">
+						<div class="col-2">
 							<div class="card mt-3">
-								<img width="220" height="330" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress.jpg/220px-Sen._Bill_Hagerty_official_Senate_portrait%2C_117th_Congress.jpg" class="card-img-top" alt="...">
+								<img width="256" height="256" src={{ senator.photo_url }} class="card-img-top" alt="...">
 								<div class="card-body">
-									<h5 class="card-title">Card title</h5>
-									<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-									<a href="#" class="btn btn-primary">Go somewhere</a>
+									<h5 class="card-title">{{ senator }}</h5>
 								</div>
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item"><b>State:</b> </li>
+									<li class="list-group-item"><b>Party: </b><p id="party">{{ senator.get_party_display }}</p></li>
+									<li class="list-group-item"><b>Years In Senate:</b> </li>
+								</ul>
 							</div>
 
 
@@ -105,7 +108,7 @@
 								<span class="input-group-text" id="dateInputLabel">to</span>
 								<input type="text" id="dateEndInput" class="form-control form-control-sm" placeholder="End" aria-label="search end date">
 							</div>
-						<script>makeDatePicker("dateRange")</script>
+							<script>makeDatePicker("dateRange")</script>
 						</div>
 						<div class="col-2">
 							<div class="input-group input-group-sm">
@@ -176,8 +179,8 @@
 							</div>
 						</div>
 						<div class="col-2">
-                <button onclick="displaySenatorResults()" type="button" class="btn btn-primary">Filter</button>
-                <button onclick="clearTradesFilterForms()" type="button" class="btn btn-danger">Reset</button>
+							<button onclick="displaySenatorResults()" type="button" class="btn btn-primary">Filter</button>
+							<button onclick="clearTradesFilterForms()" type="button" class="btn btn-danger">Reset</button>
 						</div>
 					</div>
 				</div>
