@@ -3,22 +3,26 @@ h1, h2, h3, h4, h5, h6, .navbar {
 }
 
 .navbar {
+	max-width:1400px;
+	margin: 0 auto;
 	font-size: medium;
 }
 
+.senator-card {
+	width: 15rem;
+}
 body {
 	font-family: 'Roboto Mono', serif !important;
 	font-size: small;
 	padding-top: 65px;
-	background-color: #ffffff;
+	background-color: #f7f7f7;
 }
 
-#no-filter-trades-alert {
-	opacity: 0;
-	transition: all 1s;
+.contrast-box {
+	background-color: #eee;
 }
 
-tr, #no-trades-alert {
+.animated, tr {
 	animation-name: fadeIn;
 	animation-duration: 1s;
 }
@@ -29,6 +33,7 @@ tr, #no-trades-alert {
 	}
 
 	to {
+		visibility: visible;
 		opacity: 1;
 	}
 }

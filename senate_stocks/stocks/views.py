@@ -1,15 +1,18 @@
 from collections import defaultdict
+import json
 
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 from rest_framework import generics
 from psycopg2.extras import DateRange
+from localflavor.us.us_states import US_STATES as states
 
 from django.shortcuts import render
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views.decorators.cache import cache_page
+from django.core import serializers
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -60,7 +63,21 @@ def about(request):
     return render(request, 'stocks/about.html')
 
 def senators(request):
-    context = {'senators_list': Senator.objects.all()}
+    # send template a list of states so user can 
+    # filter senators from localflavor, which stores states
+    # as tuple of tuples in form (('FL','Florida')...)
+    state_list = [x[1] for x in states]
+    senators_json = []
+    for senator in Senator.objects.all():
+        senators_json.append({'name': str(senator),
+                              'party': senator.get_party_display(),
+                              'state': senator.get_state_display(),
+                              'id': senator.id,
+                              'photo_url': senator.photo_url})
+
+    context = {'senators_list': list(Senator.objects.all()),
+               'state_list': state_list,
+               'senators_json': json.dumps(senators_json)}
     return render(request, 'stocks/senators.html', context)
 
 def senator_detail(request, senator_id):

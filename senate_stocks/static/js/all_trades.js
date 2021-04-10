@@ -95,13 +95,12 @@ function displaySenatorResults() {
 	let alert = document.getElementById("no-filter-trades-alert");
 
 	if (trades.length == 0) {
-
-		alert.hidden = false;	
-		alert.setAttribute("style","opacity: 1;");
+		alert.hidden = false;
+		alert.style.visibility = 'visible;';	
 	}
 	else {
-		alert.setAttribute("style","opacity: 0;");
-		alert.hidden = true;	
+		alert.style.visibility = 'hidden;';	
+		alert.hidden = true;
 		for (let trade of filterTrades()) {
 			displaySelectedTrade(trade,"allTrades");
 		}			
