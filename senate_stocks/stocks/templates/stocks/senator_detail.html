@@ -204,7 +204,7 @@
 							<th scope="row">{{ trade.transaction_date }}</th>
 							<td>{{ trade.owner }}</td>
 							<td>{{ trade.ticker }}</td>
-							<td>{{ trade.asset_name }}</td>
+							<td><a href="/asset/{{ trade.asset.id }}">{{ trade.asset_name }}</a></td>
 							<td>{{ trade.asset_type }}</td>
 							<td>{{ trade.transaction_type }}</td>
 							<td>{{ trade.amount }}</td>

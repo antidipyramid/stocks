@@ -1,0 +1,10 @@
+{% extends 'stocks/base.html' %}
+{% load static %}
+{% block content %}
+
+<p>Hi</p>
+<figure id="heatmap"></figure>
+<script src='{% static 'js/asset_detail.js' %}'></script>
+<script>createGraph(JSON.parse('{{ stock_history|escapejs }}'),JSON.parse('{{ trades|escapejs }}'))</script>
+
+{% endblock content %}
