@@ -25,31 +25,33 @@
 
   <body>
 
-    <nav class="navbar navbar-expand-md">
-      <div class="d-flex flex-fill bd-highlight">
-        <div class="p-2 flex-grow-1 bd-highlight">
-          <a class="navbar-brand" href="/">Stock Watcher</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
-        <div class="p-2 bd-highlight">
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto mb-2 mb-md-0">
-              <li class="nav-item active">
-                <a class="nav-link" href="/senators">Senators</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/assets">Assets</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/about">About</a>
-              </li>
-            </ul>
+    <div class="container">
+      <nav class="navbar fixed-top navbar-expand-md">
+        <div class="d-flex flex-fill bd-highlight">
+          <div class="p-2 flex-grow-1 bd-highlight">
+            <a class="navbar-brand" href="/">Stock Watcher</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+          <div class="p-2 bd-highlight">
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+              <ul class="navbar-nav mr-auto mb-2 mb-md-0">
+                <li class="nav-item active">
+                  <a class="nav-link" href="/senators">Senators</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/assets">Assets</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/about">About</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
     {% block content %}
 
     {% endblock content %}

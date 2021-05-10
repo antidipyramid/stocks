@@ -4,59 +4,66 @@
 
 <script src="{% static 'js/search.js' %}"></script>
 
-<div class="container-sm" >
-	<div class="col" style="background-color: #ffffff; width: inherit; ">
 
-		<div class="row mt-3 justify-content-center">
-			<div class="col-sm-6">
-				<div class="p-3 border light">
-					<h5 class="text-center">To get started, search for a senator or company:</h5>
-					<input type="search" oninput="delayedSearch()" class="form-control form-control-sm"
-													id="searchbox" placeholder="Search for a senator or company...">
-				</div>
-			</div>
-		</div>
 
-		<div class="row mb-3 justify-content-center">
-			<div class="col-sm-6">
-				<div id="anchor">
-					<ul class="list-group" id="results" style="max-height: 300px; overflow-y: auto;"></ul>
-				</div>
-			</div>
-		</div>
 
-		<!--
-	  {% if most_active_senators %}
-	  {{ most_active_senators|safe }}
-	  {% else %}
-	  <p>No graph provided.</p>
-	  {% endif %}
-	  //-->
+<div class="hero">
+  <video autoplay muted loop>
+    <source src={% static 'img/senate-1.mp4' %} type="video/mp4">
+  </video>
+  <h3 class="mt-5 text-center" id="homepage-heading">Hold senators accountable by monitoring their stock trades</h3>
 
-	  <div class="row mb-3 justify-content-center">
-		  <div class="col-6">
-			  <div class="p-3 border light">
-				  <h3 class="text-center">January 2021</h3>
-				  <figure class="col d-flex align-items-center justify-content-center" id="heatmap"></figure>
-			  </div>
-		  </div>
-		  <script src="{% static 'js/datejs/date-en-US.js' %}"></script>
-		  <script src="{% static 'js/home_heatmap1.js' %}"></script>
+  <div class="row mt-5 justify-content-center" >
+    <div class="col-sm-6">
+      <div class="p-3 border light search-box">
+        <h5 class="text-center">To get started, search for a senator or company:</h5>
+        <input type="search" oninput="delayedSearch()" class="form-control form-control-sm"
+                                                       id="searchbox" placeholder="Search for a senator or company...">
+      </div>
+    </div>
+  </div>
 
-		  <script src="{% static 'js/display_trade_info.js' %}"></script>
-		  <div class="col-6">
-			  <div class="p-3 border light">
-				  <h3 class="text-center">Recent Trades</h3>
-				  <p id="asset-name">Asset name:</p>
-					<p id="ticker">Ticker:</p>
-					<p id="senator">Senator:</p>
-					<p id="date">Date:</p>
-					<p id="amount">Amount:</p>
-					<p id="comments">Comments:</p>
-			  </div>
-		  </div>
-	  </div>
-	</div>
+  <div class="row mb-3 justify-content-center">
+    <div class="col-sm-6">
+      <div id="anchor">
+        <ul class="list-group" id="results" style="max-height: 300px; overflow-y: auto;"></ul>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!--
+  {% if most_active_senators %}
+  {{ most_active_senators|safe }}
+  {% else %}
+  <p>No graph provided.</p>
+  {% endif %}
+  //-->
+
+  <!-- <div class="row mb-3 justify-content-center"> -->
+  <!-- 	<div class="col-6"> -->
+  <!-- 		<div class="p-3 border light"> -->
+  <!-- 			<h3 class="text-center">January 2021</h3> -->
+  <!-- 			<figure class="col d-flex align-items-center justify-content-center" id="heatmap"></figure> -->
+  <!-- 		</div> -->
+  <!-- 	</div> -->
+  <!-- 	<script src="{% static 'js/datejs/date-en-US.js' %}"></script> -->
+  <!-- 	<script src="{% static 'js/home_heatmap1.js' %}"></script> -->
+
+  <!-- 	<script src="{% static 'js/display_trade_info.js' %}"></script> -->
+  <!-- 	<div class="col-6"> -->
+  <!-- 		<div class="p-3 border light"> -->
+  <!-- 			<h3 class="text-center">Recent Trades</h3> -->
+  <!-- 			<p id="asset-name">Asset name:</p> -->
+  <!-- 			<p id="ticker">Ticker:</p> -->
+  <!-- 			<p id="senator">Senator:</p> -->
+  <!-- 			<p id="date">Date:</p> -->
+  <!-- 			<p id="amount">Amount:</p> -->
+  <!-- 			<p id="comments">Comments:</p> -->
+  <!-- 		</div> -->
+  <!-- 	</div> -->
+  <!-- </div> -->
+
+
 
 {% endblock content %}
