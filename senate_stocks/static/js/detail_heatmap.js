@@ -1,10 +1,14 @@
+var allTrades,
+	currentTrades,
+	tradeGenerator;
+
+const TRADES_PER_CLICK = 10;
 /**
  * Groups trades into dictionary by date for display
  * by the github-style heatmap.
  *
  * @param data - array of Trade instances
  */
-var allTrades;
 function processHeatmapData(data) {
 	allTrades = data;
 	let heatmapData = new Map();
@@ -21,6 +25,7 @@ function processHeatmapData(data) {
 		}
 	}
 	console.log(heatmapData);
+	currentTrades = heatmapData;
 	return heatmapData;
 }
 
@@ -34,7 +39,7 @@ function processHeatmapData(data) {
 function getVolume(amount) {
 	let bounds = amount.split("-");
 	bounds.forEach((x,i,a) => { 
-		 a[i] = Number(x.replace(/[ ,$]/g,""));
+		a[i] = Number(x.replace(/[ ,$]/g,""));
 	});
 	return bounds.reduce((a,b) => a+b) / 2;
 }
@@ -59,18 +64,27 @@ function clearDisplayedTrades(id) {
  * @param trade
  *
  */
-function displaySelectedTrade(trade, tableId) {
+function displaySelectedTrade(trade, tableId, senator=false) {
 	let anchor = document.getElementById(tableId);
-	
+
 	let fields = ['owner', 'ticker', 'asset_name', 'asset_type', 'transaction_type',
-					'amount', 'comments'];
-	
+		'amount', 'comments'];
+
 	// make the first "key" column
 	let row = document.createElement("tr");
 	let datum = document.createElement("th")
 	datum.setAttribute("scope","col");
-	datum.innerHTML = new Date(trade.transaction_date).toString("MMMM dS, yyyy");
+	datum.innerHTML = ( new Date(trade.transaction_date) ).toString("MMMM dS, yyyy");
 	row.appendChild(datum);
+
+	if (senator) {
+		datum = document.createElement("td");
+		let link = document.createElement("a");
+		link.setAttribute("href","/senator/".concat(trade.senator_id));
+		link.innerHTML = trade.senator;
+		datum.appendChild(link);
+		row.appendChild(datum);
+	}
 
 	// cycle through attribute names
 	for (let field of fields) {
@@ -88,6 +102,7 @@ function displaySelectedTrade(trade, tableId) {
 	row.appendChild(datum);
 
 	anchor.appendChild(row);
+	return row;
 }
 
 const WIDTH = 1000, HEIGHT = 150, CELLSIZE = 17, CELLMARGIN = 1.5;
@@ -102,30 +117,134 @@ const t = d3.transition()
 
 var heatSvg;
 function update(year) {
-	heatSvg = d3.select("#heatmap")
-			.selectAll("svg")
-			.data(d3.range(year,year+1))
-			.join(
-				enter => enter.append("svg")
-					.attr("width",WIDTH)
-					.attr("height",HEIGHT)
-					.append("g")
-					.call(enter => enter.transition(t)
-						.attr("transform", "translate(" + ((WIDTH - (CELLSIZE + CELLMARGIN) * 53) / 2) + "," + (HEIGHT - (CELLSIZE + CELLMARGIN) * 7 - 1) + ")")),
+	document.getElementById("selected-date")
+		.innerHTML = "Trades in " + year;
+	tradeGenerator = null;
 
-				exit => {
-					exit.select("g").select("g").remove()		
-					return d3.select("#heatmap").select("svg").select("g");
-				}
-			);
-	loadGraph();
+	heatSvg = d3.select("#heatmap")
+		.selectAll("svg")
+		.data(d3.range(year,year+1))
+		.join(
+			enter => enter.append("svg")
+			.attr("width",WIDTH)
+			.attr("height",HEIGHT)
+			.append("g")
+			.call(enter => enter
+				.attr("transform", "translate(" + ((WIDTH - (CELLSIZE + CELLMARGIN) * 53) / 2) + "," + (HEIGHT - (CELLSIZE + CELLMARGIN) * 7 - 1) + ")")),
+
+			exit => {
+				exit.select("g").select("g").remove()		
+				return d3.select("#heatmap").select("svg").select("g");
+			}
+		);
+
+
+	loadGraph(year);
+}
+
+function toggleNoTradesAlert(hide) {
+	if (hide) {
+		document.getElementById("no-trades-alert")
+			.setAttribute("style", "visibility:hidden");
+		document.getElementById("more-trades-button")
+			.setAttribute("style", "visibility:visible;display:block;");
+	}
+	else {
+		document.getElementById("no-trades-alert")
+			.setAttribute("style", "visibility:visible;display:block;");
+		document.getElementById("more-trades-button")
+			.setAttribute("style", "visibility:hidden;display:none");
+	}
+}
+
+/**
+ * Generates the next few trades to display when user clicks
+ * view more trades button
+ *
+ * @param {Array} trades - A list of trade objects
+ * @param {Number} num - The number of trades to yield
+ * @return {Array} - The few trades to display
+ *
+ */
+function *nextTrades(trades, num=10) {
+	let curr = 0;
+	let nextTradesToDisplay = []
+	for(let [ date, obj ] of trades) {
+		for(let trade of obj.trades) {
+			if (curr < num) {
+				curr += 1;
+				nextTradesToDisplay.push(trade)
+			}
+			else {
+				yield nextTradesToDisplay;
+				nextTradesToDisplay = [];
+				curr = 0;
+			}
+		}
+	}
+
+	if (nextTradesToDisplay.length > 0) {
+		yield nextTradesToDisplay;
+	}
+}
+
+/**
+ * Wrapper function for next trade generator. When there are
+ * no more trades, disable the button
+ *
+ */
+function getNextTrades() {
+	if (!tradeGenerator) {
+		tradeGenerator = nextTrades(currentTrades);
+	}
+
+	let tradesToDisplay = tradeGenerator.next();
+	console.log(tradesToDisplay);
+	if (tradesToDisplay.value) {
+		let timeout = 0;
+		for (const trade of tradesToDisplay.value) {
+			setTimeout(function() {
+				let row = displaySelectedTrade(trade,"selected-trades-table");
+				document.getElementById("more-trades-button").scrollIntoView({behavior:'smooth'});
+			},timeout+100);
+			timeout += 100;
+		}	
+	}
+
+	if (tradesToDisplay.done) {
+		document.getElementById('more-trades-button')
+			.setAttribute('disabled','true');
+		document.getElementById('more-trades-button')
+			.innerHTML = "No More Trades"
+	}
+}
+
+/**
+ * Resets the get next trades button so the user can
+ * display more trades after selecting a new date
+ *
+ */
+function resetNextTradesButton() {
+	document.getElementById('more-trades-button')
+		.setAttribute('disabled','false');
+	document.getElementById('more-trades-button')
+		.innerHTML = "No More Trades";
 }
 
 var trades;
-function loadGraph() {
+function loadGraph(year) {
 	d3.json(getApiUrl())
 		.then(d => processHeatmapData(d.related_trades))
 		.then(d => {
+			
+			// remove dates from other years from map
+			// we'll use to display trades in table
+			for (let date of currentTrades.keys()) {
+				if (Number(date.split('-')[0]) != year) {
+					currentTrades.delete( date );
+				}
+			}
+
 			trades = d;
 			let prevSelection;
 			heatSvg.append("g")
@@ -152,7 +271,7 @@ function loadGraph() {
 						return COLOR(trades.get(d).volume);
 					}
 				})
-				.on("click", (d) => {
+				.on("click", (event, d) => {
 					if (Date.parse(d).compareTo(Date.today()) > 0) {
 						return;
 					}
@@ -171,19 +290,34 @@ function loadGraph() {
 					prevSelection = d;
 
 					if (trades.has(d)) {
-						document.getElementById("no-trades-alert").hidden = true;
+						toggleNoTradesAlert(true);
 						clearDisplayedTrades("selected-trades-table");
+
+						let timeout = 100;
 						for (let trade of trades.get(d).trades) {
-							displaySelectedTrade(trade, "selected-trades-table");
+							setTimeout(
+								() => displaySelectedTrade(trade, "selected-trades-table"),
+								timeout+100);
+							timeout += 100;
 						}
 					}
 					else {
+						toggleNoTradesAlert(false);
 						clearDisplayedTrades("selected-trades-table");
-						document.getElementById("no-trades-alert").hidden = false;
 					}
 				})
-				.transition(t);
+			// resetNextTradesButton();
+			clearDisplayedTrades("selected-trades-table");
+			if (currentTrades.size > 0) {
+				toggleNoTradesAlert(true);
+				getNextTrades();
+			}
+			else {
+				toggleNoTradesAlert(false);
+			}
+
 		});
+
 
 
 }

@@ -63,27 +63,33 @@
   </div>
 
   <!-- Start of list of senators -->
-  <div id="senator-cards" class="row justify-content-evenly">
+  <div id="senator-cards" class="row justify-content-evenly gx-0">
     {% for senator in senators_list %}
-    <div class="col">
-      <div id="sen-card " class="card m-3 animated" style="width: 15rem;">
-        <img src="{{ senator.photo_url }}" class="card-img-top " alt="">
-        <div class="card-body">
-          <div class="col" style="text-align:center;">
-            <a class="btn btn-info btn-sm" style="display:inline-block;" href="/senator/{{ senator.id }}" role="button">{{ senator }}</a>
+    <!-- <div class="col"> -->
+    <div id="sen-card " class="card animated mb-3" style="width: 400px;">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img src="{{ senator.photo_url }}" class="img-fluid" style="object-fit:cover;height:100%;" alt="">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">{{ senator }}</h5>
+            <h5>({{ senator.party }}-{{ senator.state }})</h5>
+            <!-- <ul class="list-group list-group-flush"> -->
+            <!--   <li class="list-group-item"><b>State:</b> </li> -->
+            <!--   <li class="list-group-item"><b>Party:</b> {{ senator.get_party_display }}</li> -->
+            <!--   <li class="list-group-item"><b>Years In Senate:</b> </li> -->
+            <!-- </ul> -->
+            <!-- <div class="col" style="text-align:center;"> -->
+            <!--   <a class="btn btn-info btn-sm" style="display:inline-block;" href="/senator/{{ senator.id }}" role="button">{{ senator }}</a> -->
+            <!-- </div> -->
+            <small class="text-muted mb-auto">Latest trade on </small>
           </div>
         </div>
-
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><b>State:</b> </li>
-          <li class="list-group-item"><b>Party:</b> {{ senator.get_party_display }}</li>
-          <li class="list-group-item"><b>Years In Senate:</b> </li>
-        </ul>
-        </ul>
       </div>
     </div>
     {% endfor %}
-  </div>
+  <!-- </div> -->
 </div>
 
 {% endblock content %}

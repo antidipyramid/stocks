@@ -1,4 +1,5 @@
 from collections import defaultdict
+import re
 import json
 from datetime import date, timedelta
 
@@ -16,6 +17,7 @@ from django.views.decorators.cache import cache_page
 from django.core import serializers
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .api.serializers import TradeSerializer
 
 from .forms import CompanySearchForm
 from .models import Senator, Trade, Asset
@@ -82,32 +84,52 @@ def senators(request):
 	return render(request, 'stocks/senators.html', context)
 
 def assets(request):
+	assets = []
+	for asset in Asset.objects.all():
+		most_recent_trade = asset.asset_related_trades.latest('transaction_date')
+		count = asset.asset_related_trades.count()
+		assets.append((asset, count, most_recent_trade))
+
 	return render(request,
 			   'stocks/assets.html',
-			   {assets: Asset.objects.all()})
+			   {'all_assets': assets})
 
 
 #@cache_page(60 * 60 * 24)
 def asset_detail(request, asset_id):
 
+	def getVolume(amount):
+		bounds = amount.split('-')
+		bounds = list(map(lambda x: int(re.sub('[ ,$]',"",x)),bounds))
+		return int(sum(bounds)/len(bounds))
+
 	ticker = Asset.objects.get(id=asset_id).ticker
 	name = Asset.objects.get(id=asset_id).name
 	d = get_data(ticker)
-	price_dict = []
+	price_dict = {}
 	begin_date = date(2012,1,1) # records start on 1/1/12
 	for day in d['Time Series (Daily)']:
 		# date class only takes integers, so split
 		# date string & convert to int before sending to date
 		date_obj = date(*map(int,day.split('-')))
 		if date_obj >= begin_date and date_obj < date.today():
-			price_dict.append([day,d['Time Series (Daily)'][day]['5. adjusted close']])
+			price_dict[day] = d['Time Series (Daily)'][day]['5. adjusted close']
 
-	trades = serializers.serialize("json",Trade.objects.filter(asset=asset_id))
+	# trades = serializers.serialize("json",Trade.objects.filter(asset=asset_id))
+	trades = {}
+	for trade in Trade.objects.filter(asset=asset_id):
+		date_str = str(trade.transaction_date)
+		if date_str not in trades:
+			trades[date_str] = [getVolume(trade.amount),[TradeSerializer(trade).data]]
+		else:
+			trades[date_str][0] += getVolume(trade.amount)
+			trades[date_str][1].append(TradeSerializer(trade).data)
 
 	return render(request,
 			   'stocks/asset_detail.html',
 			   {'asset': Asset.objects.get(id=asset_id),
-	   'trades': trades,
+	   'trades': Trade.objects.filter(asset=asset_id),
+	   'json_trades': json.dumps(trades),
 	   'stock_history': json.dumps(price_dict)},)
 
 def senator_detail(request, senator_id):
