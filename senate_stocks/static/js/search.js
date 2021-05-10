@@ -45,11 +45,11 @@ function executeSearch() {
 			}
 			for (i = 0; i < xhttp.response.assets.length; i++) {
 				let desc = "Asset: ".concat(xhttp.response.assets[i].name)
-				let link = "#"
-				//let link = "asset/".concat(xhttp.response.assets[i].id)
+				let link = "asset/".concat(xhttp.response.assets[i].id)
 
 				if (curr) {
 					curr.innerHTML = desc
+					curr.href = link
 					curr = curr.nextSibling
 				}
 				else {
