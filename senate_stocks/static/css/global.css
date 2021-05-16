@@ -1,5 +1,30 @@
 h1, h2, h3, h4, h5, h6, .navbar {
-	font-family: 'Roboto Slab', serif !important;
+	font-family: 'Lato', sans-serif !important;
+	font-weight: 700;
+}
+
+body {
+	font-family: 'Roboto Mono', serif;
+	font-size: small;
+}
+
+b {
+	font-family: 'Lato', sans-serif !important;
+	font-weight: 900
+}
+
+/* .navbar { */
+/* 	font-family: 'Roboto', bold, sans-serif; */
+/* 	font-weight: 700; */
+/* } */
+
+h1 {
+	font-size: 3.5rem;
+}
+
+.heading {
+	font-family: 'Lato', sans-serif !important;
+	font-weight: 700;
 }
 
 .hero {
@@ -30,9 +55,29 @@ video {
 }
 
 .navbar {
-	max-width:1400px;
+	/* max-width: 80vw; */
 	margin: 0 auto;
-	font-size: medium;
+	font-size: 1.05rem;
+	border-bottom: 1px solid rgba(255,255,255,.08);
+	background: transparent;
+	transition: 500ms ease;
+	opacity: .95;
+}
+
+.navbar.scrolled {
+	animation-name: navBarFadeIn;
+	animation-duration: 0.5s;
+}
+
+.navbar.anchored {
+	animation-name: navBarFadeOut;
+	animation-duration: 0.5s;
+}
+
+.navbar-container {
+	min-height: 70px;
+	margin-bottom: -70px;
+	position: relative;
 }
 
 .container-fluid, .container-md, .container-sm {
@@ -42,8 +87,6 @@ video {
 
 .senator-card {
 	width: 15rem;
-}
-body {
 	font-family: 'Roboto Mono', serif !important;
 	font-size: small;
 	/* background-color: #f7f7f7; */
@@ -70,5 +113,23 @@ body {
 	to {
 		visibility: visible;
 		opacity: 1;
+	}
+}
+
+@keyframes navBarFadeIn {
+	from {
+		background-color: transparent;
+	}
+	to {
+		background-color: #212529;
+	}
+}
+
+@keyframes navBarFadeOut {
+	from {
+		background-color: #212529;
+	}
+	to {
+		background-color: transparent;
 	}
 }

@@ -174,6 +174,7 @@ function prevCards() {
 // nextCards();
 
 function createCard(asset) {
+	console.log(asset);
 	let col = document.createElement("div");
 	col.setAttribute("class","col asset-card");
 	document.getElementById("asset-cards").appendChild(col);
@@ -212,7 +213,7 @@ function createCard(asset) {
 
 	let lastTrade = document.createElement("small");
 	lastTrade.setAttribute("class","text-muted");
-	lastTrade.innerHTML = "Last traded on " + Date.parse(asset.latest).toString("MMMM d, yyyy");
+	lastTrade.innerHTML = "Last traded on " + Date.parse(asset.latest).toString("MMMM d, yyyy") + "\n by " + asset.last_senator;
 	bodyFlex.appendChild(lastTrade);
 
 	let link = document.createElement("a");

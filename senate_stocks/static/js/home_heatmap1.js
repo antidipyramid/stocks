@@ -1,3 +1,4 @@
+'use strict';
 // contains the D3 code to create the homepage heatmap
 
 
@@ -15,7 +16,7 @@ function emptyMonth(month, year) {
 	let curr_day = new Date((month+1) + "/1/" + year);
 	let week = 0; let data = [];
 	for(let i = 0; i < days; i++) {
-		dayOfWeek = curr_day.getDay();
+		let dayOfWeek = curr_day.getDay();
 		data.push({x: xAxis[curr_day.getDay()], y: week});
 		if (dayOfWeek == 6) {
 			week++;
@@ -39,13 +40,17 @@ function getWeekNumber(date) {
 						.moveToFirstDayOfMonth()
 						.next().sunday();
 	for(let week = 0; week < 5; week++) {
-		if (tradeDate.getDate() < curr.getDate()) {
-			return y(yAxis[5-week]); 
+		if (curr.compareTo(tradeDate) > 0) {
+			return yAxis[week]; 
 		}
-		curr.addDays(7);
+		curr.next().sunday();
 	}
-	return y(yAxis[0]);
 }
+
+// update title of calendar with current month
+document.getElementById("cal-title")
+	.innerHTML = "February 2021";
+	// .innerHTML = Date.today().toString("MMMM") + " 2021";
 
 var margin = {top: 30, right: 30, bottom: 30, left:30},
 	width = 600-margin.left-margin.right,
@@ -65,19 +70,21 @@ const xAxis = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 var x = d3.scaleBand()
 	.range([0, width])
 	.domain(xAxis)
-	.padding(0.01);
+	.padding(0.1);
 
 var x_Axis = svg.append("g")
 				.call(d3.axisTop(x)
 					.tickSize(0)
-					.tickValues(xAxis));
+					.tickValues(xAxis))
+					.attr("font-family","Lato")
+					.attr("class","text-muted")
 
 x_Axis.select('.domain').remove()
 
 var y = d3.scaleBand()
 	.range([ height, 0 ])
 	.domain(yAxis)
-	.padding(0.01);
+	.padding(0.1);
 
 var y_Axis = svg.append("g")
 				.call(d3.axisLeft(y)
@@ -91,38 +98,115 @@ var myColor = d3.scaleLinear()
 	.domain([1,100])
 
 var empty = svg.selectAll(".myEmpty")
-				.data(emptyMonth(0,Date.today().getFullYear()))
+				.data(emptyMonth(1,Date.today().getFullYear()))
 				.enter()
-				.append("rect");
+				.append("g");
 
-empty.attr("x", (d) => {return x(d.x)})
-	.attr("y", (d) => {return y(5-d.y)})
+// fill in calendar with "blank" squares
+empty
+	.append("rect")
+	.attr("x", (d) => x(d.x))
+	.attr("y", (d) => y(5-d.y))
+	.attr("rx", 6)
+	.attr("rx", 6)
 	.attr("width", x.bandwidth())
 	.attr("height", y.bandwidth())
 	.attr("fill", "#ced4da");
 
-var div = d3.select("body").append("div")
-				.attr("class","tooltip")
-				.style("opacity",0)
+// add day numbers to calendar
+empty.append("text")
+	.attr("x", (d) => x(d.x)+5)
+	.attr("y", (d) => y(5-d.y)+15)
+	.attr("pointer-events","none")
+	.text((d, i) => i+1)
 
+var tooltipDiv = d3.select("body").append("div")
+	.style("opacity","0")
+	.attr("class","tooltip")
+	.style("background-color","#212529")
+	.style("border","solid")
+	.style("border-width","2px")
+	.style("border-radius","6px")
+	.style("padding","5px")
+	.style("visibility","hidden")
+	.style("display","none")
+	.style("font-family","Roboto Mono")
+	.style("color","white")
+	.style("padding","10px")
+	.attr("pointer-events","none")
+
+const getTooltipHtml = (tradeList, date) => {
+	let senatorList = new Set(),
+		assetList = new Set();
+	
+	tradeList.forEach(trade => senatorList.add(trade.senator));
+	tradeList.forEach(trade => assetList.add(trade.asset_name.slice(0,25)));
+
+	return "".concat(
+		"<b>Summary of trades on ",
+		Date.parse(date).toString("MMMM d, yyyy") + ":</b>",
+		"<br>" + Array.from(senatorList),
+		"<br>" + Array.from(assetList),
+	)
+}
+	
+// move tooltip a little bit away from pointer
+const offsetX = 20,
+	offsetY = -20;
+// mouseover behavior for dates on calendar
+var tooltipShow = (e,d) => {
+	let x = e.layerX + offsetX, 
+		y = e.layerY + offsetY;
+	tooltipDiv
+		.style("left",x+"px")
+		.style("top",y+"px")
+		.style("opacity","0.8")
+		.style("visibility","visible")
+		.style("display","")
+		.html(getTooltipHtml(newData.get(d.transaction_date),d.transaction_date))
+}
+
+// mousemove behavior for dates on calendar
+var tooltipMove = (e,d) => {
+	let x = e.layerX + offsetX, 
+		y = e.layerY + offsetY;
+	tooltipDiv
+		.style("left",x+"px")
+		.style("top",y+"px")
+}
+
+// mouseleave behavior for dates on calendar
+var tooltipHide = (e,d) => {
+	tooltipDiv
+		.style("opacity","0")
+		.style("visibility","hidden")
+		.style("display","none");
+}
+
+var newData;
 d3.json("http://127.0.0.1:8000/api").then(function(data) {
-	svg.selectAll()
-		.data(data, (d) => d.ticker)
-		.enter()
-		.append("rect")
-		.attr("x", (d) => x(xAxis[Date.parse(d.transaction_date).getDay()]) )
-		.attr("y", (d) => getWeekNumber(d.transaction_date))	
-		.attr("width", x.bandwidth())
-		.attr("height", y.bandwidth())
-		.style("fill", (d) => "red")
-		.on("mouseover", function(d) {
-			displayTradeInfo(d);			
-			rect.style("fill", (d) => "yellow")
-			})
-		.on("mouseout", function(d) {
-			div.transition()
-				.duration(500)
-				.style("opacity",0);
-		});
-})
+	newData = new Map();
+	let	newArray = [];
+	for (let date of data) {
+		if (newData.has(date.transaction_date)) {
+			newData.get(date.transaction_date).push(date)
+		}
+		else {
+			newData.set(date.transaction_date,[date]);
+		}
+		newArray.push({x: xAxis[Date.parse(date.transaction_date).getDay()],
+										y: getWeekNumber(date.transaction_date),
+			transaction_date: date.transaction_date});
+	}
 
+	svg.selectAll("rect")
+		.data(newArray, d => ''.concat(d.x,',',d.y))
+		.join(
+			enter => enter,
+			update => update.style("fill","red")
+					.on("mouseover",tooltipShow)
+					.on("mousemove",tooltipMove)
+					.on("mouseleave",tooltipHide),
+			exit => exit
+		)
+});

@@ -16,16 +16,20 @@ class AssetSerializer(serializers.ModelSerializer):
     # asset_related_trades = serializers.StringRelatedField(many=True)
     count = serializers.SerializerMethodField()
     latest = serializers.SerializerMethodField()
+    last_senator = serializers.SerializerMethodField()
 
     class Meta:
         model = Asset
-        fields = ('id','ticker', 'name', 'count', 'latest')
+        fields = ('id','ticker', 'name', 'count', 'latest', 'last_senator')
 
     def get_count(self, obj):
         return obj.asset_related_trades.count()
 
     def get_latest(self, obj):
         return obj.asset_related_trades.latest('transaction_date').transaction_date
+
+    def get_last_senator(self, obj):
+        return str(obj.asset_related_trades.latest('transaction_date').senator)
 
 class SenatorSerializer(serializers.ModelSerializer):
     related_trades = TradeSerializer(many=True,read_only=True)

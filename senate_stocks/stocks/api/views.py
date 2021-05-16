@@ -20,7 +20,7 @@ class TradeListApiView(APIView):
         print("HELLO")
         thirty_days_ago = date.today() - timedelta(days=60)
 
-        queryset = Trade.objects.filter(transaction_date__gte=thirty_days_ago)
+        queryset = Trade.objects.filter(transaction_date__month=2).filter(transaction_date__year=2021)
         serializer = TradeSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

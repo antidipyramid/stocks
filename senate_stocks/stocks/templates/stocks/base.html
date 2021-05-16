@@ -14,39 +14,49 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
 
-    <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
-
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
   </head>
 
 
   <body>
-
-    <div class="container">
-      <nav class="navbar fixed-top navbar-expand-md">
-        <div class="d-flex flex-fill bd-highlight">
-          <div class="p-2 flex-grow-1 bd-highlight">
-            <a class="navbar-brand" href="/">Stock Watcher</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-          </div>
-          <div class="p-2 bd-highlight">
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-              <ul class="navbar-nav mr-auto mb-2 mb-md-0">
-                <li class="nav-item active">
-                  <a class="nav-link" href="/senators">Senators</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/assets">Assets</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/about">About</a>
-                </li>
-              </ul>
+    <div class="navbar-container">
+      <nav id="navbar" class="navbar navbar-expand-lg navbar-dark fixed-top ">
+        <script src="{% static 'js/navbar.js' %}"></script>
+        <div class="container">
+          <div class="d-flex flex-fill bd-highlight">
+            <div class="p-2 flex-grow-1 bd-highlight">
+              <a class="navbar-brand" style="font-size:1.5rem;" href="/">Stock Watcher</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+            </div>
+            <div class="p-2 bd-highlight">
+              <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto mb-2 mb-md-0">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="/senators">Senators</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/assets">Assets</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/code">Code</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/faq">FAQ</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                  </li>
+                  <button class="btn btn-primary ms-3 heading">Donate</button>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
