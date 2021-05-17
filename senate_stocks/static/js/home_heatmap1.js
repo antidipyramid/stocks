@@ -109,15 +109,18 @@ empty
 	.attr("y", (d) => y(5-d.y))
 	.attr("rx", 6)
 	.attr("rx", 6)
+	.attr("stroke","black")
+	.attr("stroke-width","2px")
 	.attr("width", x.bandwidth())
 	.attr("height", y.bandwidth())
-	.attr("fill", "#ced4da");
+	.attr("fill", "#525252")
 
 // add day numbers to calendar
 empty.append("text")
 	.attr("x", (d) => x(d.x)+5)
 	.attr("y", (d) => y(5-d.y)+15)
 	.attr("pointer-events","none")
+	.style("fill","white")
 	.text((d, i) => i+1)
 
 var tooltipDiv = d3.select("body").append("div")
@@ -127,27 +130,40 @@ var tooltipDiv = d3.select("body").append("div")
 	.style("border","solid")
 	.style("border-width","2px")
 	.style("border-radius","6px")
-	.style("padding","5px")
 	.style("visibility","hidden")
 	.style("display","none")
 	.style("font-family","Roboto Mono")
 	.style("color","white")
 	.style("padding","10px")
+	.style("max-width","500px")
 	.attr("pointer-events","none")
 
 const getTooltipHtml = (tradeList, date) => {
-	let senatorList = new Set(),
-		assetList = new Set();
+	let senatorList = new Map(),
+		tooltipHtml = "".concat("<b>Trades on ",
+			Date.parse(date).toString("MMMM d, yyyy") + "</b><br>");
 	
-	tradeList.forEach(trade => senatorList.add(trade.senator));
-	tradeList.forEach(trade => assetList.add(trade.asset_name.slice(0,25)));
+	for (let trade of tradeList) {
+		if ( senatorList.has(trade.senator) ) {
+			senatorList.get(trade.senator)
+				.add(trade.asset_name);
+		}	
+		else {
+			senatorList.set(trade.senator,new Set([trade.asset_name]));
+		}
+	}
+	// senatorList.forEach((trades,senator) => {
+	// 	console.log(senator, trades);
+	// 	tooltipHtml += "<br>Senator " + senator + " traded " + Array.from(trades) + "<br>";
+	// })
 
-	return "".concat(
-		"<b>Summary of trades on ",
-		Date.parse(date).toString("MMMM d, yyyy") + ":</b>",
-		"<br>" + Array.from(senatorList),
-		"<br>" + Array.from(assetList),
-	)
+	for (const [senator,trades] of senatorList) {
+		tooltipHtml += "<br>Senator " + senator +" traded:<br>";
+		for (const asset of trades) {
+			tooltipHtml += "<i>-" + asset.trim() + "</i><br>";
+		}
+	}
+	return tooltipHtml;
 }
 	
 // move tooltip a little bit away from pointer
@@ -157,6 +173,7 @@ const offsetX = 20,
 var tooltipShow = (e,d) => {
 	let x = e.layerX + offsetX, 
 		y = e.layerY + offsetY;
+	e.currentTarget.setAttribute("stroke","#ede68a")
 	tooltipDiv
 		.style("left",x+"px")
 		.style("top",y+"px")
@@ -177,6 +194,7 @@ var tooltipMove = (e,d) => {
 
 // mouseleave behavior for dates on calendar
 var tooltipHide = (e,d) => {
+	e.currentTarget.setAttribute("stroke","black")
 	tooltipDiv
 		.style("opacity","0")
 		.style("visibility","hidden")
@@ -203,7 +221,7 @@ d3.json("http://127.0.0.1:8000/api").then(function(data) {
 		.data(newArray, d => ''.concat(d.x,',',d.y))
 		.join(
 			enter => enter,
-			update => update.style("fill","red")
+			update => update.style("fill","#ec625f")
 					.on("mouseover",tooltipShow)
 					.on("mousemove",tooltipMove)
 					.on("mouseleave",tooltipHide),

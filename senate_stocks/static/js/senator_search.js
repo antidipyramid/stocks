@@ -157,13 +157,13 @@ document.querySelectorAll(".sen-card")
 			// 	e.currentTarget.querySelector(".card-link").click();
 			// }
 			card.onmouseover = (e) => {
-				e.currentTarget.setAttribute("class","card animated text-white mb-3 bg-secondary");
-				e.currentTarget.querySelector(".latest-info")
-					.setAttribute("class","text-white mb-auto latest-info");
+				e.currentTarget.setAttribute("class","card animated mb-3 shadow sen-card");
+				// e.currentTarget.querySelector(".latest-info")
+					// .setAttribute("class","text-white mb-auto latest-info");
 			};
 			card.onmouseout = (e) => {
-				e.currentTarget.setAttribute("class","card animated mb-3");
-			e.currentTarget.querySelector(".latest-info")
-				.setAttribute("class","text-muted mb-auto latest-info");
+				e.currentTarget.setAttribute("class","card animated mb-3 shadow-sm sen-card");
+			// e.currentTarget.querySelector(".latest-info")
+			// 	.setAttribute("class","text-muted mb-auto latest-info");
 			};
 		});
