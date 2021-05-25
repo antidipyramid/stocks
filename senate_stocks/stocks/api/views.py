@@ -24,12 +24,28 @@ class TradeListApiView(APIView):
         serializer = TradeSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class AssetFilter(filters.FilterSet):
+    name = filters.CharFilter(lookup_expr='icontains')
+    ticker = filters.CharFilter(lookup_expr='icontains')
+
+    class Meta:
+        model = Asset
+        fields = ('name', 'ticker')
+
 class AssetViewSet(viewsets.ModelViewSet):
     """
     A viewset for viewing asset models.
     """
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
+    filterset_class = AssetFilter
+
+    def filter_queryset(self,queryset):
+        filter_backends = [DjangoFilterBackend]
+        for backend in list(filter_backends):
+            queryset = backend().filter_queryset(self.request,queryset,view=self)
+
+        return queryset
 
     def list(self, request):
         serializer = self.serializer_class(self.queryset,many=True)
@@ -94,8 +110,8 @@ class SearchApiViewSet(viewsets.ViewSet):
         print(query)
         Results = namedtuple('Results', ('senators','assets'))
         results = Results(senators=Senator.objects.filter(
-                        Q(first_name__icontains=query) | Q(last_name__icontains=query)),
-                    assets=Asset.objects.filter(
-                        Q(ticker__icontains=query) | Q(name__icontains=query)))
+            Q(first_name__icontains=query) | Q(last_name__icontains=query)),
+                          assets=Asset.objects.filter(
+                              Q(ticker__icontains=query) | Q(name__icontains=query)))
         serializer = SearchSerializer(results)
         return Response(serializer.data)

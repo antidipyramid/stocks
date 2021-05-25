@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid mt-3">
 
   <div class="d-flex me-3">
     <div class="flex-grow-1">
@@ -60,8 +60,8 @@
   <div class="d-flex justify-content-center mt-5">
     <nav aria-label="Page navigation example">
       <ul id="pages" class="pagination">
-        <li class="page-item"><a class="page-link" onclick="prevCards()">Previous</a></li>
-        <li class="page-item" id="nextPageButton"><a class="page-link" onclick="nextCards()">Next</a></li>
+        <li class="page-item" id="prev-page"><a class="page-link" onclick="prevCards()">Previous</a></li>
+        <li class="page-item" id="next-page"><a class="page-link" onclick="nextCards()">Next</a></li>
       </ul>
     </nav>
   </div>

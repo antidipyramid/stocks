@@ -110,10 +110,10 @@ empty
 	.attr("rx", 6)
 	.attr("rx", 6)
 	.attr("stroke","black")
-	.attr("stroke-width","2px")
+	.attr("stroke-width","var(--heatmap-default-stroke-width)")
 	.attr("width", x.bandwidth())
 	.attr("height", y.bandwidth())
-	.attr("fill", "#525252")
+	.attr("fill", "var(--heatmap-disabled)")
 
 // add day numbers to calendar
 empty.append("text")
@@ -173,7 +173,7 @@ const offsetX = 20,
 var tooltipShow = (e,d) => {
 	let x = e.layerX + offsetX, 
 		y = e.layerY + offsetY;
-	e.currentTarget.setAttribute("stroke","#ede68a")
+	e.currentTarget.setAttribute("stroke","var(--heatmap-selected-outline)")
 	tooltipDiv
 		.style("left",x+"px")
 		.style("top",y+"px")
@@ -221,7 +221,7 @@ d3.json("http://127.0.0.1:8000/api").then(function(data) {
 		.data(newArray, d => ''.concat(d.x,',',d.y))
 		.join(
 			enter => enter,
-			update => update.style("fill","#ec625f")
+			update => update.style("fill","var(--heatmap-selectable)")
 					.on("mouseover",tooltipShow)
 					.on("mousemove",tooltipMove)
 					.on("mouseleave",tooltipHide),

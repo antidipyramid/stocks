@@ -1,12 +1,21 @@
+'use strict';
+
 const assetPageButtons = ['allAssetsButton','publicStocksButton','otherAssetsButton'];
+
+const PAGE_INFO = {
+
+}
+
 var offset = 0,
-	assetsPerPage = 50,
+	assetsPerPage = 25,
 	sortDateAsc = false,
 	sortAlphaAsc = false,
 	assets;
 
+// reverse sort function for dates
 const compareDateRev = (a, b) => compareDate(a,b) * -1;
 
+// sort function for dates
 const compareDate = function(a, b) {
 	let dateAList = a.latest.split('-').map(x => Number(x));
 	let dateBList = b.latest.split('-').map(x => Number(x));
@@ -23,6 +32,7 @@ const compareDate = function(a, b) {
 	return 0;
 }
 
+// sort function for names
 const compareName = function(a, b) {
 	if (a.name.toLowerCase() > b.name.toLowerCase()) {
 		return 1;
@@ -35,13 +45,21 @@ const compareName = function(a, b) {
 	}
 }
 
+// reverse sort function for names
 const compareNameRev = (a, b) => compareName(a,b) * -1
 
+/**
+ * Fetches the list of assets from our API.
+ *
+ * @return {Array} an array of all assets in the database
+ *
+ */
 async function getAssets() {
 	let assetPromise = await fetch("/api/assets");
 
 	if (assetPromise.ok) {
 		assets = await assetPromise.json();
+		console.log(assets);
 		return assets;
 	}
 }
@@ -64,14 +82,37 @@ function changeActiveSortButton(id) {
 }
 
 function changeActivePageNumber(pageNumber) {
-	let pages = document.getElementById("pages");
-	for(let page of pages.children) {
-		if (page.innerHTML == String(pageNumber)) {
-			page.setAttribute("class","page-item active");
-		}	
-		else {
-			page.setAttribute("class","page-item");
-		}
+	// remove active status from old active page
+	let oldActivePage = document.querySelector(".pagination")
+		.querySelector(".active");
+
+	// if we're moving away from page 1, re-enable previous button
+	if (oldActivePage.id == "page-1") {
+		let prevPage = document.getElementById("prev-page");
+		prevPage.setAttribute("class","page-item");
+		prevPage.removeAttribute("aria-disabled");
+	}
+
+	oldActivePage.setAttribute("class","page-item");
+	oldActivePage.removeAttribute("aria-current");
+	
+	// add active status to current active page
+	let newActivePage = document.getElementById("page-"+pageNumber);
+	newActivePage.setAttribute("class","page-item active");
+	newActivePage.setAttribute("aria-current","page");
+
+	// if our new active page is page 1, disable previous button
+	if (newActivePage.id == "page-1") {
+		let prevPage = document.getElementById("prev-page");
+		prevPage.setAttribute("class","page-item disabled");
+		prevPage.setAttribute("aria-disabled","true");
+	}
+	
+	// if our new active page is the last page, disable next button
+	if (newActivePage.nextSibling.id == "next-page") {
+		let nextPage = document.getElementById("next-page");
+		nextPage.setAttribute("class","page-item disabled");
+		nextPage.setAttribute("aria-disabled","true");
 	}
 }
 
@@ -111,13 +152,18 @@ function sortCards(value) {
 
 }
 
+/**
+ * Create the page numbers at the bottom of the screen.
+ *
+ */
 function makePages() {
-	numPages = Math.ceil(assets.length / assetsPerPage);
-	let nextPageButton = document.getElementById("nextPageButton");
+	let numPages = Math.ceil(assets.length / assetsPerPage);
+	let nextPageButton = document.getElementById("next-page");
 
 	for(let i = 1; i <= numPages; i++) {
 		let outer = document.createElement("li");
 		outer.setAttribute("class","page-item");
+		outer.setAttribute("id","page-"+i);
 		let inner = document.createElement("a");
 		inner.setAttribute("class","page-link");
 		inner.setAttribute("onclick","nextCards(" + i + ")");
@@ -142,9 +188,12 @@ function nextCards(pageNumber) {
 	clearAssetCards();
 
 	let i, end;
+	// if nextCards is called with no pageNumber, 
+	// we're on the first page of results
 	if (typeof pageNumber == 'undefined') {
 		i = offset;
 		end = offset + assetsPerPage;
+		pageNumber = 1;
 	}
 	else {
 		i = (pageNumber - 1) * assetsPerPage;
@@ -152,9 +201,10 @@ function nextCards(pageNumber) {
 	}
 
 	for(i; i < end; i++) {
-		console.log(i);
 		if (i < assets.length) {
-			setTimeout(() => createCard(assets[i]), i*50);
+			console.log(assets[i]);
+			// timeout is just for the visual effect
+			setTimeout((j => createCard(assets[j]))(i), i*50);
 		}
 	}
 	offset = offset + assetsPerPage; 
@@ -180,7 +230,7 @@ function createCard(asset) {
 	document.getElementById("asset-cards").appendChild(col);
 
 	let card = document.createElement("div");
-	card.setAttribute("class","card m-3 animated");
+	card.setAttribute("class","card m-3 animated shadow-sm");
 	card.setAttribute("style","width: 20rem;");
 	col.appendChild(card);
 
@@ -190,11 +240,15 @@ function createCard(asset) {
 
 	let flex = document.createElement("div");
 	flex.setAttribute("class","d-flex justify-content-between align-items-center");
-	flex.innerHTML = asset.name;
+
+	let div = document.createElement("div");
+	div.setAttribute("class", "flex-grow-1");
+	div.innerHTML = asset.name + "  (<span class='ticker'>" + asset.ticker + "</span>)"
+	flex.appendChild(div);
 	header.appendChild(flex);
 
 	let span = document.createElement("span");
-	span.setAttribute("class","badge bg-secondary rounded-pill");
+	span.setAttribute("class","badge bg-secondary");
 	span.innerHTML = asset.count + " trades";
 	flex.appendChild(span);
 
@@ -206,41 +260,50 @@ function createCard(asset) {
 	bodyFlex.setAttribute("class","d-flex justify-content-between");
 	cardBody.appendChild(bodyFlex);
 
-	let ticker = document.createElement("h6");
-	ticker.setAttribute("class","asset-ticker");
-	ticker.innerHTML = asset.ticker;
-	bodyFlex.appendChild(ticker);
+	// let ticker = document.createElement("h6");
+	// ticker.setAttribute("class","asset-ticker");
+	// ticker.innerHTML = asset.ticker;
+	// bodyFlex.appendChild(ticker);
 
 	let lastTrade = document.createElement("small");
 	lastTrade.setAttribute("class","text-muted");
-	lastTrade.innerHTML = "Last traded on " + Date.parse(asset.latest).toString("MMMM d, yyyy") + "\n by " + asset.last_senator;
+	lastTrade.innerHTML = "Last traded on " + Date.parse(asset.latest).toString("MMMM d, yyyy") + "\n by Sen. " + asset.last_senator;
 	bodyFlex.appendChild(lastTrade);
 
+	// let link = document.createElement("a");
+	// link.setAttribute("href","/asset/" + asset.id);
+	// link.setAttribute("type","button");
+	// link.setAttribute("class","btn btn-outline-info btn-sm mt-3");
+	// link.innerHTML = "View Asset";
+	// cardBody.appendChild(link);
+	
+	let linkWrapper = document.createElement("h6");
+	linkWrapper.setAttribute("class", "asset-link")
 	let link = document.createElement("a");
-	link.setAttribute("href","/asset/" + asset.id);
-	link.setAttribute("type","button");
-	link.setAttribute("class","btn btn-outline-dark btn-sm mt-3");
-	link.innerHTML = "View Asset";
-	cardBody.appendChild(link);
+	link.setAttribute("class","stretched-link link-dark");
+	link.innerHTML = "<br>View asset";
+	link.href = "/asset/" + asset.id;
+	linkWrapper.appendChild(link);
+	cardBody.appendChild(linkWrapper);
 
 	// set hover behavior
 	card.addEventListener("mouseover", function(e) {
-		e.currentTarget.setAttribute("class", "card text-white bg-secondary m-3 animated");
-		e.currentTarget.querySelector("small")
-			.setAttribute("class","text-white");
+		e.currentTarget.setAttribute("class", "card m-3 animated shadow");
+		// e.currentTarget.querySelector("small")
+			// .setAttribute("class","text-white");
 		e.currentTarget.querySelector(".badge")
-			.setAttribute("class","badge bg-info rounded-pill");
-		e.currentTarget.querySelector(".btn")
-			.setAttribute("class","btn btn-info btn-sm mt-3");
+			.setAttribute("class","badge bg-primary");
+		// e.currentTarget.querySelector(".btn")
+		// 	.setAttribute("class","btn btn-info btn-sm mt-3");
 	});
 	card.addEventListener("mouseleave", function(e) {
-		e.currentTarget.setAttribute("class", "card m-3 animated");
-		e.currentTarget.querySelector("small")
-			.setAttribute("class","text-muted");
+		e.currentTarget.setAttribute("class", "card m-3 animated shadow-sm");
+		// e.currentTarget.querySelector("small")
+		// 	.setAttribute("class","text-muted");
 		e.currentTarget.querySelector(".badge")
-			.setAttribute("class","badge bg-secondary rounded-pill");
-		e.currentTarget.querySelector(".btn")
-			.setAttribute("class","btn btn-outline-dark btn-sm mt-3");
+			.setAttribute("class","badge bg-secondary");
+		// e.currentTarget.querySelector(".btn")
+		// 	.setAttribute("class","btn btn-outline-info btn-sm mt-3");
 	});
 }
 
@@ -261,7 +324,7 @@ function filterPublicStocks(id) {
 		querySelectorAll(".asset-card");
 
 	for (let card of assetCards) {
-		if (card.querySelector(".asset-ticker").innerHTML == "--") {
+		if (card.querySelector(".ticker").innerHTML == "--") {
 			card.setAttribute("style","visibility:hidden;display:none;");
 		}
 		else {
@@ -277,7 +340,7 @@ function filterOtherAssets(id) {
 		querySelectorAll(".asset-card");
 
 	for (let card of assetCards) {
-		if (card.querySelector(".asset-ticker").innerHTML != "--") {
+		if (card.querySelector(".ticker").innerHTML != "--") {
 			card.setAttribute("style","visibility:hidden;display:none;");
 		}
 		else {

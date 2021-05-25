@@ -23,7 +23,6 @@
     </div>
 
 
-    <script src="{% static 'js/histogram.js' %}"></script>
   </div>
   <!-- <h1 class="mt-3 mb-4">Senator {{ senator }}</h1> -->
 
@@ -33,117 +32,127 @@
         <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">Overview</button>
       </li>
       <li class="nav-item" role="presentation">
+        <button class="nav-link " id="heatmap-tab" data-bs-toggle="tab" data-bs-target="#heatmap-panel" type="button" role="tab" aria-controls="heatmap-tab" aria-selected="false">Heatmap</button>
+      </li>
+      <li class="nav-item" role="presentation">
         <button class="nav-link" id="trades-tab" data-bs-toggle="tab" data-bs-target="#trades" type="button" role="tab" aria-controls="trades" aria-selected="false">All Trades</button>
       </li>
     </ul>
 
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-        <div class="row">
-          <div class="row align-items-start">
+        <!-- Overview tab -->	
 
+        <!-- Overview data cards -->
+        <div class="row justify-content-evenly">
+          <div class="card mx-3 shadow-sm mt-3" style="width: 20rem;">
+            <div class="card-body">
+              <h5 class="card-title">Top 10 Most Traded Assets</h5>
+              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+              <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              <!-- <a href="#" class="card-link">Card link</a> -->
+              <!-- <a href="#" class="card-link">Another link</a> -->
 
-            <!-- Overview tab -->	
-            <div class="col">
+              <figure id="most-traded-graph"></figure>
 
-              <!-- Overview data cards -->
-              <div class="row justify-content-evenly mt-3">
-                <div class="card mx-3" style="width: 15rem;">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                  </div>
-                </div>
-                <div class="card mx-3" style="width: 15rem;">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                  </div>
-                </div>
-                <div class="card mx-3" style="width: 15rem;">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                  </div>
-                </div>
-                <div class="card mx-3" style="width: 15rem;">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                  </div>
-                </div>
-              </div>
+            </div>
+          </div>
+          <div class="card mx-3 shadow-sm mt-3" style="width: 20rem;">
+            <div class="card-body">
+              <h5 class="card-title">Who Owns The Trades?</h5>
+              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+              <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              <!-- <a href="#" class="card-link">Card link</a> -->
+              <!-- <a href="#" class="card-link">Another link</a> -->
 
+              <figure id="owner-graph"></figure>
+            </div>
+          </div>
+          <div class="card mx-3 shadow-sm mt-3" style="width: 20rem;">
+            <div class="card-body">
+              <h5 class="card-title">Buy or Sell?</h5>
+              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+              <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              <!-- <a href="#" class="card-link">Card link</a> -->
+              <!-- <a href="#" class="card-link">Another link</a> -->
 
+              <figure id="type-graph"></figure>
+            </div>
+          </div>
+          <div class="card mx-3 shadow-sm mt-3" style="width: 40rem;">
+            <div class="card-body">
+              <h5 class="card-title">Trades by Amount</h5>
+              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+              <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              <!-- <a href="#" class="card-link">Card link</a> -->
+              <!-- <a href="#" class="card-link">Another link</a> -->
 
-              
-              <!-- Year select for heatmap -->
-              <div class="row justify-content-center mt-3">
-                <div class="col-3">
-                  <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio1">2019</label>
-
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" onclick=update(2020) autocomplete="off">
-                    <label class="btn btn-outline-primary" for="btnradio2">2020</label>
-
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradio3" onclick=update(2021) autocomplete="off" checked>
-                    <label class="btn btn-outline-primary" for="btnradio3">2021</label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Trades heatmap -->
-              <div class="row justify-content-center">
-                <div class="col">
-                  <figure id="heatmap"></figure>
-                </div>
-              </div>
-
-              <!-- Table with trades for date selected in heatmap -->
-              <div id="selected-trades">
-                <h5 class="mt-5" id="selected-date">Trades on </h5>
-                <table class= "table table-striped table-hover table-sm mt-3">
-                  <thead>
-                    <tr>
-                      <th scope="col">Transaction Date</th>
-                      <th scope="col">Owner</th>
-                      <th scope="col">Ticker</th>
-                      <th scope="col">Asset Name</th>
-                      <th scope="col">Asset Type</th>
-                      <th scope="col">Transaction Type</th>
-                      <th scope="col">Amount</th>
-                      <th scope="col">Comments</th>
-                      <th scope="col">Original URL</th>
-                    </tr>
-                  </thead>
-                  <tbody id="selected-trades-table">
-                  </tbody>
-                </table>
-                <div class="d-grid ">
-                  <button id="more-trades-button" onclick="getNextTrades()" class="btn btn-outline-primary btn-sm" type="button">Show More Trades</button>
-                </div>
-                <div id = "no-trades-alert" class="alert alert-danger animated" style="visibility:hidden;display:none;" role="alert">No trades to display.</div>
-              </div>
+              <figure id="amount-graph"></figure>
             </div>
           </div>
         </div>
+
+        <script src="{% static 'js/histogram.js' %}"></script>
+        <script src="{% static 'js/sen_owner_graph.js' %}"></script>
+        <script src="{% static 'js/sen_trans_type_graph.js' %}"></script>
+        <script src="{% static 'js/sen_amount_map.js' %}"></script>
       </div>
 
-      <script src="{% static 'js/detail_heatmap.js' %}"></script>
-      <script src="{% static 'js/all_trades.js' %}"></script>
+      <div class="tab-pane fade" id="heatmap-panel" role="tabpanel" aria-labelledby="heatmap-tab">
+
+        <!-- Year select for heatmap -->
+        <div class="row justify-content-center mt-3">
+          <div class="col-3">
+            <div class="btn-group btn-group-sm mt-3" role="group" aria-label="Basic radio toggle button group">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
+              <label class="btn btn-outline-primary" for="btnradio1">2019</label>
+
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" onclick=update(2020) autocomplete="off">
+              <label class="btn btn-outline-primary" for="btnradio2">2020</label>
+
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" onclick=update(2021) autocomplete="off" checked>
+              <label class="btn btn-outline-primary" for="btnradio3">2021</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trades heatmap -->
+        <div class="row justify-content-center">
+          <div class="col">
+            <figure id="heatmap"></figure>
+          </div>
+        </div>
+
+        <!-- Table with trades for date selected in heatmap -->
+        <div id="selected-trades">
+          <h5 class="mt-5" id="selected-date">Trades on </h5>
+          <table class= "table table-striped table-hover table-sm mt-3">
+            <thead>
+              <tr>
+                <th scope="col">Transaction Date</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Ticker</th>
+                <th scope="col">Asset Name</th>
+                <th scope="col">Asset Type</th>
+                <th scope="col">Transaction Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Comments</th>
+                <th scope="col">Original URL</th>
+              </tr>
+            </thead>
+            <tbody id="selected-trades-table">
+            </tbody>
+          </table>
+          <div class="d-grid ">
+            <button id="more-trades-button" onclick="getNextTrades()" class="btn btn-outline-primary btn-sm" type="button">Show More Trades</button>
+          </div>
+          <div id = "no-trades-alert" class="alert alert-danger animated" style="visibility:hidden;display:none;" role="alert">No trades to display.</div>
+        </div>
+        <script src="{% static 'js/detail_heatmap.js' %}"></script>
+        <script src="{% static 'js/all_trades.js' %}"></script>
+        <script src="{% static 'js/senators.js' %}"></script>
+      </div>
+
       <!-- All Trades tab -->
       <div class="tab-pane fade" id="trades" role="tabpanel" aria-labelledby="trades-tab">
 

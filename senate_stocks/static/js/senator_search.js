@@ -159,7 +159,7 @@ document.querySelectorAll(".sen-card")
 			card.onmouseover = (e) => {
 				e.currentTarget.setAttribute("class","card animated mb-3 shadow sen-card");
 				// e.currentTarget.querySelector(".latest-info")
-					// .setAttribute("class","text-white mb-auto latest-info");
+				// 	.setAttribute("class","text-white mb-auto latest-info");
 			};
 			card.onmouseout = (e) => {
 				e.currentTarget.setAttribute("class","card animated mb-3 shadow-sm sen-card");

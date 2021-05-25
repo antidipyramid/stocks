@@ -68,12 +68,12 @@
     <div id="sen-card " class="card animated mb-3 shadow-sm sen-card" style="width: 25rem;">
       <div class="row g-0">
         <div class="col-md-4">
-          <img src="{{ senator.photo_url }}" class="img-fluid" style="object-fit:cover;height:100%;" alt="">
+          <img src="{{ senator.photo_url }}" class="img-fluid senator-img" style="object-fit:cover;height:100%;" alt="">
         </div>
         <div class="col-md-8">
           <div class="card-body">
             <h5 class="card-title"> 
-              <a style="text-decoration:none;" class="link-dark card-link stretched-link" href="/senator/{{ senator.id}}">{{ senator }}</a>
+              <a  class="link-dark card-link stretched-link" href="/senator/{{ senator.id}}">{{ senator }}</a>
             </h5>
             <div class="d-flex flex-row align-items-center">
               <h6 class="flex-grow-1 card-subtitle">({{ senator.party }}-{{ senator.state }})

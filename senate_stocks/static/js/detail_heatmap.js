@@ -116,7 +116,7 @@ const t = d3.transition()
 
 
 var heatSvg;
-function update(year) {
+function update(year,data) {
 	document.getElementById("selected-date")
 		.innerHTML = "Trades in " + year;
 	tradeGenerator = null;
@@ -139,7 +139,7 @@ function update(year) {
 		);
 
 
-	loadGraph(year);
+	loadGraph(year,data);
 }
 
 function toggleNoTradesAlert(hide) {
@@ -232,11 +232,8 @@ function resetNextTradesButton() {
 }
 
 var trades;
-function loadGraph(year) {
-	d3.json(getApiUrl())
-		.then(d => processHeatmapData(d.related_trades))
-		.then(d => {
-			
+function loadGraph(year,data=trades) {
+			currentTrades = data;	
 			// remove dates from other years from map
 			// we'll use to display trades in table
 			for (let date of currentTrades.keys()) {
@@ -245,7 +242,7 @@ function loadGraph(year) {
 				}
 			}
 
-			trades = d;
+	trades = data;
 			let prevSelection;
 			heatSvg.append("g")
 				.attr("fill", "#f3f6e7")
@@ -316,10 +313,9 @@ function loadGraph(year) {
 				toggleNoTradesAlert(false);
 			}
 
-		});
 
 
 
 }
 
-update(2021);
+// update(2021);
