@@ -1,15 +1,16 @@
 :root {
 	--card-link-hl: #CC2936;
-	--heatmap-disabled: #7F7979;
+	--heatmap-disabled: #eeeeee;
 	--heatmap-selectable: #CC2936;
-	--heatmap-selected-outline: #F5E663;
+	--heatmap-selected-outline: #f6c90e;
 	--heatmap-default-stroke-width: 1px;	
+	--heatmap-empty-date: rgb(58, 71, 80, .7);
 	--off-black: #212529;
 }
 
 
 h1, h2, h3, h4, h5, h6, .navbar {
-	font-family: 'Lato', sans-serif !important;
+	font-family: 'Lato', sans-serif;
 	font-weight: 700;
 }
 
@@ -29,6 +30,10 @@ body {
 
 .sen-card:hover, .asset-card:hover {
 	opacity: 1;
+}
+
+.bg-secondary {
+    background-color: #DFE2E5 !important;
 }
 
 .asset-link > a, .asset-link:after, .card-title > a, .card-title:after {

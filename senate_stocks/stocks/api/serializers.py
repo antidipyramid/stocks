@@ -15,14 +15,14 @@ class TradeSerializer(serializers.ModelSerializer):
                   'amount','comments','url',)
 
 class AssetSerializer(serializers.ModelSerializer):
-    # asset_related_trades = serializers.StringRelatedField(many=True)
+    asset_related_trades = TradeSerializer(many=True)
     count = serializers.SerializerMethodField()
     latest = serializers.SerializerMethodField()
     last_senator = serializers.SerializerMethodField()
 
     class Meta:
         model = Asset
-        fields = ('id','ticker', 'name', 'count', 'latest', 'last_senator')
+        fields = ('id','ticker', 'name', 'count', 'latest', 'last_senator', 'asset_related_trades')
 
     def get_count(self, obj):
         return obj.asset_related_trades.count()

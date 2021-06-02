@@ -230,7 +230,7 @@ def ticker_detail(request, ticker):
                   {'trades': Trade.objects.filter(ticker=ticker.upper()),
                    'senators': senator_list,
                    'senator_obj': senator_obj,
-                   'company_name': trades[0].asset_name,
+                   'asset_name': trades[0].asset_name,
                    'ticker': ticker.upper(),
                    'figure': graph,
                    'figure2': graph2})

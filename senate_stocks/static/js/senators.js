@@ -10,7 +10,7 @@ const BAR_ROUND = 3,
 	BAR_COLOR = "var(--off-black)",
 	BAR_OPACITY = "0.7",
 	GRAPH_HOVER_COLOR = "yellow"
-	TOOLTIP_OFFSET = 5;
+	TOOLTIP_OFFSET = 10;
 
 const apiUrl = "/api/senators/" + 
 	window.location.pathname.split("/").pop();

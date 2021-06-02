@@ -20,7 +20,7 @@ function clearSenatorSelect() {
 	let senatorSelect = document.getElementById("senatorSelect");
 	while (senatorSelect.hasChildNodes()) {
 		// if (senatorSelect.childNodes[i].getAttribute("selected")) { continue; }
-	
+
 		senatorSelect.removeChild(senatorSelect.childNodes[0]);
 	}
 }
@@ -126,6 +126,7 @@ var clip = svg.append("defs").append("svg:clipPath")
 	.attr("x", 0)
 	.attr("y", 0);
 
+
 function displayTradesInRange(filteredTrades) {
 	noTradesAlert = document.getElementById("no-trades-alert");
 	if (filteredTrades.length > 0) {
@@ -153,37 +154,79 @@ function createGraph(prices_obj,trades_obj) {
 		.range([ 0, width ]);
 	var xAxis = svg.append("g")
 		.attr("transform", "translate(0," + height + ")")
-		.call(d3.axisBottom(x))
+		.call(d3.axisBottom(x).tickSize(0).tickPadding(10))
+		.attr("color","grey")
 		.attr("font-family","Roboto Mono")
-		.attr("font-weight",500);
+		.attr("font-weight",500)
+
+	xAxis.select('.domain').remove()
 
 	// Add Y axis
 	var y = d3.scaleLinear()
 		.domain([0, d3.max(prices, function(d) { return Number(d[1]); })])
 		.range([ height, 0 ]);
 	svg.append("g")
-		.call(d3.axisLeft(y))
+		.call(d3.axisLeft(y).ticks(5).tickSize(-width))
 		.attr("font-family","Roboto Mono")
-		.attr("font-weight",500);
+		.attr("font-weight",500)
+		.attr("color","grey")
+		.select('.domain').remove()
+
+	svg.append("linearGradient")				
+		.attr("id", "area-gradient")			
+		.attr("gradientUnits", "userSpaceOnUse")	
+		.attr("x1", 0).attr("y1", 0)			
+		.attr("x2", 0).attr("y2", "100%")		
+		.selectAll("stop")						
+		.data([								
+			{offset: "0%", color: "#77abb7"},		
+			{offset: "100%", color: "transparent"}	
+		])					
+		.enter().append("stop")			
+		.attr("offset", function(d) { return d.offset; })	
+		.attr("stop-color", function(d) { return d.color; });
 
 	// Add a scale for bubble size
 	var z = d3.scaleLinear()
 		.domain([5000,10000,50000,100000,500000,1000000])
-		.range([10,15,20,25,30,35]);
+		.range([6,9,12,15,18,21,23]);
 
+	var area = d3.area()
+		.x(d => x( d3.timeParse("%Y-%m-%d")(d[0]) ))
+		.y0(height)
+		.y1(d => y( d[1] ));
 
-	// // Add the line for stock price
+	var gradient = svg.append("path")
+		.attr("clip-path", "url(#clip)")
+		.attr("class","area")
+		.style("fill", "url(#area-gradient)")
+		.datum(prices)
+		.attr("d",area)
+
+	// Add the line for stock price
 	var line = svg.append("path")
 		.attr("clip-path", "url(#clip)")
-		.datum(prices)
+		.datum(prices.reverse())
 		.attr("fill", "none")
 		.attr("stroke", "steelblue")
-		.attr("stroke-width", 2)
+		.attr("stroke-width", 1.5)
 		.attr("id", "line")
 		.attr("d", d3.line()
 			.x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d[0])) })
 			.y(function(d) { return y(d[1]) })
 		)
+
+	const lineDrawTransition = d3.transition()
+		.ease(d3.easeSin)
+		.duration(2500);
+
+	var lineLength = line.node().getTotalLength();
+	line
+		.attr("stroke-dashoffset",lineLength)
+		.attr("stroke-dasharray",lineLength)
+		.transition(lineDrawTransition)
+		.attr("stroke-dashoffset",0)
+		.on("end", () => updateLine("All"));
 
 	displayTradesInRange(trades);
 
@@ -206,7 +249,10 @@ function createGraph(prices_obj,trades_obj) {
 			}
 			tradesFilter = tradesFilter.filter(d => Date.parse(d[0]).getFullYear() == year);
 		}
-		xAxis.transition().duration(1000).call(d3.axisBottom(x));
+		xAxis.transition().duration(1000).call(d3.axisBottom(x).tickSize(0).tickPadding(10));
+
+		
+		xAxis.select('.domain').remove()
 
 		// filter out trades that don't match
 		for (let date of tradesFilter) {
@@ -222,6 +268,10 @@ function createGraph(prices_obj,trades_obj) {
 		tradesFilter = tradesFilter.filter(date => date[1][1].length > 0)
 		svg.select("#bubbles").remove();
 
+		gradient.transition()
+			.duration(500)
+			.style("opacity",0);
+
 		var bub = svg.append("g")
 			.attr("id","bubbles")
 			.selectAll("dot")
@@ -236,7 +286,7 @@ function createGraph(prices_obj,trades_obj) {
 			.attr("cx", function (d) { return x(d3.timeParse("%Y-%m-%d")(d[0]))} )
 			.attr("cy", function (d) { return y(prices_obj[d[0]]); } )
 			.attr("r", function (d) { return 0; } )
-			.style("fill", function (d) { return 'red' } )
+			.style("fill", function (d) { console.log(d); return 'red' } )
 			.style("opacity", "0.3")
 			.attr("stroke", "white")
 			.style("stroke-width", "2px")
@@ -250,29 +300,33 @@ function createGraph(prices_obj,trades_obj) {
 			.attr("r", 0)
 			.style("fill", "black")
 			.style("opacity", "1")
+			.attr("pointer-events","none")
 
 		// add mouseover behavior for bubbles
 		bubEnter
 			.selectAll("circle")
 			.on("mouseover", function(event,d) { 
-				let xy = d3.pointer(event,bub.node()) 
+				// let xy = d3.pointer(event,bub.node()) 
+				console.log(d);
 				tooltip
 					.transition()
 					.duration(200)
-					.style("opacity",.7);
+					.style("opacity",1);
 				tooltip
-					.html(d[0] + " " + d[1][0] + " " + prices_obj[d[0]])
-					.style("left", xy[0]+"px")
-					.style("top", xy[1]+"px")
+				// .html(d[0] + " " + d[1][0] + " " + prices_obj[d[0]])
+				// .style("left", xy[0]+"px")
+				// .style("top", xy[1]+"px")
 					.style("visibility","visible")
 					.style("display","")
 			})
 			.on("mousemove", function(event,d) {
 				let xy = d3.pointer(event,bub.node()) 
 				tooltip
-					.html(d[0] + " " + d[1][0] + " " + prices_obj[d[0]])
-					.style("left", xy[0]+"px")
-					.style("top", xy[1]+"px")
+					.html("<b>" + d[1][1].length + " trades </b>on " 
+						+ Date.parse(d[0]).toString("MMM dd, yyyy")
+						+ "<br><b>Closing stock price:</b> $" + Number( prices_obj[d[0]] ).toFixed(2))
+					.style("left", xy[0]+ 10 +"px")
+					.style("top", xy[1]+10+"px")
 			} )
 			.on("mouseleave", function(event, d) {
 				tooltip
@@ -308,6 +362,12 @@ function createGraph(prices_obj,trades_obj) {
 					.transition()
 					.duration(1000)
 					.attr("r", 3)
+
+				gradient
+					.attr("d",area)
+					.transition()
+					.duration(1000)
+					.style("opacity",1);
 			})
 
 		bub.exit().remove();
@@ -337,7 +397,8 @@ function createGraph(prices_obj,trades_obj) {
 		.style("border-radius", "5px")
 		.style("padding", "10px")
 		.style("color", "white")
-		.attr("font-family", "Roboto Mono");
+		.style("font-family", "Roboto Mono")
+		.style("font-size", ".9em")
 
 	var color = function(trade) {
 		switch(trade.transaction_type) {
@@ -395,17 +456,16 @@ function createGraph(prices_obj,trades_obj) {
 				.style("stroke","white");
 		}
 		selectedBubble = event.target
-		
+
 		let timeout = 100;
 		for (let trade of d[1][1]) {
 			setTimeout(function() {
 				displaySelectedTrade(trade, "selected-trades-table", true);
-				},timeout+100);
+			},timeout+100);
 			timeout = timeout + 100;
 		}
 	}
 
-	updateLine("All");
 
 	// Add dots for trades
 	// var bubbles = svg.append('g')

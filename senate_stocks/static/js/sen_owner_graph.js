@@ -75,9 +75,9 @@ function loadOwnerGraph(data) {
     .attr("rx",BAR_ROUND)
     .attr("ry",BAR_ROUND)
     .attr("x", d => owner_x( d[0] ))
-    .attr("y", d => owner_y( d[1] ))
+    .attr("y", owner_y(0))
       .attr("width", owner_x.bandwidth())
-    .attr("height", d => owner_height - owner_y(d[1]))
+    .attr("height", 0)
       .attr("fill", BAR_COLOR)
     .attr("opacity",BAR_OPACITY)
 		.on("mouseover", function(e,d) {
@@ -114,4 +114,10 @@ function loadOwnerGraph(data) {
 		.attr("font-family","Roboto Mono")
     .attr("text-anchor","middle")
 
+	// Animation
+	owner_svg.selectAll("rect")
+		.transition()
+		.duration(800)
+		.attr("y", d => owner_y( d[1] ))
+    .attr("height", d => owner_height - owner_y(d[1]))
 }

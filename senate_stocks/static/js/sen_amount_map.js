@@ -16,12 +16,14 @@ var amountTooltip = d3.select("#amount-graph")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
-    .style("background-color", "white")
+    .style("background-color", "black")
+    .style("color","white")
     .style("border", "solid")
     .style("border-width", "1px")
     .style("border-radius", "5px")
     .style("padding", "10px")
 		.style("font-family", "Roboto Mono")
+    .style("font-size", "1em")
 
 // Parse the Data
 function loadAmountGraph(data) {
@@ -75,9 +77,9 @@ function loadAmountGraph(data) {
     .attr("rx",BAR_ROUND)
     .attr("ry",BAR_ROUND)
     .attr("x", d => amount_x( d[0] ))
-    .attr("y", d => amount_y( d[1] ))
+    .attr("y", amount_y(0))
     .attr("width", amount_x.bandwidth())
-    .attr("height", d => amount_height - amount_y(d[1]))
+    .attr("height", 0)
     .attr("fill", BAR_COLOR)
     .attr("opacity",BAR_OPACITY)
     .on("mouseover", function(e,d) {
@@ -85,7 +87,7 @@ function loadAmountGraph(data) {
         .style("fill", GRAPH_HOVER_COLOR);
 
 			amountTooltip
-				.html("<b>" + d[1] + " </b>trades worth <i>" + d[0] + "</i>.")
+				.html("<b>" + d[1] + " trades</b> worth <i>" + d[0] + "</i>.")
 				.style("opacity","1");
     })
 		.on("mousemove", function(e,d) {
@@ -115,4 +117,10 @@ function loadAmountGraph(data) {
     .attr("font-family","Roboto Mono")
     .attr("text-anchor","middle")
 
+	// Animation
+	amount_svg.selectAll("rect")
+		.transition()
+		.duration(800)
+		.attr("y", d => amount_y( d[1] ))
+    .attr("height", d => amount_height - amount_y(d[1]))
 }

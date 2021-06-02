@@ -93,6 +93,16 @@ function displaySelectedTrade(trade, tableId, senator=false) {
 		row.appendChild(datum);
 	}
 
+	if (trade.transaction_type == 'Purchase') {
+		row.setAttribute("style","background-color:rgb(255,0,0,.1)");
+	}
+	else if (trade.transaction_type == 'Exchange') {
+		row.setAttribute("style","background-color:rgb(128,128,.1)");
+	}
+	else {
+		row.setAttribute("style","background-color:rgb(0,128,0,.1)");
+	}
+
 	// add link to official disclosure site
 	datum = document.createElement("td");
 	let link = document.createElement("a");
@@ -109,14 +119,41 @@ const WIDTH = 1000, HEIGHT = 150, CELLSIZE = 17, CELLMARGIN = 1.5;
 
 const COLOR = d3.scaleThreshold()
 	.domain([5000,10000,50000,100000,500000,1000000])
-	.range(['#ffeceb','#ffb1ad','#ff7770','#ff5147','#ff2a1f','#f50c00']);
+	.range(['#FBE6E6','#F3B6B6','#EB8888','#E25D5D','#DA3535','#D72323']);
 
 const t = d3.transition()
-	.duration(500);
+	.duration(250);
 
+const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep",
+	"Oct","Nov","Dec"];
+
+var monthLabels = d3.select("#heatmap")
+	.append("g")
+	.selectAll("text")
+	.data(d3.range(0,11))
+	.enter()
+	.append("text")
+	.text(d => months[d])
+	.attr("id",d => "month-"+d)
+// .style("opacity",0)
+
+var heatmapTooltip = d3.select("#heatmap")
+	.append("div")
+	.style("opacity", 0)
+	.attr("class", "tooltip")
+	.style("background-color", "white")
+	.style("background-color","var(--off-black)")
+	.style("color","white")
+// .style("border", "solid")
+// .style("border-width", "1px")
+	.style("border-radius", "5px")
+	.style("padding", "5px")
+	.style("font-family", "Roboto Mono")
+	.style("font-size",".9em")
 
 var heatSvg;
-function update(year,data) {
+function update(year,data=heatmapMap) {
+	console.log(data);
 	document.getElementById("selected-date")
 		.innerHTML = "Trades in " + year;
 	tradeGenerator = null;
@@ -133,13 +170,23 @@ function update(year,data) {
 				.attr("transform", "translate(" + ((WIDTH - (CELLSIZE + CELLMARGIN) * 53) / 2) + "," + (HEIGHT - (CELLSIZE + CELLMARGIN) * 7 - 1) + ")")),
 
 			exit => {
-				exit.select("g").select("g").remove()		
+				exit
+					.transition()
+					.duration(250)
+					.on("end",() => {
+						exit.select("g").select("g").remove();	
+					})
 				return d3.select("#heatmap").select("svg").select("g");
 			}
 		);
 
 
 	loadGraph(year,data);
+	heatSvg
+		.selectAll("rect")
+		.transition()
+		.duration(500)
+		.style("opacity",1)
 }
 
 function toggleNoTradesAlert(hide) {
@@ -231,87 +278,112 @@ function resetNextTradesButton() {
 		.innerHTML = "No More Trades";
 }
 
-var trades;
-function loadGraph(year,data=trades) {
-			currentTrades = data;	
-			// remove dates from other years from map
-			// we'll use to display trades in table
-			for (let date of currentTrades.keys()) {
-				if (Number(date.split('-')[0]) != year) {
-					currentTrades.delete( date );
-				}
+function loadGraph(year,data) {
+	let currentTrades = new Map();	
+	// remove dates from other years from map
+	// we'll use to display trades in table
+	for (let [date,trades] of currentTrades) {
+		if (Number(date.split('-')[0]) == year) {
+			currentTrades.set(date,trades);
+		}
+	}
+
+	let prevSelection;
+	heatSvg.append("g")
+		.attr("fill", "var(--heatmap-empty-date)")
+		.attr("stroke", "#000")
+		.attr("stroke-width", "0.1px")
+		.selectAll("rect")
+		.data(d => d3.timeDays(new Date(d,0,1), new Date(d+1,0,1)))
+		.enter().append("rect")
+		.attr("width", CELLSIZE - CELLMARGIN)
+		.attr("height", CELLSIZE - CELLMARGIN)
+		.attr("rx",1.5)
+		.attr("ry",1.5)
+		.style("opacity",0)
+		.attr("x", d => {
+			return d3.timeWeek.count(d3.timeYear(d),d)*(CELLSIZE+CELLMARGIN);})
+		.attr("y", d => d.getDay()*(CELLSIZE+CELLMARGIN))
+		.attr("id", d => d)
+		.attr("fill", d => {
+			if (d.compareTo(Date.today()) > 0) {
+				return "var(--heatmap-disabled)";
 			}
 
-	trades = data;
-			let prevSelection;
-			heatSvg.append("g")
-				.attr("fill", "#f3f6e7")
-				.attr("stroke", "#000")
-				.attr("stroke-width", "0.1px")
-				.selectAll("rect")
-				.data(d => d3.timeDays(new Date(d,0,1), new Date(d+1,0,1)))
-				.enter().append("rect")
-				.attr("width", CELLSIZE - CELLMARGIN)
-				.attr("height", CELLSIZE - CELLMARGIN)
-				.style("fill", d => {
-					if (d.compareTo(Date.today()) > 0) {
-						return "#8a9293";
-					}
-				})
-				.attr("x", d => {
-					return d3.timeWeek.count(d3.timeYear(d),d)*(CELLSIZE+CELLMARGIN);})
-				.attr("y", d => d.getDay()*(CELLSIZE+CELLMARGIN))
-				.datum(d3.timeFormat("%Y-%m-%d"))
-				.attr("id", d => d)
-				.attr("fill", d => {
-					if (trades.has(d)) {
-						return COLOR(trades.get(d).volume);
-					}
-				})
-				.on("click", (event, d) => {
-					if (Date.parse(d).compareTo(Date.today()) > 0) {
-						return;
-					}
+			let date = d.toString("yyyy-MM-dd")
+			if (data.has(date)) {
+				return COLOR(data.get(date).volume);
+			}
 
-					if (prevSelection) {
-						d3.select(document.getElementById(prevSelection))
-							.attr("stroke","#000")
-							.attr("stroke-width","0.1px");
-					}
+			if (d.getDay() == 1) {
+				d3.select("#month-"+d.getMonth())
+					.attr("dy",d.getDay()*(CELLSIZE+CELLMARGIN))
+			}
+		})
+		.on("mouseover", (e, d) => {
+			if (d.compareTo(Date.today()) <= 0) {
+				let date = d.toString("MMM d, yyyy");
+				if (data.has(d)) {
+					heatmapTooltip.html("<b>" + data.get(d).length + " trades</b> on " + date);
+				}
+				else {
+					heatmapTooltip.html("<b>No trades</b> on " + date);
+				}
+				heatmapTooltip.style("opacity",1);
+			}
+		})
+		.on("mousemove", function(e,d) {
+			let x = e.layerX + TOOLTIP_OFFSET, 
+				y = e.layerY + TOOLTIP_OFFSET;
+			heatmapTooltip
+				.style("left",x+"px")
+				.style("top",y+"px")
+		})
+		.on("mouseout", () => heatmapTooltip.style("opacity",0))
+		.on("click", (event, d) => {
+			if (Date.parse(d).compareTo(Date.today()) > 0) {
+				return;
+			}
 
-					document.getElementById("selected-date").innerHTML = "Trades on " + Date.parse(d).toString("MMMM dS, yyyy");
+			if (prevSelection) {
+				d3.select(document.getElementById(prevSelection))
+					.attr("stroke","#000")
+					.attr("stroke-width","0.1px");
+			}
 
-					d3.select(document.getElementById(d))
-						.attr("stroke","#eef525")
-						.attr("stroke-width","2px");
-					prevSelection = d;
+			document.getElementById("selected-date").innerHTML = "Trades on " + Date.parse(d).toString("MMMM dS, yyyy");
 
-					if (trades.has(d)) {
-						toggleNoTradesAlert(true);
-						clearDisplayedTrades("selected-trades-table");
+			d3.select(document.getElementById(d))
+				.attr("stroke","var(--heatmap-selected-outline)")
+				.attr("stroke-width","2px");
+			prevSelection = d;
 
-						let timeout = 100;
-						for (let trade of trades.get(d).trades) {
-							setTimeout(
-								() => displaySelectedTrade(trade, "selected-trades-table"),
-								timeout+100);
-							timeout += 100;
-						}
-					}
-					else {
-						toggleNoTradesAlert(false);
-						clearDisplayedTrades("selected-trades-table");
-					}
-				})
-			// resetNextTradesButton();
-			clearDisplayedTrades("selected-trades-table");
-			if (currentTrades.size > 0) {
+			if (data.has(d)) {
 				toggleNoTradesAlert(true);
-				getNextTrades();
+				clearDisplayedTrades("selected-trades-table");
+
+				let timeout = 100;
+				for (let trade of data.get(d).trades) {
+					setTimeout(
+						() => displaySelectedTrade(trade, "selected-trades-table"),
+						timeout+100);
+					timeout += 100;
+				}
 			}
 			else {
 				toggleNoTradesAlert(false);
+				clearDisplayedTrades("selected-trades-table");
 			}
+		})
+	// resetNextTradesButton();
+	clearDisplayedTrades("selected-trades-table");
+	if (currentTrades.size > 0) {
+		toggleNoTradesAlert(true);
+		getNextTrades();
+	}
+	else {
+		toggleNoTradesAlert(false);
+	}
 
 
 

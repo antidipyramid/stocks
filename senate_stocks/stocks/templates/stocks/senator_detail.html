@@ -47,11 +47,11 @@
         <div class="row justify-content-evenly">
           <div class="card mx-3 shadow-sm mt-3" style="width: 20rem;">
             <div class="card-body">
-              <h5 class="card-title">Top 10 Most Traded Assets</h5>
-              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-              <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-              <!-- <a href="#" class="card-link">Card link</a> -->
-              <!-- <a href="#" class="card-link">Another link</a> -->
+              <h5 class="card-title">top 10 most traded assets</h5>
+              <!-- <h6 class="card-subtitle mb-2 text-muted">card subtitle</h6> -->
+              <!-- <p class="card-text">some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              <!-- <a href="#" class="card-link">card link</a> -->
+              <!-- <a href="#" class="card-link">another link</a> -->
 
               <figure id="most-traded-graph"></figure>
 
@@ -59,11 +59,11 @@
           </div>
           <div class="card mx-3 shadow-sm mt-3" style="width: 20rem;">
             <div class="card-body">
-              <h5 class="card-title">Who Owns The Trades?</h5>
-              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-              <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-              <!-- <a href="#" class="card-link">Card link</a> -->
-              <!-- <a href="#" class="card-link">Another link</a> -->
+              <h5 class="card-title">who owns the trades?</h5>
+              <!-- <h6 class="card-subtitle mb-2 text-muted">card subtitle</h6> -->
+              <!-- <p class="card-text">some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+              <!-- <a href="#" class="card-link">card link</a> -->
+              <!-- <a href="#" class="card-link">another link</a> -->
 
               <figure id="owner-graph"></figure>
             </div>
@@ -107,10 +107,10 @@
               <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off">
               <label class="btn btn-outline-primary" for="btnradio1">2019</label>
 
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" onclick=update(2020) autocomplete="off">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio2" onclick=update(2020,heatmapMap) autocomplete="off">
               <label class="btn btn-outline-primary" for="btnradio2">2020</label>
 
-              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" onclick=update(2021) autocomplete="off" checked>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradio3" onclick=update(2021,heatmapMap) autocomplete="off" checked>
               <label class="btn btn-outline-primary" for="btnradio3">2021</label>
             </div>
           </div>
@@ -148,9 +148,10 @@
           </div>
           <div id = "no-trades-alert" class="alert alert-danger animated" style="visibility:hidden;display:none;" role="alert">No trades to display.</div>
         </div>
+
+        <script src="{% static 'js/senators.js' %}"></script>
         <script src="{% static 'js/detail_heatmap.js' %}"></script>
         <script src="{% static 'js/all_trades.js' %}"></script>
-        <script src="{% static 'js/senators.js' %}"></script>
       </div>
 
       <!-- All Trades tab -->
