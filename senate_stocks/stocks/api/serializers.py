@@ -36,6 +36,7 @@ class AssetDetailSerializer(serializers.ModelSerializer):
         return result
 
     def get_last_senator(self, obj):
+        print("HELLO")
         return str(obj.asset_related_trades.latest('transaction_date').senator)
 
 class AssetSerializer(serializers.ModelSerializer):
@@ -60,6 +61,7 @@ class AssetSerializer(serializers.ModelSerializer):
         return result
 
     def get_last_senator(self, obj):
+        print("HI THERE")
         return str(obj.asset_related_trades.latest('transaction_date').senator)
 
 class SenatorSerializer(serializers.ModelSerializer):
@@ -81,6 +83,27 @@ class SenatorSerializer(serializers.ModelSerializer):
             raise Http404("No matches found")
 
         return TradeSerializer(result).data
+
+class SenatorDetailSerializer(serializers.ModelSerializer):
+    related_trades = TradeSerializer(many=True,read_only=True)
+    latest = serializers.SerializerMethodField()
+    count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Senator
+        fields = ('id','first_name','last_name', 'photo_url', 'state', 'party', 'latest', 'count', 'related_trades')
+
+    def get_count(self, obj):
+        return obj.related_trades.count()
+
+    def get_latest(self, obj):
+        try:
+            result = obj.related_trades.latest('transaction_date')
+        except:
+            raise Http404("No matches found")
+
+        return TradeSerializer(result).data
+
 class SearchSerializer(serializers.Serializer):
     assets = AssetSerializer(many=True)
     senators = SenatorSerializer(many=True)

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework import permissions
 from stocks.models import Trade, Senator, Asset
-from .serializers import AssetDetailSerializer, TradeSerializer, SearchSerializer, SenatorSerializer, AssetSerializer
+from .serializers import AssetDetailSerializer, SenatorDetailSerializer, TradeSerializer, SearchSerializer, SenatorSerializer, AssetSerializer
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 import django_filters as filters
@@ -39,7 +39,7 @@ class AssetViewSet(viewsets.ModelViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
     filterset_class = AssetFilter
-    detail_serializer = AssetDetailSerializer
+    detail_serializer_class = AssetDetailSerializer
 
     def filter_queryset(self,queryset):
         filter_backends = [DjangoFilterBackend]
@@ -48,14 +48,12 @@ class AssetViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    def list(self, request):
-        serializer = self.serializer_class(self.queryset,many=True)
-        return Response(serializer.data)
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            if hasattr(self, 'detail_serializer_class'):
+                return self.detail_serializer_class
 
-    def retrive(self, request, pk=None):
-        asset = get_object_or_404(self.queryset,pk=pk)
-        serializer = self.detail_serializer(asset)
-        return Response(serializer.data)
+        return super(AssetViewSet,self).get_serializer_class()
 
 """
 class SenatorListApiView(APIView):
@@ -82,6 +80,7 @@ class SenatorViewSet(viewsets.ModelViewSet):
     queryset = Senator.objects.all()
     serializer_class = SenatorSerializer
     filterset_class = SenatorFilter
+    detail_serializer_class = SenatorDetailSerializer
 
     def filter_queryset(self,queryset):
         filter_backends = [DjangoFilterBackend]
@@ -90,16 +89,12 @@ class SenatorViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    def list(self, request):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer_class()(self.filter_queryset(queryset),many=True)
-        return Response(serializer.data)
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            if hasattr(self, 'detail_serializer_class'):
+                return self.detail_serializer_class
 
-    def retrieve(self, request, pk=None):
-        queryset = self.get_queryset()
-        senator = get_object_or_404(queryset,pk=pk)
-        serializer = SenatorSerializer(senator)
-        return Response(serializer.data)
+        return super(SenatorViewSet,self).get_serializer_class()
 
 class SearchApiViewSet(viewsets.ViewSet):
     """
