@@ -28,12 +28,20 @@ body {
 	transition: opacity 0.1s ease;
 }
 
+.body-font {
+    font-family: 'Roboto Mono', serif !important;
+}
+
 .sen-card:hover, .asset-card:hover {
 	opacity: 1;
 }
 
 .bg-secondary {
     background-color: #DFE2E5 !important;
+}
+
+.form-select-sm, .input-group-sm, .form-control-sm, .input-group-text {
+    font-size: .8rem !important;
 }
 
 .asset-link > a, .asset-link:after, .card-title > a, .card-title:after {

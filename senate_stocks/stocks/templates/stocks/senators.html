@@ -2,105 +2,129 @@
 {% load static %}
 {% block content %}
 
+<script src="{% static 'js/datejs/date-en-US.js' %}"></script>
 <script src="{% static 'js/all_trades.js' %}"></script>
-<div class="container-md">
+<div class="container-fluid">
   <!-- Start of filter options -->
-  <div class="row justify-content-center">
-    <div class="col-8">
-      <div class="mt-3 mb-3 p-3 border light contrast-box">
-        <div class="row justify-content-evenly">
-          <div class="col">
-            <div class="row m-3">
-              <div class="col">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text" id="nameInputLabel">Name</span>
-                  <input type="text" id="name" class="form-control form-control-sm" placeholder="All" aria-label="senator name search">
-                </div>
-              </div>
-            </div>
-            <div class="row m-3">
-              <div class="col">
-                <div class="form-floating">
-                  <select id="party" class="form-select form-select-sm" aria-label="party select">
-                    <option value="All" selected>All</option>
-                    <option value="Democrat">Democrat</option>
-                    <option value="Republican">Republican</option>
-                    <option value="Independent">Independent</option>
-                  </select>
-                  <label for="party">Party</label>
-                </div>
-              </div>
-              <div class="col">
-                <div class="form-floating">
-                  <select id="state" class="form-select form-select-sm" aria-label="state select">
-                    <option value="All" selected>All</option>
-                    {% for state in state_list %}
-                    <option value={{ state }} selected>{{ state }}</option>
-                    {% endfor %}
-                  </select>
-                  <label for="state">State</label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-3">
-            <div class="row mt-3">
-              <div class="col-1">
-                <button onclick="displayFilteredSenators(JSON.parse('{{ senators_json|escapejs }}'))" type="button" class="btn btn-primary">Filter</button>
-              </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col-1">
-                <button onclick="resetSenators(JSON.parse('{{ senators_json|escapejs }}'))" type="button" class="btn btn-danger">Reset</button>
-              </div>
-            </div>
-            <!-- <button onclick="clearSenators(SENATOR_CARDS)" type="button" class="btn btn-danger">Reset</button> -->
-          </div>
-        </div>
-      </div>
+
+  <div class="d-flex align-items-center mt-3 mb-3 p-3">
+    <div class="text-nowrap"><b>Filter by:</b></div>
+    <div class="input-group input-group-sm me-3 ms-1">
+      <span class="input-group-text" id="nameInputLabel">Name</span>
+      <input type="text" id="name" class="form-control form-control-sm" placeholder="All" aria-label="senator name search">
     </div>
-  </div>
+    <b>Party:</b>
+    <select id="party" class="form-select w-auto form-select-sm ms-1 me-3" aria-label="party select">
+      <option value="All" selected>All</option>
+      <option value="D">Democrat</option>
+      <option value="R">Republican</option>
+      <option value="I">Independent</option>
+    </select>
+    <b>State:</b>
+    <select id="state" class="form-select w-auto form-select-sm ms-1 me-3" aria-label="state select">
+      <option value="All" selected>All</option>
+      {% for state in state_list %}
+      <option value={{ state }} selected>{{ state }}</option>
+      {% endfor %}
+    </select>
+    <div class="text-nowrap"><b>Sort by:</b></div>
+    <select id="sort" class="form-select w-auto form-select-sm ms-1" aria-label="sort select">
+      <option value="Last trade (newest to oldest)" selected>Last trade (newest to oldest)</option>
+      <option value="Last trade (oldest to newest)">Last trade (oldest to newest)</option>
+      <option value="Trades (most to least)">Trades (most to least)</option>
+      <option value="Trades (least to most)">Trades (least to most)</option>
+    </select>
+  </div> 
+
+
+
+  <!-- <div class="row justify-content-center"> -->
+  <!-- <div class="col-8"> -->
+  <!--   <div class="mt-3 mb-3 p-3 border light contrast-box"> -->
+  <!--     <div class="row justify-content-evenly"> -->
+  <!--       <div class="col"> -->
+  <!--         <div class="row m-3"> -->
+  <!--           <div class="col"> -->
+  <!--             <div class="input-group input-group-sm"> -->
+  <!--               <span class="input-group-text" id="nameInputLabel">Name</span> -->
+  <!--               <input type="text" id="name" class="form-control form-control-sm" placeholder="All" aria-label="senator name search"> -->
+  <!--             </div> -->
+  <!--           </div> -->
+  <!--         </div> -->
+  <!--         <div class="row m-3"> -->
+  <!--           <div class="col"> -->
+  <!--             <div class="form-floating"> -->
+  <!--               <select id="party" class="form-select form-select-sm" aria-label="party select"> -->
+  <!--                 <option value="All" selected>All</option> -->
+  <!--                 <option value="Democrat">Democrat</option> -->
+  <!--                 <option value="Republican">Republican</option> -->
+  <!--                 <option value="Independent">Independent</option> -->
+  <!--               </select> -->
+  <!--               <label for="party">Party</label> -->
+  <!--             </div> -->
+  <!--           </div> -->
+  <!--           <div class="col"> -->
+  <!--             <div class="form-floating"> -->
+  <!--               <select id="state" class="form-select form-select-sm" aria-label="state select"> -->
+  <!--                 <option value="All" selected>All</option> -->
+  <!--                 {% for state in state_list %} -->
+  <!--                 <option value={{ state }} selected>{{ state }}</option> -->
+  <!--                 {% endfor %} -->
+  <!--               </select> -->
+  <!--               <label for="state">State</label> -->
+  <!--             </div> -->
+  <!--           </div> -->
+  <!--         </div> -->
+  <!--       </div> -->
+  <!--       <div class="col-3"> -->
+  <!--         <div class="row mt-3"> -->
+  <!--           <div class="col-1"> -->
+  <!--             <button onclick="displayFilteredSenators(JSON.parse('{{ senators_json|escapejs }}'))" type="button" class="btn btn-primary">Filter</button> -->
+  <!--           </div> -->
+  <!--         </div> -->
+  <!--         <div class="row mt-3"> -->
+  <!--           <div class="col-1"> -->
+  <!--             <button onclick="resetSenators(JSON.parse('{{ senators_json|escapejs }}'))" type="button" class="btn btn-danger">Reset</button> -->
+  <!--           </div> -->
+  <!--         </div> -->
+  <!--         <!-1- <button onclick="clearSenators(SENATOR_CARDS)" type="button" class="btn btn-danger">Reset</button> -1-> -->
+  <!--       </div> -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div> -->
+  <!-- </div> -->
 
   <!-- Start of list of senators -->
+  <h3 class="body-font">Found <span id="num-results"></span> senators:</h3>
   <div id="senator-cards" class="row justify-content-evenly gx-0">
-    {% for senator, latest_trade, latest_asset, count in senators_list %}
-    <!-- <div class="col"> -->
-    <div id="sen-card " class="card animated mb-3 shadow-sm sen-card" style="width: 25rem;">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <img src="{{ senator.photo_url }}" class="img-fluid senator-img" style="object-fit:cover;height:100%;" alt="">
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title"> 
-              <a  class="link-dark card-link stretched-link" href="/senator/{{ senator.id}}">{{ senator }}</a>
-            </h5>
-            <div class="d-flex flex-row align-items-center">
-              <h6 class="flex-grow-1 card-subtitle">({{ senator.party }}-{{ senator.state }})
-              </h6>
-              <div>
-                <span class="badge bg-primary">{{ count }} trades</span>
-              </div>
-            </div>
-            <!-- <ul class="list-group list-group-flush"> -->
-            <!--   <li class="list-group-item"><b>State:</b> </li> -->
-            <!--   <li class="list-group-item"><b>Party:</b> {{ senator.get_party_display }}</li> -->
-            <!--   <li class="list-group-item"><b>Years In Senate:</b> </li> -->
-            <!-- </ul> -->
-            <!-- <div class="col" style="text-align:center;"> -->
-            <!--   <a class="btn btn-info btn-sm" style="display:inline-block;" href="/senator/{{ senator.id }}" role="button">{{ senator }}</a> -->
-            <!-- </div> -->
-            <p class="text-muted mb-auto latest-info"><small>
-              <b>Most recent:</b> {{ latest_asset }} on {{ latest_trade.transaction_date }}.
-            </small></p>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-  <!-- </div> -->
-</div>
+    <!-- {% for senator, latest_trade, latest_asset, count in senators_list %} -->
+    <!-- <div id="sen-card " class="card animated mb-3 shadow-sm sen-card" style="width: 25rem;"> -->
+    <!--   <div class="row g-0"> -->
+    <!--     <div class="col-md-4"> -->
+    <!--       <img src="{{ senator.photo_url }}" class="img-fluid senator-img" style="object-fit:cover;height:100%;" alt=""> -->
+    <!--     </div> -->
+    <!--     <div class="col-md-8"> -->
+    <!--       <div class="card-body"> -->
+    <!--         <h5 class="card-title"> --> 
+    <!--           <a  class="link-dark card-link stretched-link" href="/senator/{{ senator.id}}">{{ senator }}</a> -->
+    <!--         </h5> -->
+    <!--         <div class="d-flex flex-row align-items-center"> -->
+    <!--           <h6 class="flex-grow-1 card-subtitle">({{ senator.party }}-{{ senator.state }}) -->
+    <!--           </h6> -->
+    <!--           <div> -->
+    <!--             <span class="badge bg-primary">{{ count }} trades</span> -->
+    <!--           </div> -->
+    <!--         </div> -->
+    <!--         <p class="text-muted mb-auto latest-info"><small> -->
+    <!--           <b>Most recent:</b> {{ latest_asset }} on {{ latest_trade.transaction_date }}. -->
+    <!--         </small></p> -->
+    <!--       </div> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!-- </div> -->
+    <!-- {% endfor %} -->
+  </div>
 
 
-<script src="{% static '/js/senator_search.js' %}"></script>
-{% endblock content %}
+  <script src="{% static '/js/senator_search.js' %}"></script>
+  {% endblock content %}

@@ -69,7 +69,7 @@ def senators(request):
     # send template a list of states so user can 
     # filter senators from localflavor, which stores states
     # as tuple of tuples in form (('FL','Florida')...)
-    state_list = [x[1] for x in states]
+    state_list = [x[0] for x in states]
     senators_json = []
     senators_list = []
     for senator in Senator.objects.all():
