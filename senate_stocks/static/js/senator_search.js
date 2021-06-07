@@ -1,16 +1,5 @@
 'use strict';
-const SENATOR_CARDS = 'senator-cards',
-	SEN_PHOTO_CLASSES = 'card-img-top',
-	CARD_STYLE = 'width:15rem;',
-	COL2_STYLE =  'text-align:center;',
-	BUTTON_CLASSES = 'btn btn-info btn-sm',
-	BUTTON_STYLE = 'display:inline-block;',
-	BUTTON_LINK = '/senator/',
-	LIST_GROUP_CLASSES = 'list-group list-group-flush',
-	SENATOR_ATTRS = ['Name', 'State', 'Party']
-
-const senatorList = [],
-	url = '/api/senators';
+const	url = '/api/senators';
 
 /**
  * Fetch senators from the API. These senators are stored in a 
@@ -22,7 +11,6 @@ const senatorList = [],
  */
 async function fetchSenators(url) {
 	const response = await fetch(url);
-	console.log(response);
 	return response.json();
 }
 
@@ -32,7 +20,7 @@ async function fetchSenators(url) {
  * @param {Array} senators
  *
  */
-var results;
+var results; // stores the senators currently displayed on page
 function loadSenatorCards(senators) {
 	let anchor = document.getElementById("senator-cards");
 	for (const senator of senators) {
@@ -97,39 +85,64 @@ function loadSenatorCards(senators) {
 }
 fetchSenators(url)
 	.then(d => { 
-		loadSenatorCards(d);
-		results = JSON.parse(JSON.stringify(d));
-		console.log(results);
-		document.getElementById("num-results").innerHTML = d.length;
 
+		// sort and load all senators to display when user first
+		// visits page
+		sortSenators(d,'Last trade (newest to oldest)');
+		loadSenatorCards(d);
+		setNumberOfResults(d.length);
+		resetFilterOptions();
+
+		// set event listeners for filtering/sorting options
 		document.getElementById("party")
 			.addEventListener("input", e => {
 				results = filterSenators(d);
-				document.getElementById("num-results").innerHTML = results.length;
+				setNumberOfResults(results.length);
 			})
 
 		document.getElementById("state")
 			.addEventListener("input", e => {
 				results = filterSenators(d);
-				document.getElementById("num-results").innerHTML = results.length;
+				setNumberOfResults(results.length);
 			})
 
 		let delay;
 		document.getElementById("name")
 			.addEventListener("input", e => {
 				clearTimeout(delay);
-				delay = setTimeout(curr => {
+				delay = setTimeout(() => {
 					results = filterSenators(d);
-					document.getElementById("num-results").innerHTML = results.length;
+					setNumberOfResults(results.length);
 				},250,e.currentTarget);
 			})
 
+		results = JSON.parse(JSON.stringify(d)); // deep copy senators array for sorting
 		document.getElementById("sort")
 			.addEventListener("input", e => {
 				results = sortSenators(results,e.originalTarget.value);
 			})
 	})
 
+/**
+ * Resets filter options to default values
+ */
+function resetFilterOptions() {
+	document.getElementById("name").value = "";
+	document.getElementById("party").value = "All";
+	document.getElementById("state").value = "All";
+	document.getElementById("sort").value = "Last trade (newest to oldest)";
+}
+
+/**
+ * Displays the number of senator results found
+ *
+ * @param {String} id - element that displays number of results
+ * @param {Number} num - number of results
+ *
+ */
+function setNumberOfResults(num, id="num-results") {
+	document.getElementById(id).innerHTML = num;
+}
 
 /**
  * Clear all senators from page
@@ -167,6 +180,14 @@ function filterSenators(senators) {
 	return results;
 }
 
+/**
+ * Second order func that compares a senator object's party a given value.
+ *
+ * @param {String} party
+ * @return {Function} - compares a senator object to a
+ * specific party value
+ *
+ */
 function compareParty(party) {
 	if (party == 'All') {
 		return x => true;
@@ -176,6 +197,14 @@ function compareParty(party) {
 	}
 }
 
+/**
+ * Second order func that compares a senator object's state to any value
+ *
+ * @param {String} state
+ * @return {Function} - compares a senator object to a specific
+	* state value
+ *
+ */
 function compareState(state) {
 	if (state == 'All') {
 		return x => true;
@@ -185,6 +214,13 @@ function compareState(state) {
 	}
 }
 
+/**
+ * Second order function that compares a senator object's name
+ *
+ * @param {name} name
+	* @return {Function} - compares a senator object's name to a specific name
+ *
+ */
 function compareName(name) {
 	if (name == '') {
 		return x => true;
@@ -195,6 +231,14 @@ function compareName(name) {
 	}
 }
 
+/**
+ * Generic function to sort elements from least to most
+ * for use in Array.sort()
+ *
+ * @param {Function} func - the function to use to compare elements
+ * @return {Number}
+ *
+ */
 function asc(func) {
 	return (a,b) => {
 		if (func(a) < func(b)) { return -1; }
@@ -203,6 +247,14 @@ function asc(func) {
 	}
 }
 
+/**
+ * Generic function to sort elements from most to least
+ * for use in Array.sort()
+ *
+ * @param {Function} func - the function to use to compare elements
+ * @return {Number}
+ *
+ */
 function desc(func) {
 	return (a,b) => {
 		if (func(a) > func(b)) { return -1; }
@@ -211,6 +263,13 @@ function desc(func) {
 	}
 }
 
+/**
+ * Sorts senator cards according to user selection of sort method
+ *
+ * @param {Array} senators - list of senators to sort
+ * @param {String} val - the sort method the user selected
+ *
+ */
 function sortSenators(senators, val) {
 	let sorted;
 	switch (val) {
@@ -232,150 +291,3 @@ function sortSenators(senators, val) {
 	loadSenatorCards(senators);
 	return sorted;
 }
-
-
-
-
-
-// function filterSenators(allSenators) {
-// 	var results = [];
-// 	for (let senator of allSenators) {
-
-// 		let match = true;
-// 		for (let i = 1; i < arguments.length; i++) {
-// 			let arg = arguments[i].toLowerCase();
-// 			let ele = document.getElementById(arg);
-// 			let data = senator[arg].toLowerCase(),
-// 				query = ele.value.toLowerCase();
-// 			if (query == "all") {
-// 				continue;
-// 			}
-// 			// if ele is a text input, check if query
-// 			// matches any part of data
-// 			if(ele.tagName.toLowerCase() == "input") {
-// 				if (data.indexOf(query) < 0) {
-// 					match = false;
-// 					break;
-// 				}
-// 			}
-// 			// otherwise, just check if they're equal
-// 			else {
-// 				if (data != query) {
-// 					match = false;
-// 					break;
-// 				}
-// 			}
-// 		}
-
-// 		if (match) {
-// 			results.push(senator);
-// 		}
-// 	}
-// 	return results;	
-// }
-
-/**
- * Resets senators by re-displaying all senators
- *
- * @param senators - list of sentors instances
- *
- */
-function resetSenators(senators) {
-	clearSenators('senator-cards');
-	for (let senator of senators) {
-		displaySenator(senator);
-	}
-
-	for (let attr of SENATOR_ATTRS) {
-		let ele = document.getElementById(attr.toLowerCase());
-		if (ele.tagName.toLowerCase() == "input") {
-			ele.value = "";
-		}
-		else {
-			clearOptionInput(attr.toLowerCase());
-		}
-	}
-}
-
-
-/**
- * Creates and displays senator card
- *
- *
- */
-function displaySenator(senator) {
-	let anchor = document.getElementById(SENATOR_CARDS);
-	let col = document.createElement('div');
-	col.className = 'col';
-	anchor.appendChild(col);
-	let card = document.createElement('div');
-	card.className = 'card m-3 animated'
-	card.style = CARD_STYLE;
-	col.appendChild(card);
-
-	let photo = document.createElement('img');
-	photo.className = SEN_PHOTO_CLASSES;
-	photo.src = senator.photo_url;
-	card.appendChild(photo);
-
-	let body = document.createElement('div');
-	body.className = 'card-body';
-	card.appendChild(body);
-
-	let col2 = document.createElement('div');
-	col2.className = 'col';
-	col2.style = COL2_STYLE;
-	body.appendChild(col2);
-
-	let button = document.createElement('a');
-	button.className = BUTTON_CLASSES;
-	button.style = BUTTON_STYLE;
-	button.href = BUTTON_LINK + senator.id;
-	button.role = 'button';
-	button.innerHTML = senator.name;
-	col2.appendChild(button);
-
-	let listGroup = document.createElement('ul');
-	listGroup.className = LIST_GROUP_CLASSES;
-	for(let field of SENATOR_ATTRS) {
-		let f = document.createElement('li');
-		f.className = "list-group-item";
-		f.innerHTML = field + ': ' + senator[field.toLowerCase()];
-		listGroup.appendChild(f);
-	}
-	card.appendChild(listGroup);
-}
-
-
-/**
- * Displays results after filtering by user
- *
- */
-function displayFilteredSenators(allSenators) {
-	clearSenators(SENATOR_CARDS);
-	let filteredSenators = filterSenators(allSenators,...SENATOR_ATTRS);
-	for (let senator of filteredSenators) {
-		displaySenator(senator);
-	}
-}
-
-/**
-* Mouseover behavior for senator cards
-*
-*/
-document.querySelectorAll(".sen-card")
-	.forEach((card) => {
-			// card.onclick = (e) => {
-			// 	e.currentTarget.querySelector(".card-link").click();
-			// }
-			card.onmouseover = (e) => {
-				e.currentTarget.setAttribute("class","card animated mb-3 shadow sen-card");
-				// e.currentTarget.querySelector(".latest-info")
-				// 	.setAttribute("class","text-white mb-auto latest-info");
-			};
-			card.onmouseout = (e) => {
-				e.currentTarget.setAttribute("class","card animated mb-3 shadow-sm sen-card");
-			// e.currentTarget.querySelector(".latest-info")
-			// 	.setAttribute("class","text-muted mb-auto latest-info");
-			};
-		});
