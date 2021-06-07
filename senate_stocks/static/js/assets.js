@@ -2,18 +2,160 @@
 
 const assetPageButtons = ['allAssetsButton','publicStocksButton','otherAssetsButton'];
 
-const PAGE_INFO = {
-
-}
+const FILTER_OPTIONS = ['name','ticker'],
+	FILTER_FUNCS = [compareAssetName, compareAssetTicker];
 
 var offset = 0,
 	assetsPerPage = 25,
 	sortDateAsc = false,
-	sortAlphaAsc = false,
-	assets;
+	sortAlphaAsc = false;
 
-// reverse sort function for dates
-const compareDateRev = (a, b) => compareDate(a,b) * -1;
+/**
+ * Generic function to sort elements from least to most
+ * for use in Array.sort()
+ *
+ * @param {Function} func - the function to use to compare elements
+ * @return {Number}
+ *
+ */
+function asc(func) {
+	return (a,b) => {
+		if (func(a) < func(b)) { return -1; }
+		else if (func(a) == func(b)) { return 0; }
+		else { return 1; }
+	}
+}
+
+/**
+ * Generic function to sort elements from most to least
+ * for use in Array.sort()
+ *
+ * @param {Function} func - the function to use to compare elements
+ * @return {Number}
+ *
+ */
+function desc(func) {
+	return (a,b) => {
+		if (func(a) > func(b)) { return -1; }
+		else if (func(a) == func(b)) { return 0; }
+		else { return 1; }
+	}
+}
+
+async function getAssets() {
+	let assetPromise = await fetch("/api/assets");
+
+	if (assetPromise.ok) {
+		const assets = await assetPromise.json();
+		return assets;
+	}
+}
+var results;
+getAssets()
+	.then(d => {
+		// clear filter and sort fields on page reload
+		resetFilterOptions();
+
+		// populate page with all assets
+		makePages(d);
+		sortAssets(d,'Last trade (newest to oldest)')
+		nextCards(d);
+
+		document.getElementById("loading").remove();
+
+		// deep copy of all assets to store what's
+		// currently displayed on page
+		results = JSON.parse(JSON.stringify(d));
+		
+		let nameDelay;
+		document.getElementById("name")
+			.addEventListener("input", e => {
+				clearTimeout(nameDelay);
+				nameDelay = setTimeout(() => { 
+					results = filterAssets(d)
+				},250);
+			});
+
+		let tickerDelay;
+		document.getElementById("ticker")
+			.addEventListener("input", e => {
+				clearTimeout(tickerDelay);
+				tickerDelay = setTimeout(() => {
+					results = filterAssets(d)
+				},250);
+			});
+
+		document.getElementById("sort")
+			.addEventListener("input", e => {
+				results = sortAssets(results,e.currentTarget.value);
+			})
+
+	});
+
+/**
+ * Reset filter options to default values
+ */
+function resetFilterOptions() {
+		document.getElementById("name").value = '';
+		document.getElementById(("ticker")).value = '';
+		document.getElementById("sort").value = 'Last trade (newest to oldest)';
+}
+
+/**
+ * Filters the asset cards based on user input
+ */
+function filterAssets(assets) {
+	let values = FILTER_OPTIONS.map(x => document.getElementById(x).value);
+	let filters = FILTER_FUNCS.map((func,i) => func(values[i]));
+
+	let results = assets;
+	for (const f of filters) {
+		results = results.filter(f);
+	}
+
+	clearAssetCards();
+	clearPages();
+	makePages(results);
+	nextCards(results);
+
+	return results;
+}
+
+/**
+ * Higher order function that returns a function to compare
+ * an asset object's name with a given value
+ *
+ * @param {String} name 
+ * @return {Function} - compares an asset with a specific
+ * name value
+ *
+ */
+function compareAssetName(name) {
+	if (name == "") {
+		return x => true;
+	}
+	else {
+		return x => x.name.toUpperCase().includes(name.toUpperCase());
+	}
+}
+
+/**
+ * Higher order function that return a function to compare
+ * an asset object's ticker with a given value
+ *
+ * @param {String} ticker
+ * @return {Function} - compares an asset's ticker with a
+ * specfic value
+ *
+ */
+function compareAssetTicker(ticker) {
+	if (ticker == "") {
+		return x => true;
+	}
+	else {
+		return x => x.ticker.toUpperCase().includes(ticker.toUpperCase());
+	}
+}
 
 // sort function for dates
 const compareDate = function(a, b) {
@@ -31,42 +173,6 @@ const compareDate = function(a, b) {
 
 	return 0;
 }
-
-// sort function for names
-const compareName = function(a, b) {
-	if (a.name.toLowerCase() > b.name.toLowerCase()) {
-		return 1;
-	}
-	if (a.name.toLowerCase() < b.name.toLowerCase()) {
-		return -1;
-	}
-	else {
-		return 0;
-	}
-}
-
-// reverse sort function for names
-const compareNameRev = (a, b) => compareName(a,b) * -1
-
-/**
- * Fetches the list of assets from our API.
- *
- * @return {Array} an array of all assets in the database
- *
- */
-async function getAssets() {
-	let assetPromise = await fetch("/api/assets");
-
-	if (assetPromise.ok) {
-		assets = await assetPromise.json();
-		console.log(assets);
-		return assets;
-	}
-}
-getAssets()
-	.then(makePages)
-	.then(nextCards)
-	.then(() => document.getElementById("loading").remove());
 
 function changeActiveSortButton(id) {
 
@@ -116,47 +222,43 @@ function changeActivePageNumber(pageNumber) {
 	}
 }
 
-function sortCards(value) {
-
-	switch (value) {
-		case 'sortByDate':
-			if (!sortDateAsc) {
-				assets.sort(compareDate);
-				sortDateAsc = true;
-				document.getElementById(value).innerHTML = "By Date 🠕";	
-			}
-			else {
-				assets.sort(compareDateRev);
-				sortDateAsc = false;
-				document.getElementById(value).innerHTML = "By Date 🠗";	
-			}
+function sortAssets(assets, val) {
+	let sorted;
+	switch (val) {
+		case 'Trades (most to least)':
+			sorted = assets.sort(desc(x => x.count));
 			break;
-
-		case 'sortAlphabetically':
-			if (!sortAlphaAsc) {
-				assets.sort(compareName);
-				sortAlphaAsc = true;
-				document.getElementById(value).innerHTML = "A-Z 🠕";	
-			}
-			else {
-				assets.sort(compareNameRev);
-				sortAlphaAsc = false;
-				document.getElementById(value).innerHTML = "A-Z 🠗";	
-			}
+		case 'Trades (least to most)':
+			sorted = assets.sort(asc(x => x.count));
 			break;
-
+		case 'Last trade (oldest to newest)':
+			sorted = assets.sort(compareDate);
+			break;
+		case 'Last trade (newest to oldest)':
+			sorted = assets.sort((a,b) => compareDate(a,b) * -1);
+			break;
 	}
 
-	changeActiveSortButton(value);
-	nextCards(1);
-
+	// changeActiveSortButton(value);
+	nextCards(sorted);
+	return sorted;
 }
 
+/**
+ * Clears pages navigation at bottom of page
+ *
+ */
+function clearPages() {
+	let pages = document.getElementById("pages").querySelectorAll("li");
+	for (let i = 1; i < pages.length-1; i++) {
+		document.getElementById("pages").removeChild(pages[i]);
+	}
+}
 /**
  * Create the page numbers at the bottom of the screen.
  *
  */
-function makePages() {
+function makePages(assets) {
 	let numPages = Math.ceil(assets.length / assetsPerPage);
 	let nextPageButton = document.getElementById("next-page");
 
@@ -166,7 +268,7 @@ function makePages() {
 		outer.setAttribute("id","page-"+i);
 		let inner = document.createElement("a");
 		inner.setAttribute("class","page-link");
-		inner.setAttribute("onclick","nextCards(" + i + ")");
+		inner.addEventListener("click", () => nextCards(assets,i));
 		inner.innerHTML = i;
 		outer.appendChild(inner);
 		document.getElementById("pages").insertBefore(outer,nextPageButton);
@@ -184,13 +286,14 @@ function clearAssetCards() {
 	}
 }
 
-function nextCards(pageNumber) {
+function nextCards(assets, pageNumber) {
 	clearAssetCards();
 
 	let i, end;
 	// if nextCards is called with no pageNumber, 
 	// we're on the first page of results
 	if (typeof pageNumber == 'undefined') {
+		offset = 0;
 		i = offset;
 		end = offset + assetsPerPage;
 		pageNumber = 1;
@@ -202,7 +305,7 @@ function nextCards(pageNumber) {
 
 	for(i; i < end; i++) {
 		if (i < assets.length) {
-			console.log(assets[i]);
+			// console.log(assets[i]);
 			// timeout is just for the visual effect
 			setTimeout((j => createCard(assets[j]))(i), i*50);
 		}
@@ -224,7 +327,7 @@ function prevCards() {
 // nextCards();
 
 function createCard(asset) {
-	console.log(asset);
+	// console.log(asset);
 	let col = document.createElement("div");
 	col.setAttribute("class","col asset-card");
 	document.getElementById("asset-cards").appendChild(col);

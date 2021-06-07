@@ -36,7 +36,6 @@ class AssetDetailSerializer(serializers.ModelSerializer):
         return result
 
     def get_last_senator(self, obj):
-        print("HELLO")
         return str(obj.asset_related_trades.latest('transaction_date').senator)
 
 class AssetSerializer(serializers.ModelSerializer):
@@ -61,7 +60,6 @@ class AssetSerializer(serializers.ModelSerializer):
         return result
 
     def get_last_senator(self, obj):
-        print("HI THERE")
         return str(obj.asset_related_trades.latest('transaction_date').senator)
 
 class SenatorSerializer(serializers.ModelSerializer):
