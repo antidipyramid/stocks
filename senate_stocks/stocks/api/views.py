@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework import permissions
 from stocks.models import Trade, Senator, Asset
-from .serializers import TradeSerializer, SearchSerializer, SenatorSerializer, AssetSerializer
+from .serializers import AssetDetailSerializer, TradeSerializer, SearchSerializer, SenatorSerializer, AssetSerializer
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 import django_filters as filters
@@ -39,6 +39,7 @@ class AssetViewSet(viewsets.ModelViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
     filterset_class = AssetFilter
+    detail_serializer = AssetDetailSerializer
 
     def filter_queryset(self,queryset):
         filter_backends = [DjangoFilterBackend]
@@ -53,7 +54,7 @@ class AssetViewSet(viewsets.ModelViewSet):
 
     def retrive(self, request, pk=None):
         asset = get_object_or_404(self.queryset,pk=pk)
-        serializer = AssetSerializer(asset)
+        serializer = self.detail_serializer(asset)
         return Response(serializer.data)
 
 """

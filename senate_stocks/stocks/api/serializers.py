@@ -14,7 +14,7 @@ class TradeSerializer(serializers.ModelSerializer):
                   'asset','asset_name','asset_type','transaction_type',
                   'amount','comments','url',)
 
-class AssetSerializer(serializers.ModelSerializer):
+class AssetDetailSerializer(serializers.ModelSerializer):
     asset_related_trades = TradeSerializer(many=True)
     count = serializers.SerializerMethodField()
     latest = serializers.SerializerMethodField()
@@ -23,6 +23,30 @@ class AssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = ('id','ticker', 'name', 'count', 'latest', 'last_senator', 'asset_related_trades')
+
+    def get_count(self, obj):
+        return obj.asset_related_trades.count()
+
+    def get_latest(self, obj):
+        try:
+            result = obj.asset_related_trades.latest('transaction_date').transaction_date
+        except:
+            raise Http404("No matches found")
+
+        return result
+
+    def get_last_senator(self, obj):
+        return str(obj.asset_related_trades.latest('transaction_date').senator)
+
+class AssetSerializer(serializers.ModelSerializer):
+    # asset_related_trades = TradeSerializer(many=True)
+    count = serializers.SerializerMethodField()
+    latest = serializers.SerializerMethodField()
+    last_senator = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Asset
+        fields = ('id','ticker', 'name', 'count', 'latest', 'last_senator')
 
     def get_count(self, obj):
         return obj.asset_related_trades.count()
