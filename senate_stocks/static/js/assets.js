@@ -60,8 +60,12 @@ getAssets()
 		makePages(d);
 		sortAssets(d,'Last trade (newest to oldest)')
 		nextCards(d);
+		updateResultsCounter(d.length);
 
+		document.getElementById("loading-assets").remove()
 		document.getElementById("loading").remove();
+		document.getElementById("found")
+			.setAttribute("style", "visibility:visible;display:;")
 
 		// deep copy of all assets to store what's
 		// currently displayed on page
@@ -73,6 +77,7 @@ getAssets()
 				clearTimeout(nameDelay);
 				nameDelay = setTimeout(() => { 
 					results = filterAssets(d)
+					updateResultsCounter(results.length);
 				},250);
 			});
 
@@ -82,6 +87,7 @@ getAssets()
 				clearTimeout(tickerDelay);
 				tickerDelay = setTimeout(() => {
 					results = filterAssets(d)
+					updateResultsCounter(results.length);
 				},250);
 			});
 
@@ -91,6 +97,15 @@ getAssets()
 			})
 
 	});
+
+/**
+ * Updates results counter
+ *
+ * @param {Number} num - number of assets founds
+ */
+function updateResultsCounter(num) {
+	document.getElementById("num-results").innerHTML = "<u>" + num + "</u>";
+}
 
 /**
  * Reset filter options to default values
@@ -114,7 +129,7 @@ function filterAssets(assets) {
 	}
 
 	clearAssetCards();
-	clearPages();
+	// clearPages();
 	makePages(results);
 	nextCards(results);
 
@@ -188,6 +203,7 @@ function changeActiveSortButton(id) {
 }
 
 function changeActivePageNumber(pageNumber) {
+	console.log(pageNumber);
 	// remove active status from old active page
 	let oldActivePage = document.querySelector(".pagination")
 		.querySelector(".active");
@@ -277,6 +293,22 @@ function makePages(assets) {
 	//make first page button active
 	document.getElementById("pages").children[1]
 		.setAttribute("class","page-item active");
+
+	document.getElementById("next-page")
+		.addEventListener("click", e => { 
+			if (!e.currentTarget.classList.contains("disabled")) {
+				let page = document.querySelector(".pagination")
+					.querySelector(".active").querySelector(".page-link").innerHTML;
+				nextCards(assets,Number( page )+1) 
+			}
+		});
+
+	document.getElementById('prev-page')
+		.addEventListener('click', e => {
+			if (!e.currentTarget.classList.contains("disabled")) {
+				prevCards(assets);
+			}
+		});
 }
 
 function clearAssetCards() {
@@ -315,10 +347,13 @@ function nextCards(assets, pageNumber) {
 	changeActivePageNumber(pageNumber);
 }
 
-function prevCards() { 
+function prevCards(assets) { 
+	let page = document.querySelector(".pagination")
+		.querySelector(".active").querySelector(".page-link").innerHTML;
+	
 	offset = offset - 2 * assetsPerPage;
 	if (offset > -1) {
-		nextCards();
+		nextCards(assets,page-1);
 	}
 	else {
 		offset = 0;
