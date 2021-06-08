@@ -45,48 +45,48 @@
 
         <!-- Overview data cards -->
         <div class="row justify-content-evenly">
-          <div class="card mx-3 shadow-sm mt-3" style="width: 20rem;">
+          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 20rem;--bs-gutter-x:0;">
+            <div class="card-header"><b>Top 10 Most Traded Assets</b></div>
             <div class="card-body">
-              <h5 class="card-title">top 10 most traded assets</h5>
-              <!-- <h6 class="card-subtitle mb-2 text-muted">card subtitle</h6> -->
-              <!-- <p class="card-text">some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-              <!-- <a href="#" class="card-link">card link</a> -->
-              <!-- <a href="#" class="card-link">another link</a> -->
-
               <figure id="most-traded-graph"></figure>
-
             </div>
           </div>
-          <div class="card mx-3 shadow-sm mt-3" style="width: 20rem;">
+          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 50rem;--bs-gutter-x:0;">
+            <div class="card-header"><b>Most Recent Trades</b></div>
             <div class="card-body">
-              <h5 class="card-title">who owns the trades?</h5>
-              <!-- <h6 class="card-subtitle mb-2 text-muted">card subtitle</h6> -->
-              <!-- <p class="card-text">some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-              <!-- <a href="#" class="card-link">card link</a> -->
-              <!-- <a href="#" class="card-link">another link</a> -->
-
+            <table class= "table table-hover table-sm mt-3">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Senator</th>
+                  <th scope="col">Owner</th>
+                  <th scope="col">Ticker</th>
+                  <th scope="col">Asset Type</th>
+                  <th scope="col">Transaction Type</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="most-recent-trades-table">
+              </tbody>
+            </table>
+              <script src='{% static 'js/sen_recent_trades.js' %}'></script>
+            </div>
+          </div>
+          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 20rem;--bs-gutter-x:0;">
+            <div class="card-header"><b>Who Owns the Trades?</b></div>
+            <div class="card-body">
               <figure id="owner-graph"></figure>
             </div>
           </div>
-          <div class="card mx-3 shadow-sm mt-3" style="width: 20rem;">
+          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 20rem;--bs-gutter-x:0;">
+            <div class="card-header"><b>Buy or Sell?</b></div>
             <div class="card-body">
-              <h5 class="card-title">Buy or Sell?</h5>
-              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-              <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-              <!-- <a href="#" class="card-link">Card link</a> -->
-              <!-- <a href="#" class="card-link">Another link</a> -->
-
               <figure id="type-graph"></figure>
             </div>
           </div>
-          <div class="card mx-3 shadow-sm mt-3" style="width: 40rem;">
+          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 40rem;--bs-gutter-x:0;">
+            <div class="card-header"><b>Trades by Amount</b></div>
             <div class="card-body">
-              <h5 class="card-title">Trades by Amount</h5>
-              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
-              <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-              <!-- <a href="#" class="card-link">Card link</a> -->
-              <!-- <a href="#" class="card-link">Another link</a> -->
-
               <figure id="amount-graph"></figure>
             </div>
           </div>

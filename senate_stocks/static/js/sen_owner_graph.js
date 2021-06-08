@@ -14,7 +14,7 @@ var owner_svg = d3.select("#owner-graph")
 
 var ownerTooltip = d3.select("#owner-graph")
     .append("div")
-    .style("opacity", 0)
+    .style("opacity", 1)
     .attr("class", "tooltip")
     .style("background-color", "white")
     .style("border", "solid")
@@ -22,6 +22,8 @@ var ownerTooltip = d3.select("#owner-graph")
     .style("border-radius", "5px")
     .style("padding", "10px")
 		.style("font-family", "Roboto Mono")
+    .style("visibility","hidden")
+    .style("display","none");
 
 // Parse the Data
 function loadOwnerGraph(data) {
@@ -82,11 +84,13 @@ function loadOwnerGraph(data) {
     .attr("opacity",BAR_OPACITY)
 		.on("mouseover", function(e,d) {
 			d3.select(this)
-				.style("fill", GRAPH_HOVER_COLOR);
+        .style("opacity",1)
+				// .style("fill", GRAPH_HOVER_COLOR);
       
       ownerTooltip
         .html("<b>" + d[1] + " </b>trades list <i>\'" + d[0] + "\'</i> as owner.")
-        .style("opacity",1);
+				.style("visibility","visible")
+				.style("display","");
 		})
     .on("mousemove", function(e,d) {
 			let x = e.layerX + TOOLTIP_OFFSET, 
@@ -97,9 +101,12 @@ function loadOwnerGraph(data) {
     })
 		.on("mouseout", function(d) {
 			d3.select(this)
-				.style("fill", BAR_COLOR);
+        .style("opacity","0.7");
+				// .style("fill", BAR_COLOR);
 
-      ownerTooltip.style("opacity",0);
+      ownerTooltip
+				.style("visibility","hidden")
+				.style("display","none");
 		});
 
   // Text labels

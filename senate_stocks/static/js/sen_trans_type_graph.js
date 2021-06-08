@@ -15,7 +15,7 @@ var type_svg = d3.select("#type-graph")
 
 var transTypeTooltip = d3.select("#type-graph")
     .append("div")
-    .style("opacity", 0)
+    .style("opacity", 1)
     .attr("class", "tooltip")
     .style("background-color", "white")
     .style("border", "solid")
@@ -23,6 +23,8 @@ var transTypeTooltip = d3.select("#type-graph")
     .style("border-radius", "5px")
     .style("padding", "10px")
 		.style("font-family", "Roboto Mono")
+    .style("visibility","hidden")
+    .style("display","none");
 
 // Parse the Data
 function loadTransTypeGraph(data) {
@@ -83,7 +85,8 @@ function loadTransTypeGraph(data) {
     .attr("opacity",BAR_OPACITY)
 		.on("mouseover", function(e,d) {
 			d3.select(this)
-				.style("fill", GRAPH_HOVER_COLOR);
+        .style("opacity","1");
+				// .style("fill", GRAPH_HOVER_COLOR);
 
       switch (d[0]) {
         case 'Purchase':
@@ -100,7 +103,9 @@ function loadTransTypeGraph(data) {
           break;
       }
 
-      transTypeTooltip.style("opacity",1);
+      transTypeTooltip
+				.style("visibility","visible")
+				.style("display","");
 		})
 		.on("mousemove", function(e,d) {
 			let x = e.layerX + TOOLTIP_OFFSET, 
@@ -111,9 +116,12 @@ function loadTransTypeGraph(data) {
 		})
 		.on("mouseout", function(d) {
 			d3.select(this)
-				.style("fill", BAR_COLOR);
+        .style("opacity","0.7");
+				// .style("fill", BAR_COLOR);
 
-      transTypeTooltip.style("opacity",0);
+      transTypeTooltip
+				.style("visibility","hidden")
+				.style("display","none");
 		});
 
   // Text labels

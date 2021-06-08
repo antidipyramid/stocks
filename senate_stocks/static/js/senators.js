@@ -4,13 +4,15 @@ var heatmapMap = new Map(),
 	assetNameMap = new Map(),
 	assetOwnerMap = new Map(),
 	tradeAmountMap = new Map(),
-	transactionTypeMap = new Map();
+	transactionTypeMap = new Map(),
+	senMostRecentTrades = [];
 
 const BAR_ROUND = 3,
-	BAR_COLOR = "var(--off-black)",
 	BAR_OPACITY = "0.7",
 	GRAPH_HOVER_COLOR = "yellow"
 	TOOLTIP_OFFSET = 10;
+
+const BAR_COLOR = d3.scaleOrdinal(d3.schemeCategory10);
 
 const apiUrl = "/api/senators/" + 
 	window.location.pathname.split("/").pop();
@@ -85,12 +87,21 @@ async function processData(senatorApiJson) {
 			tradeAmountMap.set(trade.amount,0);
 		}
 	}
+	// sort trades to get most recent
+	senatorApiJson.related_trades.sort((a,b) => {
+		if (a.transaction_date > b.transaction_date) { return -1; }
+		else if (a.transaction_date == b.transaction_date) { return 0; }
+		else { return 1; }
+	})
+
+	senMostRecentTrades = senatorApiJson.related_trades.slice(0,5);	
 }
 
 getSenatorApiData()
 	.then((data) => processData(data))
 	.then(() => {
 		update(2021,heatmapMap);
+		loadSenMostRecentTrades(senMostRecentTrades);
 		loadHistogram(assetNameMap);
 		loadOwnerGraph(assetOwnerMap);
 		loadTransTypeGraph(transactionTypeMap);

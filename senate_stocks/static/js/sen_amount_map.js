@@ -14,7 +14,7 @@ var amount_svg = d3.select("#amount-graph")
 
 var amountTooltip = d3.select("#amount-graph")
     .append("div")
-    .style("opacity", 0)
+    .style("opacity", 1)
     .attr("class", "tooltip")
     .style("background-color", "black")
     .style("color","white")
@@ -24,6 +24,8 @@ var amountTooltip = d3.select("#amount-graph")
     .style("padding", "10px")
 		.style("font-family", "Roboto Mono")
     .style("font-size", "1em")
+    .style("visibility","hidden")
+    .style("display","none");
 
 // Parse the Data
 function loadAmountGraph(data) {
@@ -84,11 +86,13 @@ function loadAmountGraph(data) {
     .attr("opacity",BAR_OPACITY)
     .on("mouseover", function(e,d) {
       d3.select(this)
-        .style("fill", GRAPH_HOVER_COLOR);
+        .style("opacity","1");
+        // .style("fill", GRAPH_HOVER_COLOR);
 
 			amountTooltip
 				.html("<b>" + d[1] + " trades</b> worth <i>" + d[0] + "</i>.")
-				.style("opacity","1");
+				.style("visibility","visible")
+				.style("display","");
     })
 		.on("mousemove", function(e,d) {
 			let x = e.layerX + TOOLTIP_OFFSET, 
@@ -100,9 +104,12 @@ function loadAmountGraph(data) {
 		})
     .on("mouseout", function(d) {
       d3.select(this)
-        .style("fill", BAR_COLOR);
+        .style("opacity","0.7");
+        // .style("fill", BAR_COLOR);
 
-			amountTooltip.style("opacity","0");
+			amountTooltip
+				.style("visibility","hidden")
+				.style("display","none");
     });
 
   // Text labels

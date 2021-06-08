@@ -28,7 +28,7 @@ var svg = d3.select("#most-traded-graph")
 
 var mostTradedTooltip = d3.select("#most-traded-graph")
     .append("div")
-    .style("opacity", 0)
+    .style("opacity", 1)
     .attr("class", "tooltip")
     .style("background-color", "white")
     .style("border", "solid")
@@ -36,6 +36,8 @@ var mostTradedTooltip = d3.select("#most-traded-graph")
     .style("border-radius", "5px")
     .style("padding", "10px")
 		.style("font-family", "Roboto Mono")
+		.style("visibility","hidden")
+		.style("display","none");
 
 const BAR_HEIGHT = 25;
 
@@ -90,15 +92,17 @@ function loadHistogram(data) {
 		.attr("y", function(d) { return y(d.ticker); })
 		.attr("width", function(d) { return x(0); })
 		.attr("height", BAR_HEIGHT )
-		.attr("fill", BAR_COLOR)
+		.attr("fill", (d,i) => BAR_COLOR(i))
 		.attr("opacity",".7")
 		.on("mouseover", function(e,d) {
 			d3.select(this)
-				.style("fill", GRAPH_HOVER_COLOR);
+				.style("opacity","1")
+				// .style("fill", GRAPH_HOVER_COLOR);
 
 			mostTradedTooltip
 				.html("<b>Asset Name:</b> <i>" + d.name + "</i><br><b>" + d.freq + " trades</b>")
-				.style("opacity","1");
+				.style("visibility","visible")
+				.style("display","");
 		})
 		.on("mousemove", function(e,d) {
 			let x = e.layerX + TOOLTIP_OFFSET, 
@@ -109,9 +113,11 @@ function loadHistogram(data) {
 		})
 		.on("mouseout", function(d) {
 			d3.select(this)
-				.style("fill", BAR_COLOR);
+				.style("opacity","0.7")
 			
-			mostTradedTooltip.style("opacity",0);
+			mostTradedTooltip
+				.style("visibility","hidden")
+				.style("display","none");
 		});
 
 	svg.append("g")
