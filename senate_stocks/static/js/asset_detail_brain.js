@@ -3,7 +3,8 @@
 var senatorNameMap = new Map(), // how many trades from each senator?
 	assetTradeAmountMap = new Map(), // how much was each trade worth?
 	assetTransTypeMap = new Map(), // what type of transaction was each trade?
-	assetMostRecentTrades = [];
+	assetMostRecentTrades = [],
+	tradeList;
 
 const BAR_COLOR = d3.scaleOrdinal(d3.schemeCategory10);
 

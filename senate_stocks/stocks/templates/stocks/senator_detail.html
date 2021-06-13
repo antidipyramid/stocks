@@ -44,14 +44,14 @@
         <!-- Overview tab -->	
 
         <!-- Overview data cards -->
-        <div class="row justify-content-evenly">
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 20rem;--bs-gutter-x:0;">
+        <div class="d-flex mt-3">
+          <div class="card bg-secondary shadow-sm flex-fill" style="--bs-gutter-x:0;">
             <div class="card-header"><b>Top 10 Most Traded Assets</b></div>
             <div class="card-body">
               <figure id="most-traded-graph"></figure>
             </div>
           </div>
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 50rem;--bs-gutter-x:0;">
+          <div class="card bg-secondary shadow-sm flex-fill" style="--bs-gutter-x:0;">
             <div class="card-header"><b>Most Recent Trades</b></div>
             <div class="card-body">
             <table class= "table table-hover table-sm mt-3">
@@ -72,19 +72,21 @@
               <script src='{% static 'js/sen_recent_trades.js' %}'></script>
             </div>
           </div>
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 20rem;--bs-gutter-x:0;">
+        </div>
+        <div class="d-flex">
+          <div class="card bg-secondary shadow-sm flex-fill" style="--bs-gutter-x:0;">
             <div class="card-header"><b>Who Owns the Trades?</b></div>
             <div class="card-body">
               <figure id="owner-graph"></figure>
             </div>
           </div>
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 20rem;--bs-gutter-x:0;">
+          <div class="card bg-secondary shadow-sm flex-fill" style="--bs-gutter-x:0;">
             <div class="card-header"><b>Buy or Sell?</b></div>
             <div class="card-body">
               <figure id="type-graph"></figure>
             </div>
           </div>
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 40rem;--bs-gutter-x:0;">
+          <div class="card bg-secondary shadow-sm flex-fill" style="--bs-gutter-x:0;">
             <div class="card-header"><b>Trades by Amount</b></div>
             <div class="card-body">
               <figure id="amount-graph"></figure>

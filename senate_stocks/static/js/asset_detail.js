@@ -161,9 +161,10 @@ function createGraph(prices_obj,trades_obj) {
 
 	xAxis.select('.domain').remove()
 
+	let maxPrice = d3.max(prices, function(d) { return Number(d[1]); });
 	// Add Y axis
 	var y = d3.scaleLinear()
-		.domain([0, d3.max(prices, function(d) { return Number(d[1]); })])
+		.domain([0, maxPrice + (maxPrice/10)])
 		.range([ height, 0 ]);
 	svg.append("g")
 		.call(d3.axisLeft(y).ticks(5).tickSize(-width))
@@ -200,6 +201,7 @@ function createGraph(prices_obj,trades_obj) {
 		.attr("clip-path", "url(#clip)")
 		.attr("class","area")
 		.style("fill", "url(#area-gradient)")
+		.style("opacity",0)
 		.datum(prices)
 		.attr("d",area)
 
@@ -209,9 +211,10 @@ function createGraph(prices_obj,trades_obj) {
 		.datum(prices.reverse())
 		.attr("fill", "none")
 		.attr("stroke", "steelblue")
-		.attr("stroke-width", 1.5)
+		.attr("stroke-width", 2)
 		.attr("id", "line")
 		.attr("d", d3.line()
+			.curve(d3.curveCardinal)
 			.x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d[0])) })
 			.y(function(d) { return y(d[1]) })
 		)
@@ -226,7 +229,11 @@ function createGraph(prices_obj,trades_obj) {
 		.attr("stroke-dasharray",lineLength)
 		.transition(lineDrawTransition)
 		.attr("stroke-dashoffset",0)
-		.on("end", () => updateLine("All"));
+		.on("end", () => {
+			line.attr("stroke-dashoffset",null)
+				.attr("stroke-dasharray",null)
+			updateLine("All")
+		});
 
 	displayTradesInRange(trades);
 
@@ -252,7 +259,7 @@ function createGraph(prices_obj,trades_obj) {
 		xAxis.transition().duration(1000).call(d3.axisBottom(x).tickSize(0).tickPadding(10));
 
 		
-		xAxis.select('.domain').remove()
+		// xAxis.select('.domain').remove()
 
 		// filter out trades that don't match
 		for (let date of tradesFilter) {
@@ -306,16 +313,12 @@ function createGraph(prices_obj,trades_obj) {
 		bubEnter
 			.selectAll("circle")
 			.on("mouseover", function(event,d) { 
-				// let xy = d3.pointer(event,bub.node()) 
 				console.log(d);
 				tooltip
 					.transition()
 					.duration(200)
 					.style("opacity",1);
 				tooltip
-				// .html(d[0] + " " + d[1][0] + " " + prices_obj[d[0]])
-				// .style("left", xy[0]+"px")
-				// .style("top", xy[1]+"px")
 					.style("visibility","visible")
 					.style("display","")
 			})
@@ -346,6 +349,7 @@ function createGraph(prices_obj,trades_obj) {
 			.transition()
 			.duration(1000)
 			.attr("d", d3.line()
+				.curve(d3.curveCardinal)
 				.x(function(d) { return x(d3.timeParse("%Y-%m-%d")(d[0])) })
 				.y(function(d) { return y(d[1]) })
 			)
@@ -366,7 +370,7 @@ function createGraph(prices_obj,trades_obj) {
 				gradient
 					.attr("d",area)
 					.transition()
-					.duration(1000)
+					.duration(500)
 					.style("opacity",1);
 			})
 

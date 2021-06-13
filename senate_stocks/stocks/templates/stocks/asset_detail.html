@@ -29,15 +29,15 @@
 
         <h2 class="mt-3 text-center" style="font-family:Roboto Mono;">There are <u>{{ trades|length }}</u> trades on file for {{ asset.name }}</h2>
 
-        <div class="row justify-content-evenly" style="--bs-gutter-x:0;">
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 40rem;">
+        <div class="d-flex" style="--bs-gutter-x:0;">
+          <div class="card bg-secondary shadow-sm flex-fill" >
             <div class="card-header">Most Active Senators</div>
             <div class="card-body">
               <figure id="most-active-senators"></figure>
               <script src='{% static 'js/most_active_senators.js' %}'></script>
             </div>
           </div>
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 50rem;">
+          <div class="card bg-secondary shadow-sm flex-fill" >
             <div class="card-header">Most Recent Trades</div>
             <div class="card-body">
             <table class= "table table-hover table-sm mt-3">
@@ -58,14 +58,16 @@
               <script src='{% static 'js/asset_recent_trades_graph.js' %}'></script>
             </div>
           </div>
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 20rem;">
+        </div>
+        <div class="d-flex" style="--bs-gutter-x:0;">
+          <div class="card bg-secondary shadow-sm flex-fill" >
             <div class="card-header">Buy or Sell?</div>
             <div class="card-body">
               <figure id="asset-type-graph"></figure>
               <script src='{% static 'js/asset_trans_type_graph.js' %}'></script>
             </div>
           </div>
-          <div class="card bg-secondary mx-3 shadow-sm mt-3" style="width: 40rem;">
+          <div class="card bg-secondary shadow-sm flex-fill" >
             <div class="card-header">Trades by Amount</div>
             <div class="card-body">
               <figure id="asset-amount-graph"></figure>
@@ -81,62 +83,54 @@
 
         <!-- Asset price graph -->
 
-        <div class="d-flex mt-3">
-          <div class="d-flex flex-column">
+        <div class="row mt-3 align-items-center">
+          <div class="col">
             <figure id="heatmap"></figure>
           </div>
 
           <!-- Filter options -->
-          <div class="d-flex flex-column align-items-center">
+          <div class="col justify-content-center">
             <div class="p-3 border light contrast-box">
-              <div class="d-flex flex-row mb-3">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text" id="basic-addon1">Year</span>
-                  <select class="form-select form-select-sm" id="yearSelect" aria-label="Default select example">
-                    <option selected>All</option>
-                    <option value="2021">2021</option>
-                    <option value="2020">2020</option>
-                    <option value="2019">2019</option>
-                  </select>
-                </div>
+              <div class="form-floating mb-1">
+                <select class="form-select form-select-sm" id="yearSelect" aria-label="Default select example">
+                  <option selected>All</option>
+                  <option value="2021">2021</option>
+                  <option value="2020">2020</option>
+                  <option value="2019">2019</option>
+                </select>
+                <label for="yearSelect">Year</label>
               </div>
-              <div class="d-flex flex-row mb-3">
-                <div class="input-group input-group-sm ">
-                  <span class="input-group-text" id="basic-addon1">Senator</span>
-                  <select class="form-select form-select-sm" id="senatorSelect" aria-label="Default select example">
-                    <option value="All" selected>All</option>
-                  </select>
-                </div>
+              <div class="form-floating mb-1">
+                <select class="form-select form-select-sm" id="senatorSelect" aria-label="Default select example">
+                  <option value="All" selected>All</option>
+                </select>
+                <label for="senatorSelect">Senator</label>
               </div>
-              <div class="d-flex flex-row mb-3">
-                <div class="form-floating">
-                  <select class="form-select form-select-sm" id="transaction_type" aria-label="transaction type select">
-                    <option value="All" selected>All</option>
-                    <option value="Purchase">Purchase</option>
-                    <option value="Sale">Sale</option>
-                  </select>
-                  <label for="transaction_type">Transaction Type</label>
-                </div>
+              <div class="form-floating mb-1">
+                <select class="form-select form-select-sm" id="transaction_type" aria-label="transaction type select">
+                  <option value="All" selected>All</option>
+                  <option value="Purchase">Purchase</option>
+                  <option value="Sale">Sale</option>
+                </select>
+                <label for="transaction_type">Transaction Type</label>
               </div>
-              <div class="d-flex flex-row mb-3">
-                <div class="form-floating">
-                  <select class="form-select form-select-sm" id="amount" aria-label"trade amount select">
-                    <option value="All" selected>All</option>
-                    <option value="$1,001 - $15,000">$1,001 - $15,000</option>
-                    <option value="$15,001 - $50,000">$15,001 - $50,000</option>              
-                    <option value="$50,001 - $100,000">$50,001 - $100,000</option>
-                    <option value="$100,001 - $250,000">$100,001 - $250,000</option>
-                    <option value="$251,001 - $500,000">$251,001 - $500,000</option>
-                    <option value="$500,001 - $1,000,000">$500,001 - $1,000,000</option>
-                    <option value="$1,000,001 - 5,000,000">$1,000,001 - 5,000,000</option>
-                    <option value="$5,000,001 - $25,000,000">$5,000,001 - $25,000,000</option>
-                    <option value="$25,000,001 - $50,000,000">$25,000,001 - $50,000,000</option>
-                    <option value="Over $50,000,0000">Over $50,000,000</option>
-                  </select>
-                  <label for="amount">Transaction Amount</label>
-                </div>
+              <div class="form-floating mb-1">
+                <select class="form-select form-select-sm" id="amount" aria-label"trade amount select">
+                  <option value="All" selected>All</option>
+                  <option value="$1,001 - $15,000">$1,001 - $15,000</option>
+                  <option value="$15,001 - $50,000">$15,001 - $50,000</option>              
+                  <option value="$50,001 - $100,000">$50,001 - $100,000</option>
+                  <option value="$100,001 - $250,000">$100,001 - $250,000</option>
+                  <option value="$251,001 - $500,000">$251,001 - $500,000</option>
+                  <option value="$500,001 - $1,000,000">$500,001 - $1,000,000</option>
+                  <option value="$1,000,001 - 5,000,000">$1,000,001 - 5,000,000</option>
+                  <option value="$5,000,001 - $25,000,000">$5,000,001 - $25,000,000</option>
+                  <option value="$25,000,001 - $50,000,000">$25,000,001 - $50,000,000</option>
+                  <option value="Over $50,000,0000">Over $50,000,000</option>
+                </select>
+                <label for="amount">Transaction Amount</label>
               </div>
-              <div class="d-flex flex-row mb-3">
+              <div class="d-grid">
                 <button onclick="clearTradesFilterForms()" type="button" class="btn btn-sm btn-danger">Reset</button>
               </div>
             </div>
@@ -169,7 +163,7 @@
           </div>
         </div>
         <script src='{% static 'js/asset_detail.js' %}'></script>
-        <script>createGraph(JSON.parse('{{ stock_history|escapejs }}'),JSON.parse('{{ json_trades|escapejs }}'))</script>
+        <script>document.getElementById("overview-tab").addEventListener('click', () => createGraph(JSON.parse('{{ stock_history|escapejs }}'),JSON.parse('{{ json_trades|escapejs }}')),{ once:true })</script>
 
         <!-- All Trades tab -->
         <div class="tab-pane fade" id="trades" role="tabpanel" aria-labelledby="trades-tab">
@@ -185,34 +179,32 @@
                 </div>
                 <script>makeDatePicker("dateRange")</script>
               </div>
-              <div class="col-2">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text" id="tickerInputLabel">Ticker</span>
-                  <input type="text" id="ticker" class="form-control form-control-sm" placeholder="All" aria-label="ticker search">
-                </div>
-              </div>
-              <div class="col">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text" id="assetNameInputLabel">Asset Name</span>
-                  <input type="text" id="asset_name" class="form-control form-control-sm" placeholder="All" aria-label="asset name search">
-                </div>
-              </div>
-            </div>
-            <div class="row mt-3 mx-3 justify-content-evenly align-items-center">
-              <div class="col-2">
-                <div class="form-floating">
-                  <select id="owner" class="form-select form-select-sm" aria-label="Owner select">
-                    <option value="All" selected>All</option>
-                    <option value="Self">Self</option>
-                    <option value="Spouse">Spouse</option>
-                    <option value="Child">Child</option>
-                  </select>
-                  <label for="owner">Owner</label>
-                </div>
-              </div>
+              <!-- <div class="col-2"> -->
+              <!--   <div class="input-group input-group-sm"> -->
+              <!--     <span class="input-group-text" id="tickerInputLabel">Ticker</span> -->
+              <!--     <input type="text" id="ticker" class="form-control form-control-sm" placeholder="All" aria-label="ticker search"> -->
+              <!--   </div> -->
+              <!-- </div> -->
+              <!-- <div class="col"> -->
+              <!--   <div class="input-group input-group-sm"> -->
+              <!--     <span class="input-group-text" id="assetNameInputLabel">Asset Name</span> -->
+              <!--     <input type="text" id="asset_name" class="form-control form-control-sm w-auto" placeholder="All" aria-label="asset name search"> -->
+              <!--   </div> -->
+              <!-- </div> -->
+              <!-- <div class="col-2"> -->
+              <!--   <div class="form-floating"> -->
+              <!--     <select id="owner" class="form-select form-select-sm w-auto" aria-label="Owner select"> -->
+              <!--       <option value="All" selected>All</option> -->
+              <!--       <option value="Self">Self</option> -->
+              <!--       <option value="Spouse">Spouse</option> -->
+              <!--       <option value="Child">Child</option> -->
+              <!--     </select> -->
+              <!--     <label for="owner">Owner</label> -->
+              <!--   </div> -->
+              <!-- </div> -->
               <div class="col-2">
                 <div class="form-floating">
-                  <select class="form-select form-select-sm" id="asset_type" aria-label="asset type select">
+                  <select class="form-select form-select-sm w-auto" id="asset_type" aria-label="asset type select">
                     <option value="All" selected>All</option>
                     <option value="Stock">Stock</option>
                     <option value="Non-Public Stock">Non-Public Stock</option>
@@ -226,7 +218,7 @@
               </div>
               <div class="col-2">
                 <div class="form-floating">
-                  <select class="form-select form-select-sm" id="transaction_type" aria-label="transaction type select">
+                  <select class="form-select form-select-sm w-auto" id="transaction_type" aria-label="transaction type select">
                     <option value="All" selected>All</option>
                     <option value="Purchase" selected>Purchase</option>
                     <option value="Sale (Partial)">Sale (Partial)</option>
@@ -237,7 +229,7 @@
               </div>
               <div class="col-3">
                 <div class="form-floating">
-                  <select class="form-select form-select-sm" id="amount" aria-label"trade amount select">
+                  <select class="form-select form-select-sm w-auto" id="amount" aria-label"trade amount select">
                     <option value="All" selected>All</option>
                     <option value="$1,001 - $15,000">$1,001 - $15,000</option>
                     <option value="$15,001 - $50,000">$15,001 - $50,000</option>							
@@ -254,8 +246,8 @@
                 </div>
               </div>
               <div class="col-2">
-                <button onclick="displaySenatorResults()" type="button" class="btn btn-primary">Filter</button>
-                <button onclick="clearTradesFilterForms()" type="button" class="btn btn-danger">Reset</button>
+                <!-- <button onclick="displaySenatorResults()" type="button" class="btn btn-primary">Filter</button> -->
+                <button id="reset-button" type="button" class="btn btn-danger">Reset</button>
               </div>
             </div>
           </div>
@@ -275,23 +267,26 @@
               </tr>
             </thead>
             <tbody id="allTrades">
-              {% for trade in trades %}
-              <tr>
-                <th scope="row">{{ trade.transaction_date }}</th>
-                <td><a href={% url 'senator_detail' trade.senator.id %}>{{ trade.senator }}</a></td>
-                <td>{{ trade.owner }}</td>
-                <td>{{ trade.ticker }}</td>
-                <td><a href="/asset/{{ trade.asset.id }}">{{ trade.asset_name }}</a></td>
-                <td>{{ trade.asset_type }}</td>
-                <td>{{ trade.transaction_type }}</td>
-                <td>{{ trade.amount }}</td>
-                <td>{{ trade.comments }}</td>
-                <td><a href={{ trade.url }}>Link</a></td>
-              </tr>
-              {% endfor %}
+              <!-- {% for trade in trades %} -->
+              <!-- <tr> -->
+              <!--   <th scope="row">{{ trade.transaction_date }}</th> -->
+              <!--   <td><a href={% url 'senator_detail' trade.senator.id %}>{{ trade.senator }}</a></td> -->
+              <!--   <td>{{ trade.owner }}</td> -->
+              <!--   <td>{{ trade.ticker }}</td> -->
+              <!--   <td><a href="/asset/{{ trade.asset.id }}">{{ trade.asset_name }}</a></td> -->
+              <!--   <td>{{ trade.asset_type }}</td> -->
+              <!--   <td>{{ trade.transaction_type }}</td> -->
+              <!--   <td>{{ trade.amount }}</td> -->
+              <!--   <td>{{ trade.comments }}</td> -->
+              <!--   <td><a href={{ trade.url }}>Link</a></td> -->
+              <!-- </tr> -->
+              <!-- {% endfor %} -->
             </tbody>
           </table>
-          <div id="no-filter-trades-alert" class="alert alert-dark animated" role="alert" hidden="true">No trades found.</div>
+          <div id="no-filter-trades-alert" style="visibility:hidden;display:none;" class="alert alert-dark animated" role="alert" >No trades found.</div>
+          <div class="d-grid ">
+            <button id="all-trades-more" class="btn btn-outline-primary btn-sm" type="button">Show More Trades</button>
+          </div>
         </div>
       </div>
 
