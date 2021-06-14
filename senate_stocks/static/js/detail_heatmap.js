@@ -316,8 +316,9 @@ function loadGraph(year,data) {
 			}
 
 			if (d.getDay() == 1) {
+				console.log("FIST");
 				d3.select("#month-"+d.getMonth())
-					.attr("dy",d.getDay()*(CELLSIZE+CELLMARGIN))
+					.attr("x",d.getDay()*(CELLSIZE+CELLMARGIN))
 			}
 		})
 		.on("mouseover", (e, d) => {

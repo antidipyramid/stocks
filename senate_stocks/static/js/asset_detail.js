@@ -258,7 +258,7 @@ function createGraph(prices_obj,trades_obj) {
 		}
 		xAxis.transition().duration(1000).call(d3.axisBottom(x).tickSize(0).tickPadding(10));
 
-		
+
 		// xAxis.select('.domain').remove()
 
 		// filter out trades that don't match
@@ -284,6 +284,26 @@ function createGraph(prices_obj,trades_obj) {
 			.selectAll("dot")
 			.data(tradesFilter)
 
+		var bubbleColor = function(trades) {
+			let [buy, sell] = [false, false];
+			for (const trade of trades) {
+				if (trade.transaction_type == 'Purchase') {
+					buy = true;
+				}
+				else if (trade.transaction_type == 'Sale (Full)' || 
+					trade.transaction_type == 'Sale (Partial)') {
+					sell = true;
+				}
+				else {
+					sell = true;
+					buy = true;
+				}
+			}
+
+			if (buy && sell) { return 'grey'; }
+			else { return buy ? 'red' : 'green'; }
+		}
+
 		var bubEnter = bub.enter()
 
 		// draw bubbles for each trade
@@ -293,7 +313,7 @@ function createGraph(prices_obj,trades_obj) {
 			.attr("cx", function (d) { return x(d3.timeParse("%Y-%m-%d")(d[0]))} )
 			.attr("cy", function (d) { return y(prices_obj[d[0]]); } )
 			.attr("r", function (d) { return 0; } )
-			.style("fill", function (d) { console.log(d); return 'red' } )
+			.style("fill", d => bubbleColor(d[1][1]))
 			.style("opacity", "0.3")
 			.attr("stroke", "white")
 			.style("stroke-width", "2px")
@@ -306,7 +326,7 @@ function createGraph(prices_obj,trades_obj) {
 			.attr("cy", function (d) { return y(prices_obj[d[0]]); } )
 			.attr("r", 0)
 			.style("fill", "black")
-			.style("opacity", "1")
+			.style("opacity", "0.5")
 			.attr("pointer-events","none")
 
 		// add mouseover behavior for bubbles
@@ -404,41 +424,6 @@ function createGraph(prices_obj,trades_obj) {
 		.style("font-family", "Roboto Mono")
 		.style("font-size", ".9em")
 
-	var color = function(trade) {
-		switch(trade.transaction_type) {
-			case 'Sale (Full)':
-				return 'red';
-			case 'Sale (Partial)':
-				return 'red';
-			case 'Purchase':
-				return 'green';
-		}
-	};
-
-	// -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
-	// var showTooltip = function(d) {
-	// 	tooltip
-	// 		.transition()
-	// 		.duration(200)
-	// 	tooltip
-	// 		.style("opacity", .7)
-	// 		.html(d[0] + " ")
-	// 		.style("left", (d3.pointer("mouseover")[0]))
-	// 		.style("top", (d3.pointer("mouseover")[1]))
-
-	// }
-	// var moveTooltip = function(d) {
-	// 	tooltip
-	// 		.style("left", (d3.pointer("mouseover")[0]))
-	// 		.style("top", (d3.pointer("mouseover")[1]))
-	// }
-	// var hideTooltip = function(d) {
-	// 	tooltip
-	// 		.transition()
-	// 		.duration(200)
-	// 		.style("opacity", 0)
-	// }
-
 	var onClick = function(event, d) {
 		// update table heading + delete no trades alert
 		document.getElementById("selected-date").innerHTML = "Trades on ".concat(Date.parse(d[1][1][0].transaction_date).toString("MMMM d, yyyy"));
@@ -449,9 +434,8 @@ function createGraph(prices_obj,trades_obj) {
 		// change the color of selected bubble
 		// then reset the color of any previously selected bubble
 		d3.select(event.target)
-			.style("fill","#ffba08")
-			.style("opacity",".9")
-			.style("stroke","black");
+			.style("opacity",".7")
+			.style("stroke","yellow");
 
 		if (selectedBubble) {
 			d3.select(selectedBubble)
@@ -469,24 +453,4 @@ function createGraph(prices_obj,trades_obj) {
 			timeout = timeout + 100;
 		}
 	}
-
-
-	// Add dots for trades
-	// var bubbles = svg.append('g')
-	// 	.attr("id","bubbles")
-	// 	.selectAll("dot")
-	// 	.data(Object.entries(trades))
-	// 	.enter()
-	// 	.append("circle")
-	// 	.attr("cx", function (d) { return x(d3.timeParse("%Y-%m-%d")(d[0]))} )
-	// 	.attr("cy", function (d) { return y(prices_obj[d[0]]); } )
-	// 	.attr("r", function (d) { return z(d[1][0]); } )
-	// 	.style("fill", function (d) { return 'red' } )
-	// 	.style("opacity", "0.5")
-	// 	.attr("stroke", "white")
-	// 	.style("stroke-width", "2px")
-	// 	.on("mouseover", showTooltip )
-	// 	.on("mousemove", moveTooltip )
-	// 	.on("mouseleave", hideTooltip )
-	// 	.on("click", onClick)
 }
