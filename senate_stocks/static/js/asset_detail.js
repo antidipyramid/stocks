@@ -1,5 +1,7 @@
 var selectedBubble;
 
+const GRAPH_FILTERS = ['#yearSelect','#transaction_type','#amount','#senatorSelect'];
+
 /**
  *
  * Takes the amount field in of Trade instance, converts to num
@@ -128,7 +130,7 @@ var clip = svg.append("defs").append("svg:clipPath")
 
 
 function displayTradesInRange(filteredTrades) {
-	noTradesAlert = document.getElementById("no-trades-alert");
+	noTradesAlert = document.getElementById("no-selected-trades-alert");
 	if (filteredTrades.length > 0) {
 		noTradesAlert.setAttribute("style","visibility:hidden;display:none;");
 		clearDisplayedTrades("selected-trades-table");
@@ -235,7 +237,9 @@ function createGraph(prices_obj,trades_obj) {
 			updateLine("All")
 		});
 
-	displayTradesInRange(trades);
+	const unselectBubble = b => d3.select(b).style("opacity",0.3);
+	const selectBubble = b => d3.select(b).style("opacity",0.7);
+	// displayTradesInRange(trades);
 
 	// A function that update the chart
 	function updateLine(selectedYear) {
@@ -329,11 +333,13 @@ function createGraph(prices_obj,trades_obj) {
 			.style("opacity", "0.5")
 			.attr("pointer-events","none")
 
+
 		// add mouseover behavior for bubbles
 		bubEnter
 			.selectAll("circle")
 			.on("mouseover", function(event,d) { 
-				console.log(d);
+				selectBubble(event.target);
+
 				tooltip
 					.transition()
 					.duration(200)
@@ -352,6 +358,10 @@ function createGraph(prices_obj,trades_obj) {
 					.style("top", xy[1]+10+"px")
 			} )
 			.on("mouseleave", function(event, d) {
+				if (event.target != selectedBubble) {
+					unselectBubble(event.target);
+				}
+
 				tooltip
 					.transition()
 					.duration(200)
@@ -403,14 +413,13 @@ function createGraph(prices_obj,trades_obj) {
 		var selectedYear = document.getElementById("yearSelect").value;
 		let filteredTrades = updateLine(selectedYear);
 
+		clearDisplayedTrades("selected-trades-table");
 		document.getElementById("selected-date").innerHTML = "All Trades In ".concat(selectedYear);
-		displayTradesInRange(filteredTrades);
+		document.getElementById("no-selected-trades-alert").hidden = false;
+		// displayTradesInRange(filteredTrades);
 	}
 
-	d3.select("#yearSelect").on("change", updateBubbles);
-	d3.select("#transaction_type").on("change", updateBubbles);
-	d3.select("#amount").on("change", updateBubbles);
-	d3.select("#senatorSelect").on("change", updateBubbles);
+	GRAPH_FILTERS.forEach(ele => d3.select(ele).on('change',updateBubbles));
 
 	// -1- Create a tooltip div that is hidden by default:
 	var tooltip = d3.select("#heatmap")
@@ -424,26 +433,51 @@ function createGraph(prices_obj,trades_obj) {
 		.style("font-family", "Roboto Mono")
 		.style("font-size", ".9em")
 
+
+	// -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+	// var showTooltip = function(d) {
+	// 	tooltip
+	// 		.transition()
+	// 		.duration(200)
+	// 	tooltip
+	// 		.style("opacity", .7)
+	// 		.html(d[0] + " ")
+	// 		.style("left", (d3.pointer("mouseover")[0]))
+	// 		.style("top", (d3.pointer("mouseover")[1]))
+
+	// }
+	// var moveTooltip = function(d) {
+	// 	tooltip
+	// 		.style("left", (d3.pointer("mouseover")[0]))
+	// 		.style("top", (d3.pointer("mouseover")[1]))
+	// }
+	// var hideTooltip = function(d) {
+	// 	tooltip
+	// 		.transition()
+	// 		.duration(200)
+	// 		.style("opacity", 0)
+	// }
+
 	var onClick = function(event, d) {
 		// update table heading + delete no trades alert
 		document.getElementById("selected-date").innerHTML = "Trades on ".concat(Date.parse(d[1][1][0].transaction_date).toString("MMMM d, yyyy"));
-		document.getElementById("no-trades-alert").hidden = true;
 
 		clearDisplayedTrades("selected-trades-table");
 
 		// change the color of selected bubble
 		// then reset the color of any previously selected bubble
-		d3.select(event.target)
-			.style("opacity",".7")
-			.style("stroke","yellow");
-
 		if (selectedBubble) {
-			d3.select(selectedBubble)
-				.style("fill","red")
-				.style("opacity",".3")
-				.style("stroke","white");
+			unselectBubble(selectedBubble);
+			if (selectedBubble == event.target) {
+				selectedBubble = null;
+				document.getElementById("no-selected-trades-alert").hidden = false;
+				return;
+			}
 		}
-		selectedBubble = event.target
+		selectBubble(event.target);
+		selectedBubble = event.target;
+
+		document.getElementById("no-selected-trades-alert").hidden = true;
 
 		let timeout = 100;
 		for (let trade of d[1][1]) {
@@ -453,4 +487,24 @@ function createGraph(prices_obj,trades_obj) {
 			timeout = timeout + 100;
 		}
 	}
+
+
+	// Add dots for trades
+	// var bubbles = svg.append('g')
+	// 	.attr("id","bubbles")
+	// 	.selectAll("dot")
+	// 	.data(Object.entries(trades))
+	// 	.enter()
+	// 	.append("circle")
+	// 	.attr("cx", function (d) { return x(d3.timeParse("%Y-%m-%d")(d[0]))} )
+	// 	.attr("cy", function (d) { return y(prices_obj[d[0]]); } )
+	// 	.attr("r", function (d) { return z(d[1][0]); } )
+	// 	.style("fill", function (d) { return 'red' } )
+	// 	.style("opacity", "0.5")
+	// 	.attr("stroke", "white")
+	// 	.style("stroke-width", "2px")
+	// 	.on("mouseover", showTooltip )
+	// 	.on("mousemove", moveTooltip )
+	// 	.on("mouseleave", hideTooltip )
+	// 	.on("click", onClick)
 }

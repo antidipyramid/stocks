@@ -1,6 +1,7 @@
-const filterFields = ["asset_type","transaction_type","amount"],
+var filterFields = ["asset_type","transaction_type","amount"],
 	dates = ["dateStartInput","dateEndInput"],
-	DISPLAY_NUM = 25;
+	DISPLAY_NUM = 25,
+	showSenatorsInTable = true;
 
 var	CURR_INDEX = 0,
 	oldFilterValues = new Map(),
@@ -10,9 +11,19 @@ var	CURR_INDEX = 0,
 filterFields.forEach(x => oldFilterValues.set(x,""));
 
 var allTradesUrl = '/api';
-let path = window.location.pathname.split('/');
-if (path[1] == 'senator') { allTradesUrl += '/senators/' + path[2] }
-else { allTradesUrl += '/assets/' + path[2] }
+var path = window.location.pathname.split('/'),
+	related;
+
+if (path[1] == 'senator') {
+	allTradesUrl += '/senators/' + path[2];
+	related = 'related_trades';
+	filterFields = filterFields.concat(['ticker','asset_name','owner']);
+	showSenatorsInTable = false;
+}
+else {
+	allTradesUrl += '/assets/' + path[2];
+	related = 'asset_related_trades';
+}
 
 /**
  * Fetches all related trades from API
@@ -28,10 +39,10 @@ fetchAllTrades()
 	.then(d => {
 		// store all trades and currently displayed trades in
 		// global variables for filtering
-		allTradesFiltered = d.asset_related_trades.map(x => x);
-		allTrades = d.asset_related_trades;
+		allTradesFiltered = d[related].map(x => x);
+		allTrades = d[related];
 
-		allTradesFiltered.slice(0,DISPLAY_NUM).forEach(t => displaySelectedTrade(t,"allTrades",true))		
+		allTradesFiltered.slice(0,DISPLAY_NUM).forEach(t => displaySelectedTrade(t,"allTrades",showSenatorsInTable))		
 		CURR_INDEX += DISPLAY_NUM;	
 
 		resetFilterFields();
@@ -67,7 +78,7 @@ fetchAllTrades()
 		// set click event for 'see more trades' button
 		document.getElementById("all-trades-more")
 			.addEventListener("click", e => {
-				displayNextTrades(allTradesFiltered,false);
+				displayNextTrades(allTradesFiltered,showSenatorsInTable);
 				updateMoreTradesButton();
 			});
 
@@ -179,13 +190,13 @@ function displayNextTrades(trades, reset=true) {
 		CURR_INDEX = 0;
 		trades
 			.slice(0,DISPLAY_NUM)
-			.forEach(t => displaySelectedTrade(t,"allTrades",true));
+			.forEach(t => displaySelectedTrade(t,"allTrades",showSenatorsInTable));
 		CURR_INDEX += DISPLAY_NUM;	
 	} 
 	else {
 		trades
 			.slice(CURR_INDEX,CURR_INDEX+DISPLAY_NUM)
-			.forEach(t => displaySelectedTrade(t,"allTrades",true));
+			.forEach(t => displaySelectedTrade(t,"allTrades",showSenatorsInTable));
 		CURR_INDEX += DISPLAY_NUM;	
 	}
 }
@@ -326,8 +337,8 @@ function filterFunc(list, fields) {
 				.querySelector("#"+field);
 			if (e.value) {
 				if (e.value != "All") {
-					if (e.value.toLowerCase() != list[i][field].toLowerCase()) {
-						if (list[i][field].toLowerCase().indexOf(e.value.toLowerCase()) < 0) {
+					if (e.value.toUpperCase() != list[i][field].toUpperCase()) {
+						if (list[i][field].toUpperCase().indexOf(e.value.toUpperCase()) < 0) {
 							match = false;
 							break;
 						}
@@ -373,7 +384,7 @@ function displaySenatorResults() {
 		alert.style.visibility = 'hidden;';	
 		alert.hidden = true;
 		for (let trade of filterTrades()) {
-			displaySelectedTrade(trade,"allTrades",true);
+			displaySelectedTrade(trade,"allTrades",showSenatorsInTable);
 		}			
 	}
 }

@@ -139,11 +139,11 @@ var monthLabels = d3.select("#heatmap")
 
 var heatmapTooltip = d3.select("#heatmap")
 	.append("div")
-	.style("opacity", 0)
 	.attr("class", "tooltip")
 	.style("background-color", "white")
 	.style("background-color","var(--off-black)")
 	.style("color","white")
+	.style("opacity",1)
 // .style("border", "solid")
 // .style("border-width", "1px")
 	.style("border-radius", "5px")
@@ -193,14 +193,14 @@ function toggleNoTradesAlert(hide) {
 	if (hide) {
 		document.getElementById("no-trades-alert")
 			.setAttribute("style", "visibility:hidden");
-		document.getElementById("more-trades-button")
-			.setAttribute("style", "visibility:visible;display:block;");
+		// document.getElementById("more-trades-button")
+			// .setAttribute("style", "visibility:visible;display:block;");
 	}
 	else {
 		document.getElementById("no-trades-alert")
 			.setAttribute("style", "visibility:visible;display:block;");
-		document.getElementById("more-trades-button")
-			.setAttribute("style", "visibility:hidden;display:none");
+		// document.getElementById("more-trades-button")
+		// 	.setAttribute("style", "visibility:hidden;display:none");
 	}
 }
 
@@ -279,14 +279,14 @@ function resetNextTradesButton() {
 }
 
 function loadGraph(year,data) {
-	let currentTrades = new Map();	
-	// remove dates from other years from map
-	// we'll use to display trades in table
-	for (let [date,trades] of currentTrades) {
-		if (Number(date.split('-')[0]) == year) {
-			currentTrades.set(date,trades);
-		}
-	}
+	// let currentTrades = new Map();	
+	// // remove dates from other years from map
+	// // we'll use to display trades in table
+	// for (let [date,trades] of currentTrades) {
+	// 	if (Number(date.split('-')[0]) == year) {
+	// 		currentTrades.set(date,trades);
+	// 	}
+	// }
 
 	let prevSelection;
 	heatSvg.append("g")
@@ -306,31 +306,34 @@ function loadGraph(year,data) {
 		.attr("y", d => d.getDay()*(CELLSIZE+CELLMARGIN))
 		.attr("id", d => d)
 		.attr("fill", d => {
+			// grey out future dates
 			if (d.compareTo(Date.today()) > 0) {
 				return "var(--heatmap-disabled)";
 			}
 
+			// color dates with trades
 			let date = d.toString("yyyy-MM-dd")
 			if (data.has(date)) {
 				return COLOR(data.get(date).volume);
 			}
 
 			if (d.getDay() == 1) {
-				console.log("FIST");
 				d3.select("#month-"+d.getMonth())
 					.attr("x",d.getDay()*(CELLSIZE+CELLMARGIN))
 			}
 		})
 		.on("mouseover", (e, d) => {
+			let selectedDate = d.toString("yyyy-MM-dd");
+			// don't show tooltip on future dates
 			if (d.compareTo(Date.today()) <= 0) {
-				let date = d.toString("MMM d, yyyy");
-				if (data.has(d)) {
-					heatmapTooltip.html("<b>" + data.get(d).length + " trades</b> on " + date);
+				let dateString = d.toString("MMM d, yyyy");
+				if (data.has(selectedDate)) {
+					heatmapTooltip.html("<b>" + data.get(selectedDate).trades.length + " trades</b> on " + dateString);
 				}
 				else {
-					heatmapTooltip.html("<b>No trades</b> on " + date);
+					heatmapTooltip.html("<b>No trades</b> on " + dateString);
 				}
-				heatmapTooltip.style("opacity",1);
+				heatmapTooltip.attr('hidden',null);
 			}
 		})
 		.on("mousemove", function(e,d) {
@@ -340,12 +343,12 @@ function loadGraph(year,data) {
 				.style("left",x+"px")
 				.style("top",y+"px")
 		})
-		.on("mouseout", () => heatmapTooltip.style("opacity",0))
+		.on("mouseout", () => heatmapTooltip.attr('hidden',true))
 		.on("click", (event, d) => {
-			if (Date.parse(d).compareTo(Date.today()) > 0) {
-				return;
-			}
+			// don't show trades for future dates
+			if (Date.parse(d).compareTo(Date.today()) > 0) { return; }
 
+			// un-highlight previously selected date
 			if (prevSelection) {
 				d3.select(document.getElementById(prevSelection))
 					.attr("stroke","#000")
@@ -354,22 +357,20 @@ function loadGraph(year,data) {
 
 			document.getElementById("selected-date").innerHTML = "Trades on " + Date.parse(d).toString("MMMM dS, yyyy");
 
+			// highlight selected date
 			d3.select(document.getElementById(d))
 				.attr("stroke","var(--heatmap-selected-outline)")
 				.attr("stroke-width","2px");
 			prevSelection = d;
 
-			if (data.has(d)) {
+			document.getElementById("no-date-selected").hidden = true;
+			let selectedDate = Date.parse(d).toString("yyyy-MM-dd");
+			if (data.has(selectedDate)) {
 				toggleNoTradesAlert(true);
 				clearDisplayedTrades("selected-trades-table");
 
-				let timeout = 100;
-				for (let trade of data.get(d).trades) {
-					setTimeout(
-						() => displaySelectedTrade(trade, "selected-trades-table"),
-						timeout+100);
-					timeout += 100;
-				}
+				data.get(selectedDate).trades
+					.forEach(t => displaySelectedTrade(t,'selected-trades-table'));
 			}
 			else {
 				toggleNoTradesAlert(false);
@@ -378,13 +379,13 @@ function loadGraph(year,data) {
 		})
 	// resetNextTradesButton();
 	clearDisplayedTrades("selected-trades-table");
-	if (currentTrades.size > 0) {
-		toggleNoTradesAlert(true);
-		getNextTrades();
-	}
-	else {
-		toggleNoTradesAlert(false);
-	}
+	// if (currentTrades.size > 0) {
+	// 	toggleNoTradesAlert(true);
+	// 	getNextTrades();
+	// }
+	// else {
+	// 	toggleNoTradesAlert(false);
+	// }
 
 
 

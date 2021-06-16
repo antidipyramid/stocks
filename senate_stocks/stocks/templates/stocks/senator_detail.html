@@ -145,10 +145,11 @@
             <tbody id="selected-trades-table">
             </tbody>
           </table>
-          <div class="d-grid ">
-            <button id="more-trades-button" onclick="getNextTrades()" class="btn btn-outline-primary btn-sm" type="button">Show More Trades</button>
-          </div>
+          <!-- <div class="d-grid "> -->
+          <!--   <button id="more-trades-button" onclick="getNextTrades()" class="btn btn-outline-primary btn-sm" type="button">Show More Trades</button> -->
+          <!-- </div> -->
           <div id = "no-trades-alert" class="alert alert-danger animated" style="visibility:hidden;display:none;" role="alert">No trades to display.</div>
+          <div id="no-date-selected" class="alert alert-danger animated" role="alert">No date selected. Select a date above to view that day's transactions.</div>
         </div>
 
         <script src="{% static 'js/senators.js' %}"></script>
@@ -191,6 +192,7 @@
                   <option value="Self">Self</option>
                   <option value="Spouse">Spouse</option>
                   <option value="Child">Child</option>
+                  <option value="Joint">Joint</option>
                 </select>
                 <label for="owner">Owner</label>
               </div>
@@ -226,11 +228,11 @@
                   <option value="All" selected>All</option>
                   <option value="$1,001 - $15,000">$1,001 - $15,000</option>
                   <option value="$15,001 - $50,000">$15,001 - $50,000</option>							
-                  <option value="$50,000 - $100,000">$50,000 - $100,000</option>
+                  <option value="$50,001 - $100,000">$50,001 - $100,000</option>
                   <option value="$100,001 - $250,000">$100,001 - $250,000</option>
-                  <option value="$251,001 - $500,000">$251,001 - $500,000</option>
+                  <option value="$250,001 - $500,000">$250,001 - $500,000</option>
                   <option value="$500,001 - $1,000,000">$500,001 - $1,000,000</option>
-                  <option value="$1,000,001 - 5,000,000">$1,000,001 - 5,000,000</option>
+                  <option value="$1,000,001 - $5,000,000">$1,000,001 - $5,000,000</option>
                   <option value="$5,000,001 - $25,000,000">$5,000,001 - $25,000,000</option>
                   <option value="$25,000,001 - $50,000,000">$25,000,001 - $50,000,000</option>
                   <option value="Over $50,000,0000">Over $50,000,000</option>
@@ -239,15 +241,14 @@
               </div>
             </div>
             <div class="col-2">
-              <button onclick="displaySenatorResults()" type="button" class="btn btn-primary">Filter</button>
-              <button onclick="clearTradesFilterForms()" type="button" class="btn btn-danger">Reset</button>
+              <button id="reset-button" type="button" class="btn btn-danger">Reset</button>
             </div>
           </div>
         </div>
         <table class= "table table-hover table-striped table-sm mt-3">
           <thead>
             <tr>
-              <th scope="col">All Transaction Dates</th>
+              <th scope="col">Transaction Date</th>
               <th scope="col">Owner</th>
               <th scope="col">Ticker</th>
               <th scope="col">Asset Name</th>
@@ -259,22 +260,25 @@
             </tr>
           </thead>
           <tbody id="allTrades">
-            {% for trade in trades %}
-            <tr>
-              <th scope="row">{{ trade.transaction_date }}</th>
-              <td>{{ trade.owner }}</td>
-              <td>{{ trade.ticker }}</td>
-              <td><a href="/asset/{{ trade.asset.id }}">{{ trade.asset_name }}</a></td>
-              <td>{{ trade.asset_type }}</td>
-              <td>{{ trade.transaction_type }}</td>
-              <td>{{ trade.amount }}</td>
-              <td>{{ trade.comments }}</td>
-              <td><a href={{ trade.url }}>Link</a></td>
-            </tr>
-            {% endfor %}
+            <!-- {% for trade in trades %} -->
+            <!-- <tr> -->
+            <!--   <th scope="row">{{ trade.transaction_date }}</th> -->
+            <!--   <td>{{ trade.owner }}</td> -->
+            <!--   <td>{{ trade.ticker }}</td> -->
+            <!--   <td><a href="/asset/{{ trade.asset.id }}">{{ trade.asset_name }}</a></td> -->
+            <!--   <td>{{ trade.asset_type }}</td> -->
+            <!--   <td>{{ trade.transaction_type }}</td> -->
+            <!--   <td>{{ trade.amount }}</td> -->
+            <!--   <td>{{ trade.comments }}</td> -->
+            <!--   <td><a href={{ trade.url }}>Link</a></td> -->
+            <!-- </tr> -->
+            <!-- {% endfor %} -->
           </tbody>
         </table>
-        <div id="no-filter-trades-alert" class="alert alert-dark animated" role="alert" hidden="true">No trades found.</div>
+        <div id="no-filter-trades-alert" style="visibility:hidden;display:none;" class="alert alert-dark animated" role="alert" >No trades found.</div>
+        <div class="d-grid ">
+          <button id="all-trades-more" class="btn btn-outline-primary btn-sm" type="button">Show More Trades</button>
+        </div>
       </div>
     </div>
   </div>

@@ -85,11 +85,14 @@ function loadSenatorCards(senators) {
 }
 fetchSenators(url)
 	.then(d => { 
-
 		// sort and load all senators to display when user first
 		// visits page
 		sortSenators(d,'Last trade (newest to oldest)');
-		loadSenatorCards(d);
+
+		document.getElementById('loading-senators').remove();
+		document.getElementById('senator-spinner').remove();
+		document.getElementById('senator-result-count').removeAttribute('hidden');
+
 		setNumberOfResults(d.length);
 		resetFilterOptions();
 
