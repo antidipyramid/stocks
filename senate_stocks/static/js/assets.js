@@ -62,10 +62,10 @@ getAssets()
 		nextCards(d);
 		updateResultsCounter(d.length);
 
-		document.getElementById("loading-assets").remove()
+		document.getElementById("loading-assets").remove();
 		document.getElementById("loading").remove();
-		document.getElementById("found")
-			.setAttribute("style", "visibility:visible;display:;")
+		document.getElementById("found").removeAttribute('hidden');
+		document.getElementById('pages').removeAttribute('hidden');
 
 		// deep copy of all assets to store what's
 		// currently displayed on page
@@ -129,7 +129,7 @@ function filterAssets(assets) {
 	}
 
 	clearAssetCards();
-	// clearPages();
+	clearPages();
 	makePages(results);
 	nextCards(results);
 
@@ -213,6 +213,15 @@ function changeActivePageNumber(pageNumber) {
 		let prevPage = document.getElementById("prev-page");
 		prevPage.setAttribute("class","page-item");
 		prevPage.removeAttribute("aria-disabled");
+		prevPage.removeAttribute("disabled");
+	}
+
+	// if we're moving away from last page, re-enable next button
+	if (oldActivePage.nextSibling.id == 'next-page') {
+		let prevPage = document.getElementById('next-page');
+		prevPage.setAttribute("class","page-item");
+		prevPage.removeAttribute("aria-disabled");
+		prevPage.removeAttribute("disabled");
 	}
 
 	oldActivePage.setAttribute("class","page-item");
