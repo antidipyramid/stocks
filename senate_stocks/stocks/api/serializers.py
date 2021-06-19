@@ -52,6 +52,9 @@ class AssetSerializer(serializers.ModelSerializer):
         return obj.asset_related_trades.count()
 
     def get_latest(self, obj):
+        if obj.asset_related_trades.count() == 0:
+            return 'None'
+
         try:
             result = obj.asset_related_trades.latest('transaction_date').transaction_date
         except:
@@ -60,6 +63,9 @@ class AssetSerializer(serializers.ModelSerializer):
         return result
 
     def get_last_senator(self, obj):
+        if obj.asset_related_trades.count() == 0:
+            return 'None'
+
         return str(obj.asset_related_trades.latest('transaction_date').senator)
 
 class SenatorSerializer(serializers.ModelSerializer):

@@ -1,6 +1,5 @@
 import requests
 import re
-from datetime import date
 
 import pandas as pd
 from stocks.models import Trade, Senator, Asset
@@ -15,23 +14,27 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('start_date', type=str)
+        parser.add_argument('end_date', type=str)
 
     def handle(self, *args, **options):
         # Just make sure the input is in MM/DD/YYYY HH:MM:SS format
-        cond = re.match('\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}',
+        validStartInput = re.match(r'\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}',
                         options['start_date'])
+        validEndInput = re.match(r'\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}',
+                        options['end_date'])
 
-        if not cond:
-            raise CommandError('Invalid input! Date must be in form \'MM/DD/YYYY HH:MM:SS\'')
+        if not (validStartInput and validEndInput):
+            raise CommandError('Invalid input! Dates must be in form \'MM/DD/YYYY HH:MM:SS\'')
             return
 
-        start_date = options['start_date']
+        start_date, end_date = options['start_date'], options['end_date']
 
         self.stdout.write(self.style.SUCCESS(f'Start date is {start_date}'))
 
         with requests.Session() as session:
             scraper = SenateDataScraper(session=session,
-                                        start_date=start_date)
+                                        start_date=start_date,
+                                        end_date=end_date)
 
             trades_dict = scraper.scrape()
             save_trades(trades_dict)

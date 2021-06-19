@@ -11,8 +11,6 @@
 
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"> 
@@ -28,6 +26,7 @@
     <div class="navbar-container">
       <nav id="navbar" class="navbar navbar-expand-lg navbar-dark fixed-top ">
         <script src="{% static 'js/navbar.js' %}"></script>
+        <script src="{% static 'js/search.js' %}"></script>
         <div class="container">
           <div class="d-flex flex-fill bd-highlight">
             <div class="p-2 flex-grow-1 bd-highlight">
@@ -54,7 +53,8 @@
                   <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                   </li>
-                  <button class="btn btn-primary ms-3 heading">Donate</button>
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#results-modal">Search</button>
+                  <!-- <button class="btn btn-primary ms-3 heading">Donate</button> -->
                 </ul>
               </div>
             </div>
@@ -62,6 +62,25 @@
         </div>
       </nav>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="results-modal" tabindex="-1" aria-labelledby="results-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Search</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form class="d-flex ms-3 mt-3 hidden">
+            <input class="form-control form-control-sm me-2" id="navbar-search-input" id="nav-search" type="search" placeholder="Search for a senator or asset..." aria-label="Search">
+            <button type="button" id="navbar-search" class="btn btn-sm btn-primary me-3">Go</button>
+          </form>
+          <div id="navbar-results" class="modal-body">
+          </div>
+        </div>
+      </div>
+      <script src="{% static 'js/navbar_search.js' %}"></script>
+    </div>
+
     {% block content %}
 
     {% endblock content %}
@@ -72,16 +91,16 @@
 
   </body>	
 
-    <hr />
-    <div class="d-flex flex-row justify-content-between">
-      <div class="d-flex flex-col">
-        <p>Disclaimer: The data presented on this site is sourced from public<br>
-        disclosures. I've worked hard to present this information accurately<br>
-        but mistakes do happen. Please contact me if you find any errors in<br>
+  <hr />
+  <div class="d-flex flex-row justify-content-between">
+    <div class="d-flex flex-col">
+      <p>Disclaimer: The data presented on this site is sourced from public<br>
+      disclosures. I've worked hard to present this information accurately<br>
+      but mistakes do happen. Please contact me if you find any errors in<br>
       the data.</p>
-      </div>
-      <div class="d-flex flex-col me-3 align-items-center">
-        <p>About / Code</p>
-      </div>
     </div>
+    <div class="d-flex flex-col me-3 align-items-center">
+      <p>About / Code</p>
+    </div>
+  </div>
 </html>

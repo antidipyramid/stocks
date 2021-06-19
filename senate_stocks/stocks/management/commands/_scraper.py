@@ -20,9 +20,10 @@ SLEEPLENGTH = 2
 
 class SenateDataScraper:
 
-    def __init__(self, session, start_date):
+    def __init__(self, session, start_date, end_date):
         self.start_date = start_date
         self.session = session
+        self.end_date = end_date
 
     def get_csrf(self, response):
         soup = BeautifulSoup(response.text, 'lxml')
@@ -41,7 +42,7 @@ class SenateDataScraper:
                 "report_types":"[11]",
                 "filer_types":"[]",
                 "submitted_start_date":self.start_date,
-                "submitted_end_date":"",
+                "submitted_end_date":self.end_date,
                 "candidate_state":"",
                 "senator_state":"",
                 "office_id":"",
@@ -117,6 +118,8 @@ class SenateDataScraper:
                 pics.append(report_url)
             else:
                 entries[senator_name].append(data)
+
+            # print(self.extract_data( report.text )[0:6])
         #print(len(pics))
         #print(pics)
 

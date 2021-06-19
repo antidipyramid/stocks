@@ -2,3 +2,4 @@
 /stocks_venv
 *.pyc
 __pycache__/
+db.sqlite3

@@ -51,27 +51,19 @@ fetchAllTrades()
 		dates.forEach(id => {
 			document.getElementById(id).
 				addEventListener("changeDate", e => {
-					setTimeout(() => {
-						// get values from both the start and end date inputs
-						let values = dates.map(ele => {
-								let v = document.getElementById(ele).value;
-								// don't try to convert if field is empty
-								return (v == '') ? '' : convertPickerDate(v);
-							});
+					let values = getDateValues(dates);
 
-						console.log(values);
-						allTradesFiltered = allTrades
-							.filter(t => filterDate(t,values[0],values[1]));
+					allTradesFiltered = allTrades
+						.filter(t => filterDate(t,values[0],values[1]));
+					// re-filter all other filter inputs
+					filterFields.forEach(field => {
+						let val = document.getElementById("trades")
+							.querySelector("#"+field).value;
+						executeFilter(field,val);
+					});
 
-						// re-filter all other filter inputs
-						filterFields.forEach(field => {
-							let val = document.getElementById("trades")
-								.querySelector("#"+field).value;
-							executeFilter(field,val);
-						});
-
-						updateResults();
-					},150);
+					console.log(allTradesFiltered);
+					updateResults();
 				});
 		});	
 
@@ -100,6 +92,14 @@ fetchAllTrades()
 				updateResults();
 			});
 	});
+
+function getDateValues(dateIds) {
+	return dateIds.map(id => {
+		let v = document.getElementById(id).value;
+		// don't try to convert if field is empty
+		return (v == '') ? '' : convertPickerDate(v);
+	});	
+}
 
 function updateResults() {
 	clearDisplayedTrades("allTrades");
@@ -131,7 +131,7 @@ function updateNoTradesAlert() {
 }
 
 function executeFilter(field, value) {
-	if (oldFilterValues.get(field) == "" || oldFilterValues.get(field) == "All") {
+	if (oldFilterValues.get(field) == "All") {
 		allTradesFiltered = allTradesFiltered
 			.filter(t => (value == "All") ? true : (t[field] == value));
 	}
@@ -140,7 +140,7 @@ function executeFilter(field, value) {
 		allTradesFiltered = filterFunc(allTradesFiltered, filterFields);
 	}
 	oldFilterValues.set(field,value);
-	console.log(allTradesFiltered);
+	// console.log(allTradesFiltered);
 }
 
 /**
@@ -350,8 +350,9 @@ function filterFunc(list, fields) {
 			results.push(list[i]);
 		}
 	}
-	console.log(results);
-	return results;
+
+	let dateValues = getDateValues(dates);
+	return results.filter(t => filterDate(t,...dateValues));
 }
 
 /**

@@ -1,76 +1,58 @@
-function newResult(parent, inner, link) {
+function displaySearchResult(parent, inner, link) {
 	let result = document.createElement("a")
 	result.href = link
 	result.className = "list-group-item list list-group-item-action list-group-item-light"
 	result.innerHTML = inner
 	results.setAttribute('transition-duration','1s')
 	results.setAttribute('transition-timing-function','linear')
-	parent.appendChild(result)
+	document.getElementById(parent).appendChild(result)
 }
 
-function executeSearch() {
-	let query = document.getElementById("searchbox").value
+function clearResults(id) {
+	let resultsEle = document.getElementById(id);
 	
-	let results = document.getElementById("results")
-	if (!query) {
-		while (results.lastChild) {
-			results.removeChild(results.lastChild)
-		}
-		return;
+	while(resultsEle.firstChild) {
+		resultsEle.removeChild(resultsEle.lastChild);
+	}
+}
+
+function showResults(resultsId, results) {
+	for (const senator of results.senators) {
+		let desc = 'Senator: ' + senator.first_name + ' ' + senator.last_name,
+			link = 'senator/' + senator.id;
+		displaySearchResult(resultsId,desc,link);
 	}
 
-	var xhttp = new XMLHttpRequest()
-	xhttp.responseType = "json"
-
-	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			if (results.firstChild == null) {
-				newResult(results,"","")
-			}
-
-			let curr = results.firstChild
-			for (i = 0; i < xhttp.response.senators.length; i++) {
-				let desc = "Senator: ".concat(xhttp.response.senators[i].first_name,
-												" ",xhttp.response.senators[i].last_name)
-				let link = "senator/".concat(xhttp.response.senators[i].id)
-
-				if (curr) {
-					curr.innerHTML = desc
-					curr.href = link
-					curr = curr.nextSibling
-				}
-				else {
-					newResult(results,desc,link)	
-				}
-			}
-			for (i = 0; i < xhttp.response.assets.length; i++) {
-				let desc = "Asset: ".concat(xhttp.response.assets[i].name)
-				let link = "asset/".concat(xhttp.response.assets[i].id)
-
-				if (curr) {
-					curr.innerHTML = desc
-					curr.href = link
-					curr = curr.nextSibling
-				}
-				else {
-					newResult(results,desc,link)	
-				}
-			}
-			while (curr) {
-				let tmp = curr.nextSibling
-				results.removeChild(curr)
-				curr = tmp
-			}
-		}
-	};
-	xhttp.open("GET","api/search/" + query,true);
-	xhttp.send();
+	for (const asset of results.assets) {
+		let desc = 'Asset: ' + asset.name,
+			link = 'asset/' + asset.id;
+		displaySearchResult(resultsId,desc,link);
+	}
 }
 
 var delay;
-function delayedSearch() {
+function delayedSearch(searchId, resultsId) {
 	clearTimeout(delay);
 	delay = setTimeout(() => {
-		executeSearch()
+		clearResults(resultsId);
+		let query = document.getElementById(searchId).value;
+		if (query.length > 0) {
+			fetch('api/search/' + query)
+				.then(r => r.json())
+				.then(d => {
+					clearResults(resultsId);
+					showResults(resultsId,d);
+				});
+		}
 	},250);
+}
+
+function search(query, resultsId) {
+	fetch('/api/search/' + query)
+		.then(r => r.json())
+		.then(d => {
+				clearResults(resultsId);
+				showResults(resultsId,d);
+			}
+		);
 }

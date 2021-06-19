@@ -17,22 +17,27 @@ def fix_name(trade):
 
     # some trades, such as corporate bond trades, have "--" listed as the ticker
     # while the actual ticker is included in the asset name
-    if ticker == '--':
-        match = re.match(r'^(\w{2,})[ ][-][ ](.*)$',name)
-        if match:
-            ticker = match.group(1).strip()
-            name = match.group(2).strip()
+    # if ticker == '--':
+    match = re.match(r'^(\w{2,})[ ][-][ ](.*)$',name)
+    if match:
+        ticker = match.group(1).strip()
+        name = match.group(2).strip()
 
-        if 'Bond' in trade[5]:
-            match = re.match(r'^(.*) (\w{2,}[ ]*\bRate\b.*)',name)
+    if 'Bond' in trade[5] or 'Municipal Security' == trade[5]:
+        match = re.match(r'^(.*) (\w{2,}[ ]*\bRate\b.*)',name)
+        if match:
+            name = match.group(1).strip()
+            comments += f'\n{match.group(2)}'
+    if trade[5] in ("Non-Public Stock","Other Securities"):
+        match = re.match(r'^(.*)[ ]*(\bCompany\b.*)[ ]*(\bDescription\b.*)$',name)
+        if match:
+            name = match.group(1).strip()
+            comments += f'\n{match.group(2)}\n{match.group(3)}'
+        else:
+            match = re.match(r'^(.*)[ ]*(\bDescription\b.*)$',name)
             if match:
                 name = match.group(1).strip()
                 comments += f'\n{match.group(2)}'
-        if trade[5] in ("Non-Public Stock","Other Securities"):
-            match = re.match(r'^(.*)[ ]*(\bCompany\b.*)[ ]*(\bDescription\b.*)$',name)
-            if match:
-                name = match.group(1).strip()
-                comments += f'\n{match.group(2)}\n{match.group(3)}'
 
     return (ticker, name, comments)
 
@@ -40,8 +45,16 @@ def fix_name(trade):
 # Returns the relevant Asset instance for a given trade
 # If the Asset isn't in db yet, create it
 def get_asset(ticker, name):
-    # using the ticker, check if there's already an entry for this asset
-    asset_results = Asset.objects.filter(ticker=ticker)
+    asset_results = None
+    if ticker == '--':
+        if len(name) <= 5:
+            asset_results = Asset.objects.filter(ticker__iexact=name)
+
+        if not asset_results:
+            asset_results = Asset.objects.filter(name__icontains=name)
+    else:
+        # using the ticker, check if there's already an entry for this asset
+        asset_results = Asset.objects.filter(ticker__iexact=ticker)
 
     # if so, link this trade to that Asset model
     # otherwise, make a new Asset entry in db and link
@@ -51,11 +64,12 @@ def get_asset(ticker, name):
         asset = Asset(ticker=ticker,name=name)
 
         try:
+            pass
             asset.save()
         except Exception as e:
             print(f'Exception while saving asset: {asset.ticker} {asset.name}')
             print(e)
-
+    print(f'Asset: {asset}')
     return asset
 
 
@@ -93,12 +107,13 @@ def save_trade(entry, trade, senator, asset, comments):
                         )
 
     try:
+        pass
         trade_entry.save()
     except Exception as e:
         print("Exception!")
         print(e)
 
-    print(trade_entry)
+    print(f'{trade_entry}\n')
 
 
 # Parses all trades and saves to db
@@ -110,6 +125,6 @@ def save_trades(trades_dict):
             for trade in entry.frame.iloc:
                 senator = get_senator(entry.first_name,entry.last_name)
                 ticker, name, comments = fix_name(trade)
-                print(ticker,name,comments)
+                print(f'Ticker: {ticker}, Name: {name}, Comments: {comments}')
                 asset = get_asset(ticker,name)
                 save_trade(entry,trade,senator,asset,comments)

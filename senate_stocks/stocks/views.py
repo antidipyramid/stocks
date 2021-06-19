@@ -73,6 +73,9 @@ def senators(request):
     senators_json = []
     senators_list = []
     for senator in Senator.objects.all():
+        if senator.related_trades.count() == 0:
+            continue
+
         latest_trade = senator.related_trades.latest('transaction_date')
         count = senator.related_trades.count()
         senators_list.append((senator,latest_trade,latest_trade.asset_name[0:25],count))
