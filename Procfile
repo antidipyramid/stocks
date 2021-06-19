@@ -1,1 +1,1 @@
-web: gunicorn senate-stocks.wsgi
+web: gunicorn senate_stocks.wsgi
