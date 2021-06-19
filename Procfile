@@ -1,1 +1,1 @@
-web: gunicorn senate_stocks.wsgi
+web: gunicorn --pythonpath senate_stocks senate_stocks.wsgi
