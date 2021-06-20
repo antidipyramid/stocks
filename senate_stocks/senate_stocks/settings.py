@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!vx*gyrbe*72$4a7dv=z_7y37(4ta6$e5$@d%gou$sf*+%2583'
+# SECRET_KEY = ''
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -84,15 +89,14 @@ WSGI_APPLICATION = 'senate_stocks.wsgi.application'
 DATABASES = {
     'default': {
 	'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'stocks',
-        'USER': 'stocks',
-        'PASSWORD': 'E5mSkd6zEHoqPnVL6Yjr',
-        'HOST': 'localhost',
-        'PORT': '',
+        # 'NAME': 'stocks',
+        # 'USER': 'stocks',
+        # 'PASSWORD': '',
+        # 'HOST': 'localhost',
+        # 'PORT': '',
     }
 }
 
-import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 

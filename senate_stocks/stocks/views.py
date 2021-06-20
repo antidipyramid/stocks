@@ -3,8 +3,6 @@ import re
 import json
 from datetime import date, timedelta
 
-import plotly.graph_objects as go
-import plotly.express as px
 import pandas as pd
 from rest_framework import generics
 from psycopg2.extras import DateRange
@@ -34,33 +32,32 @@ def index(request):
         return '-'.join([s[2],s[0],s[1]])
 
     #Get trades by company
-    companies = Trade.objects.all().distinct('ticker')
-    senators = Trade.objects.all().distinct('senator')
-    activity = []
-    for senator in Senator.objects.all():
-        activity.append(len(Trade.objects.all().filter(senator=senator)))
+    # companies = Trade.objects.all().distinct('ticker')
+    # senators = Trade.objects.all().distinct('senator')
+    # activity = []
+    # for senator in Senator.objects.all():
+    #     activity.append(len(Trade.objects.all().filter(senator=senator)))
 
-    fig1 = go.Figure(go.Bar(y=[str(x) for x in Senator.objects.all()],
-                            x=activity,
-                            orientation='h'))
+    # fig1 = go.Figure(go.Bar(y=[str(x) for x in Senator.objects.all()],
+    #                         x=activity,
+    #                         orientation='h'))
 
-    fig1.update_layout(title='Most Active Senators',
-                       paper_bgcolor='rgba(0,0,0,0)',
-                       plot_bgcolor='rgba(0,0,0,0)',
-                       yaxis=dict(
-                           showgrid=False,
-                           showline=False,
-                           showticklabels=True),
-                       xaxis=dict(
-                           showgrid=False,
-                           showline=False,
-                           showticklabels=False))
+    # fig1.update_layout(title='Most Active Senators',
+    #                    paper_bgcolor='rgba(0,0,0,0)',
+    #                    plot_bgcolor='rgba(0,0,0,0)',
+    #                    yaxis=dict(
+    #                        showgrid=False,
+    #                        showline=False,
+    #                        showticklabels=True),
+    #                    xaxis=dict(
+    #                        showgrid=False,
+    #                        showline=False,
+    #                        showticklabels=False))
 
-    senators_by_activity = fig1.to_html(full_html=False,default_height=500)
+    # senators_by_activity = fig1.to_html(full_html=False,default_height=500)
 
 
-    return render(request, 'stocks/index.html',
-                  {'most_active_senators': senators_by_activity})
+    return render(request, 'stocks/index.html',)
 
 def about(request):
     return render(request, 'stocks/about.html')

@@ -1,5 +1,5 @@
 from django.db import models
-from  localflavor.us.us_states import US_STATES
+from localflavor.us.us_states import US_STATES
 from localflavor.us.models import USStateField
 
 class Senator(models.Model):
