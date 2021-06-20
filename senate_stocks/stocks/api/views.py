@@ -15,7 +15,7 @@ from datetime import date, timedelta
 
 class TradeListApiView(APIView):
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get(self, request, *args, **kwargs):
         print("HELLO")
         thirty_days_ago = date.today() - timedelta(days=60)
@@ -101,7 +101,8 @@ class SearchApiViewSet(viewsets.ViewSet):
     This viewset searches for the provided query among the senators and companies
     and puts the results in a neat little object for the serializer to parse
     """
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def list(self, request, query):
         print(query)
         Results = namedtuple('Results', ('senators','assets'))
