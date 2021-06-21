@@ -90,6 +90,9 @@ def senators(request):
 def assets(request):
     assets = []
     for asset in Asset.objects.all():
+        if asset.asset_related_trades.count() == 0:
+            continue
+
         most_recent_trade = asset.asset_related_trades.latest('transaction_date')
         count = asset.asset_related_trades.count()
         assets.append((asset, count, most_recent_trade))
