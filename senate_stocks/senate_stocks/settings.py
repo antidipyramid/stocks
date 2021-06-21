@@ -86,19 +86,17 @@ WSGI_APPLICATION = 'senate_stocks.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-	'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': 'stocks',
-        # 'USER': 'stocks',
-        # 'PASSWORD': '',
-        # 'HOST': 'localhost',
-        # 'PORT': '',
+try:
+    from senate_stocks.local_settings import *
+except ImportError:
+    DATABASES = {
+        'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        }
     }
-}
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
 
 # Cache database
 
