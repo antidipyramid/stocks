@@ -4,10 +4,10 @@ Project to keep track of U.S. senators' stock transactions created with Django a
 
 
 ## Table of Contents
-* Motivation
-* How It Works
-* Technologies
-* Status
+* [Motivation](https://github.com/antidipyramid/stocks/tree/master#motivation)
+* [How It Works](https://github.com/antidipyramid/stocks#how-it-works)
+* [Technologies](https://github.com/antidipyramid/stocks#libraries-used)
+* [Status](https://github.com/antidipyramid/stocks#status)
 * Installation
 
 ## Motivation
