@@ -1,7 +1,5 @@
 # Senate Stock Tracker
-Project to keep track of U.S. senators' stock transactions created with Django and D3.js.
-
-
+Full-stack Django project to keep track of U.S. senators' stock transactions.
 
 ## Table of Contents
 * [Motivation](https://github.com/antidipyramid/stocks/tree/master#motivation)
