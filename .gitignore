@@ -1,6 +1,0 @@
-#Ignore environment files
-/stocks_venv
-*.pyc
-__pycache__/
-db.sqlite3
-local_settings.py
