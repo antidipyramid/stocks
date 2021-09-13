@@ -1,5 +1,6 @@
 # Senate Stock Tracker
 Full-stack Django project to keep track of U.S. senators' stock transactions.
+![Screenshot](images/main_screenshot.png)
 
 ## Table of Contents
 * [Motivation](https://github.com/antidipyramid/stocks/tree/master#motivation)
@@ -21,6 +22,7 @@ By law, members of the United States Senate are required to disclose certain sto
 1. The scraper is implemented as a custom `django-admin` command. The Python script scrapes the public disclosures site and then cleans up the raw data.
 2. In the database, each transaction found the scraped data is associated with three models `Senator`, `Trade`, and `Asset`.
 3. On the front-end, along with using Django templates to display data from the database, a REST API is used to enable D3.js to easily request data to create visualizations.
+4. There are two main ways to explore the data, by senator and by asset (e.g. Apple, Wells Fargo, Google, etc.).
 
 ## Status
 Unfortunately, the front-end was written entirely in vanilla Javascript (yikes!). My goal is to make this app actually usable for the public so the next steps are to gradually move over to a modern framework, most likely React, for ease of development. 
