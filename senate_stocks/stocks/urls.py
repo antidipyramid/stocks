@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic.base import TemplateView
 from . import views
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('api/', include('stocks.api.urls')),
     path('assets/', views.assets, name='assets'),
     path('asset/<int:asset_id>', views.asset_detail, name='asset_detail'),
+    path('hello-webpack/', TemplateView.as_view(template_name='stocks/hello_webpack.html'))
 ]

@@ -115,7 +115,7 @@ function displaySelectedTrade(trade, tableId, senator=false) {
 	return row;
 }
 
-const WIDTH = 1000, HEIGHT = 150, CELLSIZE = 17, CELLMARGIN = 1.5;
+const WIDTH = 1000, HEIGHT = 170, CELLSIZE = 17, CELLMARGIN = 1.5, LABELHEIGHT = 40;
 
 const COLOR = d3.scaleThreshold()
 	.domain([5000,10000,50000,100000,500000,1000000])
@@ -124,18 +124,33 @@ const COLOR = d3.scaleThreshold()
 const t = d3.transition()
 	.duration(250);
 
-const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep",
-	"Oct","Nov","Dec"];
+const months = year => d3.timeMonths(year,year+1);
 
-var monthLabels = d3.select("#heatmap")
-	.append("g")
-	.selectAll("text")
-	.data(d3.range(0,11))
-	.enter()
-	.append("text")
-	.text(d => months[d])
-	.attr("id",d => "month-"+d)
+var heatSvg = d3.select('#heatmap').append('svg')
+	.attr("width",WIDTH)
+	.attr("height",HEIGHT)
+
+var labels = heatSvg.append('g').attr('id','labels')
+
+var calendar = heatSvg.append('g')
+	.attr('id','map')
+	.attr('width', WIDTH)
+	.attr('height', HEIGHT-LABELHEIGHT)
+	.attr("transform", "translate(" + ((WIDTH - (CELLSIZE + CELLMARGIN) * 53) / 2) + "," + (HEIGHT - (CELLSIZE + CELLMARGIN) * 7 - 1) + ")")
+	.attr("fill", "var(--heatmap-empty-date)")
+	.attr("stroke", "#000")
+	.attr("stroke-width", "0.1px")
+	// .selectAll("text")
+	// .data(months)
+	// .enter()
+	// .append("text")
+	// .text(d => months[d])
+	// .attr("id",d => "month-"+d)
 // .style("opacity",0)
+
+var monthScale = d3.scaleLinear()
+	.range([0, WIDTH])
+	.domain([0,12]);
 
 var heatmapTooltip = d3.select("#heatmap")
 	.append("div")
@@ -144,49 +159,117 @@ var heatmapTooltip = d3.select("#heatmap")
 	.style("background-color","var(--off-black)")
 	.style("color","white")
 	.style("opacity",1)
-// .style("border", "solid")
-// .style("border-width", "1px")
+	.attr("hidden",true)
 	.style("border-radius", "5px")
 	.style("padding", "5px")
 	.style("font-family", "Roboto Mono")
 	.style("font-size",".9em")
 
-var heatSvg;
 function update(year,data=heatmapMap) {
-	console.log(data);
 	document.getElementById("selected-date")
 		.innerHTML = "Trades in " + year;
 	tradeGenerator = null;
 
-	heatSvg = d3.select("#heatmap")
-		.selectAll("svg")
-		.data(d3.range(year,year+1))
-		.join(
-			enter => enter.append("svg")
-			.attr("width",WIDTH)
-			.attr("height",HEIGHT)
-			.append("g")
-			.call(enter => enter
-				.attr("transform", "translate(" + ((WIDTH - (CELLSIZE + CELLMARGIN) * 53) / 2) + "," + (HEIGHT - (CELLSIZE + CELLMARGIN) * 7 - 1) + ")")),
+	labels.selectAll('text')
+		.data(d3.timeMonths(new Date(year,0,1), new Date(year+1,0,1)))
+		.enter()
+		.append("text")
+		.text(d => d.toString('MMM'))
+		.attr("x", (d,i) => monthScale(i) + (monthScale(i) - monthScale(i-1))/2)
+		.attr("y", LABELHEIGHT / 2)
+		.attr("class","text-muted")
 
+	calendar.selectAll('rect')
+		.data(d3.timeDays(new Date(year,0,1), new Date(year+1,0,1)), d => d.toString('yyyy-MM-dd'))
+		.join(
+			enter => enter.append('rect')
+			.attr("width", CELLSIZE - CELLMARGIN)
+			.attr("height", CELLSIZE - CELLMARGIN)
+			.attr("rx",1.5)
+			.attr("ry",1.5)
+			.style("opacity",1)
+			.attr("x", d => {
+				return d3.timeWeek.count(d3.timeYear(d),d)*(CELLSIZE+CELLMARGIN);})
+			.attr("y", d => d.getDay()*(CELLSIZE+CELLMARGIN))
+			.attr("id", d => d)
+			.attr("fill", d => {
+				// grey out future dates
+				if (d.compareTo(Date.today()) > 0) {
+					return "var(--heatmap-disabled)";
+				}
+
+				// color dates with trades
+				let date = d.toString("yyyy-MM-dd")
+				if (data.has(date)) {
+					return COLOR(data.get(date).volume);
+				}
+			}),
 			exit => {
 				exit
 					.transition()
-					.duration(250)
-					.on("end",() => {
-						exit.select("g").select("g").remove();	
-					})
-				return d3.select("#heatmap").select("svg").select("g");
+					.duration(500)
+					.style("opacity",0)
+					.remove()
+					// .on("end",() => exit.remove())
+			})
+
+	let prevSelection;
+	calendar.selectAll('rect')
+		.on("mouseover", (e, d) => {
+			let selectedDate = d.toString("yyyy-MM-dd");
+			// don't show tooltip on future dates
+			if (d.compareTo(Date.today()) <= 0) {
+				let dateString = d.toString("MMM d, yyyy");
+				if (data.has(selectedDate)) {
+					heatmapTooltip.html("<b>" + data.get(selectedDate).trades.length + " trades</b> on " + dateString);
+				}
+				else {
+					heatmapTooltip.html("<b>No trades</b> on " + dateString);
+				}
+				heatmapTooltip.attr('hidden',null);
 			}
-		);
+		})
+		.on("mousemove", function(e,d) {
+			let x = e.layerX + TOOLTIP_OFFSET, 
+				y = e.layerY + TOOLTIP_OFFSET;
+			heatmapTooltip
+				.style("left",x+"px")
+				.style("top",y+"px")
+		})
+		.on("mouseout", () => heatmapTooltip.attr('hidden',true))
+		.on("click", (event, d) => {
+			// don't show trades for future dates
+			if (Date.parse(d).compareTo(Date.today()) > 0) { return; }
 
+			// un-highlight previously selected date
+			if (prevSelection) {
+				d3.select(document.getElementById(prevSelection))
+					.attr("stroke","#000")
+					.attr("stroke-width","0.1px");
+			}
 
-	loadGraph(year,data);
-	heatSvg
-		.selectAll("rect")
-		.transition()
-		.duration(500)
-		.style("opacity",1)
+			document.getElementById("selected-date").innerHTML = "Trades on " + Date.parse(d).toString("MMMM dS, yyyy");
+
+			// highlight selected date
+			d3.select(document.getElementById(d))
+				.attr("stroke","var(--heatmap-selected-outline)")
+				.attr("stroke-width","2px");
+			prevSelection = d;
+
+			document.getElementById("no-date-selected").hidden = true;
+			let selectedDate = Date.parse(d).toString("yyyy-MM-dd");
+			if (data.has(selectedDate)) {
+				toggleNoTradesAlert(true);
+				clearDisplayedTrades("selected-trades-table");
+
+				data.get(selectedDate).trades
+					.forEach(t => displaySelectedTrade(t,'selected-trades-table'));
+			}
+			else {
+				toggleNoTradesAlert(false);
+				clearDisplayedTrades("selected-trades-table");
+			}
+		})
 }
 
 function toggleNoTradesAlert(hide) {
@@ -290,9 +373,6 @@ function loadGraph(year,data) {
 
 	let prevSelection;
 	heatSvg.append("g")
-		.attr("fill", "var(--heatmap-empty-date)")
-		.attr("stroke", "#000")
-		.attr("stroke-width", "0.1px")
 		.selectAll("rect")
 		.data(d => d3.timeDays(new Date(d,0,1), new Date(d+1,0,1)))
 		.enter().append("rect")

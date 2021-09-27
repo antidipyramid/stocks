@@ -1,0 +1,17 @@
+.asset-card {
+	opacity: .7;
+	transition: opacity 0.1s ease;
+	/* width: 25vw; */
+}
+
+/* @media screen and (max-width: 992px) { */
+/* 	.asset-card { */
+/* 		width: 30vw; */
+/* 	} */
+/* } */
+
+/* @media screen and (max-width: 768px) { */
+/* 	.asset-card { */
+/* 		width: 50vw; */
+/* 	} */
+/* } */

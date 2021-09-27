@@ -1,0 +1,47 @@
+.chart > svg {
+	width: 100%;
+	height: 100%;
+}
+
+.card {
+	border-radius: 0;
+	/* background-color: var(--dark-contrast-bg); */
+	margin-right: 10px;
+	margin-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	/* color: #ffffff; */
+}
+
+.card-header {
+	font-family: 'Lato';
+	font-size: 1.1rem;
+	font-weight: 700;
+	/* border-bottom: 1px solid #4b5460; */
+	color: var(--muted-heading);
+	background-color: transparent;
+}
+
+/* #most-active-senators-card { */
+/* 	max-height: 30vh; */
+/* 	width: 100%; */
+/* } */
+
+svg {
+	display: block;
+	margin: auto;
+}
+
+.resp-form {
+	width: 100%;
+}
+
+/* #most-recent-trades-card { */
+/* 	width: 60vw; */
+/* } */
+
+@media only screen and (max-width: 1200px) {
+	.resp-form {
+		width: 100%;
+	}
+}

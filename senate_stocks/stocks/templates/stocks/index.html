@@ -2,14 +2,15 @@
 {% load static %}
 {% block content %}
 
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
 <script src="{% static 'js/search.js' %}"></script>
 
 
 
 
 <div class="hero">
-  <video autoplay muted loop>
-    <source src={% static 'img/senate-1.mp4' %} type="video/mp4">
+  <video id="video-bg" autoplay muted loop>
+    <source  src={% static 'img/senate-1.mp4' %} type="video/mp4">
   </video>
   <h1 class="mt-5 text-center bold" id="homepage-heading">Hold senators accountable.<br>Monitor their stock trades.</h1>
 

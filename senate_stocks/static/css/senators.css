@@ -1,0 +1,9 @@
+#name {
+	max-width: 25vw;
+}
+
+@media screen and (max-width: 768px) {
+	.sen-card {
+		width: 40vw;
+	}
+}
