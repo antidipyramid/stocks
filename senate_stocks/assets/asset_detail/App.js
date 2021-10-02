@@ -208,6 +208,11 @@ function App() {
           <Stats
             count={isLoading ? 0 : Number(assetInfo.count)}
             transactionTypeMap={checkIfLoading(new Map(), transactionTypeMap)}
+            transactionAmountMap={checkIfLoading(
+              new Map(),
+              transactionAmountMap
+            )}
+            topTraders={checkIfLoading(new Map(), topTraders)}
           />
         </Tab>
         <Tab eventKey="explorer" title="Trade Explorer">

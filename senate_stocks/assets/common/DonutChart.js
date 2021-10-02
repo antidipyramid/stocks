@@ -2,15 +2,15 @@ import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-function BuySellChart({ data, dimensions }) {
+export default function DonutChart({ data, dimensions }) {
   const svgRef = useRef(null);
   const { width, height, margin } = dimensions;
-  const svgWidth = width + margin.left + margin.right;
-  const svgHeight = height + margin.top + margin.bottom;
+  const svgWidth = width + margin;
+  const svgHeight = height + margin;
   const angleRange = 0.5 * Math.PI;
 
   useEffect(() => {
-    const radius = Math.min(width, height) / 2 - 40;
+    const radius = Math.min(width, height) / 2 - margin;
 
     // set the color scale
     const color = d3.scaleOrdinal([
@@ -53,17 +53,15 @@ function BuySellChart({ data, dimensions }) {
       .attr('fill', function (d) {
         return color(d.data.key);
       })
-      .attr('stroke', 'black')
-      .style('stroke-width', '2px')
+      // .attr('stroke', 'black')
+      // .style('stroke-width', '2px')
       .style('opacity', 0.7);
   }, [data]);
 
-  return <svg ref={svgRef} width={svgWidth} height={svgHeight} />;
+  return <svg ref={svgRef} width={svgWidth} height={svgHeight / 2} />;
 }
 
-BuySellChart.propTypes = {
+DonutChart.propTypes = {
   data: PropTypes.map,
   dimensions: PropTypes.object,
 };
-
-export default BuySellChart;

@@ -7,7 +7,9 @@ import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
 import Carousel from 'react-bootstrap/Carousel';
 
-import BuySellChart from './BuySellChart';
+import DonutChart from '../common/DonutChart';
+import DashboardCard from '../common/DashboardCard';
+import { TableHeader, TableBody } from '../common/DashboardTable';
 
 function NumberCard({ title, count }) {
   return (
@@ -59,74 +61,40 @@ function RecentTradesCard() {
   );
 }
 
-function TableCard({ title }) {
-  return (
-    <Card style={{ width: '18rem' }}>
-      <Card.Body>
-        <Card.Title>{title}</Card.Title>
-        <Card.Text>
-          <Table borderless size="sm">
-            <thead>
-              <th>#</th>
-              <th>Name</th>
-              <th># of Trades</th>
-            </thead>
-            <tbody>
-              {[1, 2, 3, 4, 5].map((num) => (
-                <tr key={num}>
-                  <td className="text-center">{num + '.'}</td>
-                  <td>Bernie Sanders</td>
-                  <td className="text-center">12</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Card.Text>
-      </Card.Body>
-    </Card>
-  );
-}
+function Stats({
+  count,
+  transactionTypeMap,
+  transactionAmountMap,
+  topTraders,
+}) {
+  const donutChartDimensions = { width: 200, height: 200, margin: 10 };
 
-function BuySellCard({ data }) {
-  return (
-    <Card style={{ width: '18rem' }} className="number-card">
-      <Card.Body>
-        <Card.Title>Buy Vs. Sell</Card.Title>
-        <Card.Text>
-          <BuySellChart
-            data={data}
-            dimensions={{
-              width: 300,
-              height: 200,
-              margin: { top: 10, left: 10, right: 10, bottom: 10 },
-            }}
-          />
-        </Card.Text>
-      </Card.Body>
-    </Card>
-  );
-}
-
-BuySellCard.propTypes = {
-  data: PropTypes.map,
-};
-
-TableCard.propTypes = {
-  title: PropTypes.string,
-};
-
-function Stats({ count, transactionTypeMap }) {
   return (
     <Row>
       <Col xxl="auto">
         <NumberCard title="Total Trades" count={count} />
         <RecentTradesCard />
-        <TableCard title="Top Senators" />
+        <DashboardCard title="Top Senators" width="18rem">
+          <Table borderless size="sm">
+            <TableHeader headings={['#', 'Name', '# of Trades']} />
+            <TableBody data={Array.from(topTraders.entries()).slice(0, 4)} />
+          </Table>
+        </DashboardCard>
       </Col>
       <Col>
         <Row className="justify-content-evenly">
-          <BuySellCard data={transactionTypeMap} />
-          <NumberCard title="Trades By Amount" count={count} />
+          <DashboardCard title="Buy Vs. Sell" width="18rem">
+            <DonutChart
+              data={transactionTypeMap}
+              dimensions={donutChartDimensions}
+            />
+          </DashboardCard>
+          <DashboardCard title="Trades By Amount" width="18rem">
+            <DonutChart
+              data={transactionAmountMap}
+              dimensions={donutChartDimensions}
+            />
+          </DashboardCard>
           <NumberCard title="Party" count={count} />
         </Row>
         <Row>
@@ -140,6 +108,8 @@ function Stats({ count, transactionTypeMap }) {
 Stats.propTypes = {
   count: PropTypes.number,
   transactionTypeMap: PropTypes.map,
+  transactionAmountMap: PropTypes.map,
+  topTraders: PropTypes.map,
 };
 
 export default Stats;
