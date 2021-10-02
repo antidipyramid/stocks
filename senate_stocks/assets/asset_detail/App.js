@@ -213,6 +213,7 @@ function App() {
               transactionAmountMap
             )}
             topTraders={checkIfLoading(new Map(), topTraders)}
+            recentTrades={checkIfLoading([], recentTrades)}
           />
         </Tab>
         <Tab eventKey="explorer" title="Trade Explorer">

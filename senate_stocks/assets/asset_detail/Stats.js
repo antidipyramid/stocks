@@ -10,6 +10,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import DonutChart from '../common/DonutChart';
 import DashboardCard from '../common/DashboardCard';
 import { TableHeader, TableBody } from '../common/DashboardTable';
+import RecentTrade from '../common/RecentTrade';
 
 function NumberCard({ title, count }) {
   return (
@@ -27,45 +28,12 @@ NumberCard.propTypes = {
   count: PropTypes.number,
 };
 
-function RecentTrade() {
-  return (
-    <div>
-      <p>Date:</p>
-      <p>Senator:</p>
-      <p>Owner:</p>
-      <p>Asset Type:</p>
-      <p>Transaction Type:</p>
-      <p>Amount:</p>
-    </div>
-  );
-}
-
-function RecentTradesCard() {
-  return (
-    <Card style={{ width: '18rem' }} className="number-card">
-      <Card.Body>
-        <Card.Title>Recent Trades</Card.Title>
-        <Carousel variant="dark">
-          <Carousel.Item>
-            <RecentTrade />
-          </Carousel.Item>
-          <Carousel.Item>
-            <RecentTrade />
-          </Carousel.Item>
-          <Carousel.Item>
-            <RecentTrade />
-          </Carousel.Item>
-        </Carousel>
-      </Card.Body>
-    </Card>
-  );
-}
-
 function Stats({
   count,
   transactionTypeMap,
   transactionAmountMap,
   topTraders,
+  recentTrades,
 }) {
   const donutChartDimensions = { width: 200, height: 200, margin: 10 };
 
@@ -73,7 +41,15 @@ function Stats({
     <Row>
       <Col xxl="auto">
         <NumberCard title="Total Trades" count={count} />
-        <RecentTradesCard />
+        <DashboardCard title="Recent Trades" width="18rem">
+          <Carousel variant="dark">
+            {recentTrades.map((t, i) => (
+              <Carousel.Item key={'recent-trade-' + i}>
+                <RecentTrade trade={t} />
+              </Carousel.Item>
+            ))}
+          </Carousel>
+        </DashboardCard>
         <DashboardCard title="Top Senators" width="18rem">
           <Table borderless size="sm">
             <TableHeader headings={['#', 'Name', '# of Trades']} />
@@ -109,6 +85,7 @@ Stats.propTypes = {
   count: PropTypes.number,
   transactionTypeMap: PropTypes.map,
   transactionAmountMap: PropTypes.map,
+  recentTrades: PropTypes.array,
   topTraders: PropTypes.map,
 };
 
