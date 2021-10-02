@@ -7,6 +7,8 @@ import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
 import Carousel from 'react-bootstrap/Carousel';
 
+import BuySellChart from './BuySellChart';
+
 function NumberCard({ title, count }) {
   return (
     <Card style={{ width: '18rem' }} className="number-card">
@@ -85,11 +87,35 @@ function TableCard({ title }) {
   );
 }
 
+function BuySellCard({ data }) {
+  return (
+    <Card style={{ width: '18rem' }} className="number-card">
+      <Card.Body>
+        <Card.Title>Buy Vs. Sell</Card.Title>
+        <Card.Text>
+          <BuySellChart
+            data={data}
+            dimensions={{
+              width: 300,
+              height: 200,
+              margin: { top: 10, left: 10, right: 10, bottom: 10 },
+            }}
+          />
+        </Card.Text>
+      </Card.Body>
+    </Card>
+  );
+}
+
+BuySellCard.propTypes = {
+  data: PropTypes.map,
+};
+
 TableCard.propTypes = {
   title: PropTypes.string,
 };
 
-function Stats({ count }) {
+function Stats({ count, transactionTypeMap }) {
   return (
     <Row>
       <Col xxl="auto">
@@ -99,7 +125,7 @@ function Stats({ count }) {
       </Col>
       <Col>
         <Row className="justify-content-evenly">
-          <NumberCard title="Buy vs. Sell" count={count} />
+          <BuySellCard data={transactionTypeMap} />
           <NumberCard title="Trades By Amount" count={count} />
           <NumberCard title="Party" count={count} />
         </Row>
@@ -113,6 +139,7 @@ function Stats({ count }) {
 
 Stats.propTypes = {
   count: PropTypes.number,
+  transactionTypeMap: PropTypes.map,
 };
 
 export default Stats;
