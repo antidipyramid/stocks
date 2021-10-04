@@ -19,7 +19,7 @@ h1, h2, h3, h4, h5, h6, .navbar {
 }
 
 body {
-	/* background-color: var(--dark-background); */
+	background-color: #f2f2f2;
 	/* color: #ffffff; */
 	font-family: 'Roboto Mono', serif;
 	font-size: small;
@@ -47,9 +47,9 @@ body {
 	opacity: 1;
 }
 
-.bg-secondary {
-    background-color: #DFE2E5 !important;
-}
+/* .bg-secondary { */
+/*     background-color: #DFE2E5 !important; */
+/* } */
 
 .form-select-sm, .input-group-sm, .form-control-sm, .input-group-text {
     font-size: .8rem !important;

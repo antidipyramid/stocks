@@ -5,10 +5,12 @@ import Card from 'react-bootstrap/Card';
 
 export default function DashboardCard(props) {
   return (
-    <Card style={{ width: props.width }} className="number-card">
+    <Card style={{ width: props.width }} className="dashboard-card shadow-sm">
       <Card.Body>
-        <Card.Title>{props.title}</Card.Title>
-        {props.children}
+        <div className="card-title">
+          <b>{props.title}</b>
+        </div>
+        <div className="card-content">{props.children}</div>
       </Card.Body>
     </Card>
   );

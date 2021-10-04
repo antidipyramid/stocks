@@ -16,59 +16,59 @@ const amounts = [
     '$25,000,001 - $50,000,000',
     'Over $50,000,000',
   ],
-  states = [
-    'AL',
-    'AK',
-    'AZ',
-    'AR',
-    'CA',
-    'CO',
-    'CT',
-    'DE',
-    'DC',
-    'FL',
-    'GA',
-    'HI',
-    'ID',
-    'IL',
-    'IN',
-    'IA',
-    'KS',
-    'KY',
-    'LA',
-    'ME',
-    'MD',
-    'MA',
-    'MI',
-    'MN',
-    'MS',
-    'MO',
-    'MT',
-    'NE',
-    'NV',
-    'NH',
-    'NJ',
-    'NM',
-    'NY',
-    'NC',
-    'ND',
-    'OH',
-    'OK',
-    'OR',
-    'PA',
-    'RI',
-    'SC',
-    'SD',
-    'TN',
-    'TX',
-    'UT',
-    'VT',
-    'VA',
-    'WA',
-    'WV',
-    'WI',
-    'WY',
-  ],
+  states = {
+    AL: 'Alabama',
+    AK: 'Alaska',
+    AZ: 'Arizona',
+    AR: 'Arkansas',
+    CA: 'California',
+    CO: 'Colorado',
+    CT: 'Connecticut',
+    DE: 'Delaware',
+    DC: 'District Of Columbia',
+    FL: 'Florida',
+    GA: 'Georgia',
+    HI: 'Hawaii',
+    ID: 'Idaho',
+    IL: 'Illinois',
+    IN: 'Indiana',
+    IA: 'Iowa',
+    KS: 'Kansas',
+    KY: 'Kentucky',
+    LA: 'Louisiana',
+    ME: 'Maine',
+    MD: 'Maryland',
+    MA: 'Massachusetts',
+    MI: 'Michigan',
+    MN: 'Minnesota',
+    MS: 'Mississippi',
+    MO: 'Missouri',
+    MT: 'Montana',
+    NE: 'Nebraska',
+    NV: 'Nevada',
+    NH: 'New Hampshire',
+    NJ: 'New Jersey',
+    NM: 'New Mexico',
+    NY: 'New York',
+    NC: 'North Carolina',
+    ND: 'North Dakota',
+    OH: 'Ohio',
+    OK: 'Oklahoma',
+    OR: 'Oregon',
+    PA: 'Pennsylvania',
+    RI: 'Rhode Island',
+    SC: 'South Carolina',
+    SD: 'South Dakota',
+    TN: 'Tennessee',
+    TX: 'Texas',
+    UT: 'Utah',
+    VT: 'Vermont',
+    VA: 'Virginia',
+    WA: 'Washington',
+    WV: 'West Virginia',
+    WI: 'Wisconsin',
+    WY: 'Wyoming',
+  },
   parties = ['R', 'D', 'I'],
   transactionTypes = ['Purchase', 'Sale', 'Exchange'];
 
@@ -92,7 +92,7 @@ function initTransactionAmountMap() {
 
 function initStateMap() {
   let stateMap = new Map();
-  for (const state of states) {
+  for (const state of Object.values(states)) {
     stateMap.set(state, 0);
   }
 
@@ -153,20 +153,22 @@ function App() {
           );
 
           // process for transaction type map
-          if (
-            trade.transaction_type == 'Purchase' ||
-            trade.transaction_type == 'Exchange'
-          ) {
-            tempTransactionTypeMap.set(
-              trade.transaction_type,
-              tempTransactionTypeMap.get(trade.transaction_type) + 1
-            );
-          } else {
-            tempTransactionTypeMap.set(
-              'Sale',
-              tempTransactionTypeMap.get('Sale') + 1
-            );
-          }
+          tempTransactionTypeMap.set(
+            trade.transaction_type,
+            tempTransactionTypeMap.get(trade.transaction_type) + 1
+          );
+
+          //process for party map
+          tempPartyMap.set(
+            trade.senator_party,
+            tempPartyMap.get(trade.senator_party) + 1
+          );
+
+          // process for state map
+          tempStateMap.set(
+            states[trade.senator_state],
+            tempStateMap.get(states[trade.senator_state]) + 1
+          );
         }
 
         // sort trades to get most recent
@@ -184,13 +186,21 @@ function App() {
         setTransactionAmountMap(tempTransactionAmountMap);
         setTopTraders(tempTopTraders);
         setRecentTrades(data.asset_related_trades.slice(0, 3));
+        setPartyMap(tempPartyMap);
+        setStateMap(tempStateMap);
 
         setIsLoading(false);
       });
   }, []);
 
   useEffect(() => {
-    console.log(transactionTypeMap, transactionAmountMap, recentTrades);
+    console.log(
+      transactionTypeMap,
+      transactionAmountMap,
+      recentTrades,
+      partyMap,
+      stateMap
+    );
   }, [isLoading]);
 
   const checkIfLoading = (placeholder, data) =>
@@ -214,6 +224,8 @@ function App() {
             )}
             topTraders={checkIfLoading(new Map(), topTraders)}
             recentTrades={checkIfLoading([], recentTrades)}
+            partyMap={checkIfLoading(new Map(), partyMap)}
+            stateMap={checkIfLoading(new Map(), stateMap)}
           />
         </Tab>
         <Tab eventKey="explorer" title="Trade Explorer">
