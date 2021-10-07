@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Stats from './Stats';
+import Explorer from './Explorer';
 
 const amounts = [
     '$1,001 - $15,000',
@@ -70,7 +71,7 @@ const amounts = [
     WY: 'Wyoming',
   },
   parties = ['R', 'D', 'I'],
-  transactionTypes = ['Purchase', 'Sale', 'Exchange'];
+  transactionTypes = ['Purchase', 'Sale (Partial)', 'Sale', 'Exchange'];
 
 function initTransactionTypeMap() {
   let transactionTypeMap = new Map();
@@ -118,7 +119,8 @@ function App() {
     [partyMap, setPartyMap] = useState({}),
     [stateMap, setStateMap] = useState({}),
     [recentTrades, setRecentTrades] = useState([]),
-    [topTraders, setTopTraders] = useState({});
+    [topTraders, setTopTraders] = useState({}),
+    [allTrades, setAllTrades] = useState([]);
 
   useEffect(() => {
     // fetch asset info from django db
@@ -188,6 +190,7 @@ function App() {
         setRecentTrades(data.asset_related_trades.slice(0, 3));
         setPartyMap(tempPartyMap);
         setStateMap(tempStateMap);
+        setAllTrades(data.asset_related_trades);
 
         setIsLoading(false);
       });
@@ -229,7 +232,7 @@ function App() {
           />
         </Tab>
         <Tab eventKey="explorer" title="Trade Explorer">
-          <p>Hi</p>
+          <Explorer data={checkIfLoading([], allTrades)} />
         </Tab>
         <Tab eventKey="all" title="All Trades" disabled></Tab>
       </Tabs>

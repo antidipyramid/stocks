@@ -27,12 +27,12 @@ function Stats({
   return (
     <div>
       <Row>
-        <Col className="d-flex align-items-stretch">
+        <Col md={3}>
           <DashboardCard title="Total Trades" width="100%">
             <p className="dashboard-number text-center">{count}</p>
           </DashboardCard>
         </Col>
-        <Col className="d-flex align-items-stretch">
+        <Col md={3}>
           <DashboardCard title="Buy Vs. Sell" width="100%">
             <DonutChart
               data={transactionTypeMap}
@@ -40,7 +40,7 @@ function Stats({
             />
           </DashboardCard>
         </Col>
-        <Col className="d-flex align-items-stretch">
+        <Col md={3}>
           <DashboardCard title="Trades By Amount" width="100%">
             <DonutChart
               data={transactionAmountMap}
@@ -48,38 +48,41 @@ function Stats({
             />
           </DashboardCard>
         </Col>
-        <Col className="d-flex align-items-stretch">
+        <Col md={3}>
           <DashboardCard title="Party Spread" width="100%">
             <DonutChart data={partyMap} dimensions={donutChartDimensions} />
           </DashboardCard>
         </Col>
       </Row>
-      <DashboardCard title="Recent Trades" width="18rem">
-        <Carousel variant="dark">
-          {recentTrades.map((t, i) => (
-            <Carousel.Item key={'recent-trade-' + i}>
-              <RecentTrade trade={t} />
-            </Carousel.Item>
-          ))}
-        </Carousel>
-      </DashboardCard>
-      <DashboardCard title="Top Senators" width="auto">
-        <Table borderless size="sm">
-          <TableHeader headings={['#', 'Name', '# of Trades']} />
-          <TableBody data={Array.from(topTraders.entries()).slice(0, 4)} />
-        </Table>
-      </DashboardCard>
-      <Col>
-        <Row className="justify-content-evenly"></Row>
-        <Row>
-          <DashboardCard title="Map" width="30rem">
-            <USMap
-              data={stateMap}
-              dimensions={{ height: 600, width: 1000, margin: 10 }}
-            />
+      <Row>
+        <Col md={3}>
+          <DashboardCard title="Recent Trades" width="100%">
+            <Carousel variant="dark">
+              {recentTrades.map((t, i) => (
+                <Carousel.Item key={'recent-trade-' + i}>
+                  <RecentTrade trade={t} />
+                </Carousel.Item>
+              ))}
+            </Carousel>
           </DashboardCard>
-        </Row>
-      </Col>
+          <DashboardCard title="Top Senators" width="100%">
+            <Table borderless size="sm">
+              <TableHeader headings={['#', 'Name', '# of Trades']} />
+              <TableBody data={Array.from(topTraders.entries()).slice(0, 4)} />
+            </Table>
+          </DashboardCard>
+        </Col>
+        <Col md={9}>
+          <Row>
+            <DashboardCard title="Map" width="100%">
+              <USMap
+                data={stateMap}
+                dimensions={{ height: 600, width: 750, margin: 10 }}
+              />
+            </DashboardCard>
+          </Row>
+        </Col>
+      </Row>
     </div>
   );
 }

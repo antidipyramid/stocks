@@ -58,8 +58,6 @@ export default function DonutChart({ data, dimensions }) {
       .attr('fill', function (d, i) {
         return color(i);
       })
-      // .attr('stroke', 'black')
-      // .style('stroke-width', '2px')
       .style('opacity', 0.7)
       .on('mouseover', (e, d) => mouseover(e, d, tooltip))
       .on('mousemove', (e, d) =>
