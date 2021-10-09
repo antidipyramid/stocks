@@ -4,6 +4,8 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Stats from './Stats';
 import Explorer from './Explorer';
+import AllTrades from '../common/AllTrades';
+import useTableData from '../common/hooks/useTableData';
 
 const amounts = [
     '$1,001 - $15,000',
@@ -16,6 +18,14 @@ const amounts = [
     '$5,000,001 - $25,000,000',
     '$25,000,001 - $50,000,000',
     'Over $50,000,000',
+  ],
+  owners = ['Self', 'Spouse', 'Child', 'Joint'],
+  assetTypes = [
+    'Stock',
+    'Corporate Bond',
+    'Municipal Security',
+    'Non-Public Stock',
+    'Other Securities',
   ],
   states = {
     AL: 'Alabama',
@@ -71,7 +81,39 @@ const amounts = [
     WY: 'Wyoming',
   },
   parties = ['R', 'D', 'I'],
-  transactionTypes = ['Purchase', 'Sale (Partial)', 'Sale', 'Exchange'];
+  transactionTypes = ['Purchase', 'Sale (Partial)', 'Sale (Full)', 'Exchange'],
+  columns = [
+    { title: 'Date', field: 'transaction_date', type: 'date' },
+    { title: 'Senator', field: 'senator', filtering: false },
+    {
+      title: 'Owner',
+      field: 'owner',
+      lookup: Object.fromEntries(owners.map((o) => [o, o])),
+    },
+    {
+      title: 'Asset Type',
+      field: 'asset_type',
+      lookup: Object.fromEntries(assetTypes.map((t) => [t, t])),
+    },
+    {
+      title: 'Transaction Type',
+      field: 'transaction_type',
+      lookup: Object.fromEntries(transactionTypes.map((t) => [t, t])),
+    },
+    {
+      title: 'Amount',
+      field: 'amount',
+      lookup: Object.fromEntries(amounts.map((a) => [a, a])),
+    },
+    { title: 'Comments', field: 'comments', filtering: false, sorting: false },
+    {
+      title: 'Link To Original',
+      field: 'url',
+      render: (rowData) => <a href={rowData.url}>Link</a>,
+      filtering: false,
+      sorting: false,
+    },
+  ];
 
 function initTransactionTypeMap() {
   let transactionTypeMap = new Map();
@@ -121,6 +163,8 @@ function App() {
     [recentTrades, setRecentTrades] = useState([]),
     [topTraders, setTopTraders] = useState({}),
     [allTrades, setAllTrades] = useState([]);
+
+  const [tableData, setTableData] = useTableData(columns, []);
 
   useEffect(() => {
     // fetch asset info from django db
@@ -198,13 +242,20 @@ function App() {
 
   useEffect(() => {
     console.log(
+      assetInfo,
       transactionTypeMap,
       transactionAmountMap,
       recentTrades,
       partyMap,
       stateMap
     );
+
+    setTableData(assetInfo.asset_related_trades);
   }, [isLoading]);
+
+  useEffect(() => {
+    console.log(tableData);
+  }, [tableData]);
 
   const checkIfLoading = (placeholder, data) =>
     isLoading ? placeholder : data;
@@ -234,7 +285,12 @@ function App() {
         <Tab eventKey="explorer" title="Trade Explorer">
           <Explorer data={checkIfLoading([], allTrades)} />
         </Tab>
-        <Tab eventKey="all" title="All Trades" disabled></Tab>
+        <Tab eventKey="all" title="All Trades">
+          <AllTrades
+            tableInfo={checkIfLoading([], tableData)}
+            title="All Trades"
+          />
+        </Tab>
       </Tabs>
     </Container>
   );
