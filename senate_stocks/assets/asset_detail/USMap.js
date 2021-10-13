@@ -26,9 +26,6 @@ export default function USMap({ data, dimensions }) {
   ];
 
   useEffect(() => {
-    const projection = d3.geoAlbersUsa(),
-      geoGenerator = d3.geoPath().projection(projection);
-
     const figureElement = d3.select(figureRef.current);
     figureElement.selectAll('*').remove();
 
@@ -47,6 +44,11 @@ export default function USMap({ data, dimensions }) {
     const tooltip = figureElement.append('div').attr('class', 'tooltip');
 
     d3.json('/static/img/us-states.json').then((geojson) => {
+      const projection = d3
+          .geoAlbersUsa()
+          .fitSize([svgWidth, svgHeight], geojson),
+        geoGenerator = d3.geoPath().projection(projection);
+
       svg
         .selectAll('path')
         .data(geojson.features)

@@ -1,20 +1,21 @@
-const path = require("path");
+const path = require('path');
 
 module.exports = {
   entry: {
-    asset_detail: "./assets/asset_detail/index.js",
+    asset_detail: './assets/asset_detail/index.js',
+    senator_detail: './assets/senator_detail/index.js',
   },
   output: {
-    filename: "[name]_bundle.js", // output bundle file name
-    path: path.resolve(__dirname, "./static/js"), // path to our Django static directory
+    filename: '[name]_bundle.js', // output bundle file name
+    path: path.resolve(__dirname, './static/js'), // path to our Django static directory
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
-        options: { presets: ["@babel/preset-env", "@babel/preset-react"] },
+        loader: 'babel-loader',
+        options: { presets: ['@babel/preset-env', '@babel/preset-react'] },
       },
     ],
   },

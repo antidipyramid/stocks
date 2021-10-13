@@ -5,6 +5,7 @@ export default function useTableData(headings, data) {
   const [dataForTable, setDataForTable] = useState(null);
 
   useEffect(() => {
+    console.log(tradeList);
     if (tradeList) {
       let trades = [];
       for (const trade of tradeList) {

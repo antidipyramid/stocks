@@ -77,7 +77,7 @@ function Stats({
             <DashboardCard title="Map" width="100%">
               <USMap
                 data={stateMap}
-                dimensions={{ height: 600, width: 750, margin: 10 }}
+                dimensions={{ height: 400, width: 800, margin: 0 }}
               />
             </DashboardCard>
           </Row>

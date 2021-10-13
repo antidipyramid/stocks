@@ -45,12 +45,12 @@ const tableIcons = {
 const rowStyling = (rowData) => {
   switch (rowData.transaction_type) {
     case 'Purchase':
-      return { backgroundColor: 'red' };
+      return { backgroundColor: 'rgb(211,33,45,0.1)' };
     case 'Sale (Full)':
     case 'Sale (Partial)':
-      return { backgroundColor: 'green' };
+      return { backgroundColor: 'rgba(102,255,0,0.1)' };
     case 'Exchange':
-      return { backgroundColor: 'gray' };
+      return { backgroundColor: 'rgba(128,128,128,0.1)' };
   }
 };
 
