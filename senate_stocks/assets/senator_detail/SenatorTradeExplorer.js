@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import DashboardCard from '../common/DashboardCard';
 import Heatmap from './Heatmap';
@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AllTrades from '../common/AllTrades';
 import useTableData from '../common/hooks/useTableData';
+import TradeTable from '../common/TradeTable';
 import {
   amounts,
   owners,
@@ -17,15 +18,52 @@ import {
 } from '../common/Constants';
 
 export default function SenatorTradeExplorer({ data }) {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState([]);
   const [tableData, setTableData] = useTableData(columns, []);
 
-  useEffect(() => {
-    console.log('changed date');
-    if (selectedDate) {
-      setTableData(selectedDate);
-    }
-  }, [selectedDate]);
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        columns: [
+          {
+            Header: 'Date',
+            accessor: 'transaction_date',
+          },
+          {
+            Header: 'Senator',
+            accessor: 'senator',
+          },
+          {
+            Header: 'Owner',
+            accessor: 'owner',
+          },
+          {
+            Header: 'Asset Type',
+            accessor: 'asset_type',
+          },
+          {
+            Header: 'Transaction Type',
+            accessor: 'transaction_type',
+          },
+          {
+            Header: 'Amount',
+            accessor: 'amount',
+          },
+          {
+            Header: 'Comments',
+            accessor: 'comments',
+          },
+          {
+            Header: 'Link To Original',
+            accessor: 'url',
+            Cell: (value) => <a href={value}>Link</a>,
+          },
+        ],
+      },
+    ],
+    []
+  );
 
   return (
     <Row>
@@ -40,10 +78,7 @@ export default function SenatorTradeExplorer({ data }) {
       </Row>
       <Row>
         <DashboardCard title="Selected Trades" width="100%">
-          <AllTrades
-            tableInfo={tableData ? tableData : []}
-            title="Selected Trade"
-          />
+          <TradeTable columns={columns} data={selectedDate} />
         </DashboardCard>
       </Row>
     </Row>

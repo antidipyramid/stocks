@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Row from 'react-bootstrap/Row';
@@ -7,10 +7,13 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import SenatorStats from './SenatorStats';
 import AllTrades from '../common/AllTrades';
+import TradeTable from '../common/TradeTable';
 import SenatorTradeExplorer from './SenatorTradeExplorer';
 import useTableData from '../common/hooks/useTableData';
 import useApiData from '../common/hooks/useApiData';
 import useMapData from '../common/hooks/useMapData';
+import useTable from 'react-table';
+import { SelectColumnFilter } from '../common/TradeTable';
 import {
   amounts,
   owners,
@@ -20,6 +23,8 @@ import {
   transactionTypes,
   columns,
 } from '../common/Constants';
+
+require('datejs');
 
 function getTransactionDateMap(trades) {
   let map = new Map();
@@ -57,7 +62,70 @@ function SenatorDashboard() {
 
   const [transactionDateMap, setTransactionDateMap] = useState({});
 
-  const [tableData, setTableData] = useTableData(columns, []);
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        columns: [
+          {
+            Header: 'Date',
+            accessor: (row) => {
+              let arr = row.transaction_date.split('-'),
+                date_string = arr[1] + '/' + arr[2] + '/' + arr[0];
+
+              return Date.parse(date_string);
+            },
+            disableFilters: true,
+            Cell: ({ value }) => value.toString('M/d/yy'),
+          },
+          {
+            Header: 'Senator',
+            accessor: 'senator',
+            disableSortBy: true,
+            disableFilters: true,
+          },
+          {
+            Header: 'Owner',
+            accessor: 'owner',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+          },
+          {
+            Header: 'Asset Type',
+            accessor: 'asset_type',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+          },
+          {
+            Header: 'Transaction Type',
+            accessor: 'transaction_type',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+          },
+          {
+            Header: 'Amount',
+            accessor: 'amount',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+          },
+          {
+            Header: 'Comments',
+            accessor: 'comments',
+            disableSortBy: true,
+            disableFilters: true,
+          },
+          {
+            Header: 'Link To Original',
+            accessor: 'url',
+            disableSortBy: true,
+            Cell: (value) => <a href={value}>Link</a>,
+            disableFilters: true,
+          },
+        ],
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     if (apiData) {
@@ -82,10 +150,6 @@ function SenatorDashboard() {
       recentTrades,
       transactionDateMap
     );
-
-    if (apiData) {
-      setTableData(apiData.related_trades);
-    }
   }, [isLoading]);
 
   const checkIfLoading = (placeholder, data) =>
@@ -139,10 +203,7 @@ function SenatorDashboard() {
             />
           </Tab>
           <Tab eventKey="all" title="All Trades">
-            <AllTrades
-              tableInfo={checkIfLoading([], tableData)}
-              title="All Trades"
-            />
+            <TradeTable data={allTrades} columns={columns} />
           </Tab>
         </Tabs>
       </Col>

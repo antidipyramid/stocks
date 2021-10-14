@@ -26,6 +26,7 @@ export default function PriceGraph({ data, dimensions, selectFunction, year }) {
         figureRef.current,
         priceData,
         data,
+
         dimensions,
         selectFunction
       );
