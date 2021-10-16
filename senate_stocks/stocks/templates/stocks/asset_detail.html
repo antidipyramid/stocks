@@ -6,6 +6,7 @@
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker-bs4.min.css"> -->
 <link rel="stylesheet" href="{% static 'css/asset_detail.css' %}">
 <link rel="stylesheet" href="{% static 'css/detail_pages.css' %}">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
 <!-- <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/js/datepicker-full.min.js"></script> -->
 <!-- <script src="{% static 'js/responsify.js' %}"></script> -->
 <!-- <script src="{% static 'js/datejs/date-en-US.js' %}"></script> -->
@@ -13,279 +14,279 @@
 <!-- <script src='{% static 'js/detail_heatmap.js' %}'></script> -->
 
 
-<div class="container-fluid content">
+
 <div id="root"></div>
 <script src="{% static 'js/asset_detail_bundle.js' %}"></script>
-    <!-- <h1 class="mt-3 mb-4">{{ asset.name }} ({{ asset.ticker }})</h1> -->
+<!-- <h1 class="mt-3 mb-4">{{ asset.name }} ({{ asset.ticker }})</h1> -->
 
-    <!-- <ul class="nav nav-tabs" id="myTab" role="tablist"> -->
-    <!--   <li class="nav-item" role="presentation"> -->
-    <!--     <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab" aria-controls="stats" aria-selected="true">Stats At-A-Glance</button> -->
-    <!--   </li> -->
-    <!--   <li class="nav-item" role="presentation"> -->
-    <!--     <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="false">Trade Explorer</button> -->
-    <!--   </li> -->
-    <!--   <li class="nav-item" role="presentation"> -->
-    <!--     <button class="nav-link" id="trades-tab" data-bs-toggle="tab" data-bs-target="#trades" type="button" role="tab" aria-controls="trades" aria-selected="false">All Trades</button> -->
-    <!--   </li> -->
-    <!-- </ul> -->
+<!-- <ul class="nav nav-tabs" id="myTab" role="tablist"> -->
+<!--   <li class="nav-item" role="presentation"> -->
+<!--     <button class="nav-link active" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab" aria-controls="stats" aria-selected="true">Stats At-A-Glance</button> -->
+<!--   </li> -->
+<!--   <li class="nav-item" role="presentation"> -->
+<!--     <button class="nav-link" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="false">Trade Explorer</button> -->
+<!--   </li> -->
+<!--   <li class="nav-item" role="presentation"> -->
+<!--     <button class="nav-link" id="trades-tab" data-bs-toggle="tab" data-bs-target="#trades" type="button" role="tab" aria-controls="trades" aria-selected="false">All Trades</button> -->
+<!--   </li> -->
+<!-- </ul> -->
 
-    <!-- <div class="tab-content" id="myTabContent"> -->
-    <!--   <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab"> -->
+<!-- <div class="tab-content" id="myTabContent"> -->
+<!--   <div class="tab-pane fade show active" id="stats" role="tabpanel" aria-labelledby="stats-tab"> -->
 
-    <!--     <h2 class="mt-3 text-center" style="font-family:Roboto Mono;">There are <u>{{ trades|length }}</u> trades on file for {{ asset.name }}</h2> -->
+<!--     <h2 class="mt-3 text-center" style="font-family:Roboto Mono;">There are <u>{{ trades|length }}</u> trades on file for {{ asset.name }}</h2> -->
 
-    <!--     <div style="max-width:1200px"> -->
-    <!--       <div class="row" style="--bs-gutter-x:0;"> -->
-    <!--         <div class="col-lg-4 col-sm-12"> -->
-    <!--           <div id="most-active-senators-card" class="card shadow-sm" > -->
-    <!--             <div class="card-header">Most Active Senators</div> -->
-    <!--             <div class="card-body" style='text-align:center;' id='most-active-senators'> -->
-    <!--               <!-1- <div class="chart" id="most-active-senators"></div> -1-> -->
-    <!--               <script src='{% static 'js/most_active_senators.js' %}'></script> -->
-    <!--             </div> -->
-    <!--           </div> -->
-    <!--         </div> -->
-    <!--         <div class="col-lg-8 col-md-12"> -->
-    <!--           <div id="most-recent-trades-card" class="card shadow-sm " > -->
-    <!--             <div class="card-header">Most Recent Trades</div> -->
-    <!--             <div class="card-body"> -->
-    <!--               <div class="table-responsive"> -->
-    <!--                 <table class= "table table-hover table-sm mt-3"> -->
-    <!--                   <thead> -->
-    <!--                     <tr> -->
-    <!--                       <th scope="col">Date</th> -->
-    <!--                       <th scope="col">Senator</th> -->
-    <!--                       <th scope="col">Owner</th> -->
-    <!--                       <th scope="col">Ticker</th> -->
-    <!--                       <th scope="col">Asset Type</th> -->
-    <!--                       <th scope="col">Transaction Type</th> -->
-    <!--                       <th scope="col">Amount</th> -->
-    <!--                     </tr> -->
-    <!--                   </thead> -->
-    <!--                   <tbody id="most-recent-trades-table"> -->
-    <!--                   </tbody> -->
-    <!--                 </table> -->
-    <!--               </div> -->
-    <!--               <script src='{% static 'js/asset_recent_trades_graph.js' %}'></script> -->
-    <!--             </div> -->
-    <!--           </div> -->
-    <!--         </div> -->
-    <!--         <div class="col-lg-3 col-md-12"> -->
-    <!--           <div class="card shadow-sm" > -->
-    <!--             <div class="card-header">Buy or Sell?</div> -->
-    <!--             <div class="card-body"> -->
-    <!--               <figure id="asset-type-graph"></figure> -->
-    <!--               <script src='{% static 'js/asset_trans_type_graph.js' %}'></script> -->
-    <!--             </div> -->
-    <!--           </div> -->
-    <!--         </div> -->
-    <!--         <div class="col-lg-9 col-md-12"> -->
-    <!--           <div class="card shadow-sm" > -->
-    <!--             <div class="card-header">Trades by Amount</div> -->
-    <!--             <div class="card-body"> -->
-    <!--               <figure id="asset-amount-graph"></figure> -->
-    <!--               <script src='{% static 'js/asset_amount_graph.js' %}'></script> -->
-    <!--             </div> -->
-    <!--           </div> -->
-    <!--         </div> -->
-    <!--       </div> -->
-    <!--     </div> -->
-    <!--   </div> -->
-    <!--   <script src='{% static 'js/asset_detail_brain.js' %}'></script> -->
-    <!--   <div class="tab-pane fade show" id="overview" role="tabpanel" aria-labelledby="overview-tab"> -->
+<!--     <div style="max-width:1200px"> -->
+<!--       <div class="row" style="--bs-gutter-x:0;"> -->
+<!--         <div class="col-lg-4 col-sm-12"> -->
+<!--           <div id="most-active-senators-card" class="card shadow-sm" > -->
+<!--             <div class="card-header">Most Active Senators</div> -->
+<!--             <div class="card-body" style='text-align:center;' id='most-active-senators'> -->
+<!--               <!-1- <div class="chart" id="most-active-senators"></div> -1-> -->
+<!--               <script src='{% static 'js/most_active_senators.js' %}'></script> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--         <div class="col-lg-8 col-md-12"> -->
+<!--           <div id="most-recent-trades-card" class="card shadow-sm " > -->
+<!--             <div class="card-header">Most Recent Trades</div> -->
+<!--             <div class="card-body"> -->
+<!--               <div class="table-responsive"> -->
+<!--                 <table class= "table table-hover table-sm mt-3"> -->
+<!--                   <thead> -->
+<!--                     <tr> -->
+<!--                       <th scope="col">Date</th> -->
+<!--                       <th scope="col">Senator</th> -->
+<!--                       <th scope="col">Owner</th> -->
+<!--                       <th scope="col">Ticker</th> -->
+<!--                       <th scope="col">Asset Type</th> -->
+<!--                       <th scope="col">Transaction Type</th> -->
+<!--                       <th scope="col">Amount</th> -->
+<!--                     </tr> -->
+<!--                   </thead> -->
+<!--                   <tbody id="most-recent-trades-table"> -->
+<!--                   </tbody> -->
+<!--                 </table> -->
+<!--               </div> -->
+<!--               <script src='{% static 'js/asset_recent_trades_graph.js' %}'></script> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--         <div class="col-lg-3 col-md-12"> -->
+<!--           <div class="card shadow-sm" > -->
+<!--             <div class="card-header">Buy or Sell?</div> -->
+<!--             <div class="card-body"> -->
+<!--               <figure id="asset-type-graph"></figure> -->
+<!--               <script src='{% static 'js/asset_trans_type_graph.js' %}'></script> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--         <div class="col-lg-9 col-md-12"> -->
+<!--           <div class="card shadow-sm" > -->
+<!--             <div class="card-header">Trades by Amount</div> -->
+<!--             <div class="card-body"> -->
+<!--               <figure id="asset-amount-graph"></figure> -->
+<!--               <script src='{% static 'js/asset_amount_graph.js' %}'></script> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--   </div> -->
+<!--   <script src='{% static 'js/asset_detail_brain.js' %}'></script> -->
+<!--   <div class="tab-pane fade show" id="overview" role="tabpanel" aria-labelledby="overview-tab"> -->
 
-    <!--     <!-1- Overview tab -1-> -->	
+<!--     <!-1- Overview tab -1-> -->	
 
-    <!--     <!-1- Asset price graph -1-> -->
+<!--     <!-1- Asset price graph -1-> -->
 
-    <!--     <div class="row mt-3 align-items-center"> -->
-    <!--       <div class="col-xl-9"> -->
-    <!--         <figure id="heatmap"></figure> -->
-    <!--       </div> -->
+<!--     <div class="row mt-3 align-items-center"> -->
+<!--       <div class="col-xl-9"> -->
+<!--         <figure id="heatmap"></figure> -->
+<!--       </div> -->
 
-    <!--       <!-1- Filter options -1-> -->
-    <!--       <div class="col-xl-3 justify-content-center"> -->
-    <!--         <div class="p-3 border light contrast-box"> -->
-    <!--           <div class="form-floating mb-1"> -->
-    <!--             <select class="form-select form-select-sm" id="yearSelect" aria-label="Default select example"> -->
-    <!--               <option selected>All</option> -->
-    <!--               <option value="2021">2021</option> -->
-    <!--               <option value="2020">2020</option> -->
-    <!--               <option value="2019">2019</option> -->
-    <!--             </select> -->
-    <!--             <label for="yearSelect">Year</label> -->
-    <!--           </div> -->
-    <!--           <div class="form-floating mb-1"> -->
-    <!--             <select class="form-select form-select-sm" id="senatorSelect" aria-label="Default select example"> -->
-    <!--               <option value="All" selected>All</option> -->
-    <!--             </select> -->
-    <!--             <label for="senatorSelect">Senator</label> -->
-    <!--           </div> -->
-    <!--           <div class="form-floating mb-1"> -->
-    <!--             <select class="form-select form-select-sm" id="transaction_type" aria-label="transaction type select"> -->
-    <!--               <option value="All" selected>All</option> -->
-    <!--               <option value="Purchase">Purchase</option> -->
-    <!--               <option value="Sale">Sale</option> -->
-    <!--             </select> -->
-    <!--             <label for="transaction_type">Transaction Type</label> -->
-    <!--           </div> -->
-    <!--           <div class="form-floating mb-1"> -->
-    <!--             <select class="form-select form-select-sm" id="amount" aria-label"trade amount select"> -->
-    <!--               <option value="All" selected>All</option> -->
-    <!--               <option value="$1,001 - $15,000">$1,001 - $15,000</option> -->
-    <!--               <option value="$15,001 - $50,000">$15,001 - $50,000</option> -->              
-    <!--               <option value="$50,001 - $100,000">$50,001 - $100,000</option> -->
-    <!--               <option value="$100,001 - $250,000">$100,001 - $250,000</option> -->
-    <!--               <option value="$251,001 - $500,000">$251,001 - $500,000</option> -->
-    <!--               <option value="$500,001 - $1,000,000">$500,001 - $1,000,000</option> -->
-    <!--               <option value="$1,000,001 - 5,000,000">$1,000,001 - 5,000,000</option> -->
-    <!--               <option value="$5,000,001 - $25,000,000">$5,000,001 - $25,000,000</option> -->
-    <!--               <option value="$25,000,001 - $50,000,000">$25,000,001 - $50,000,000</option> -->
-    <!--               <option value="Over $50,000,0000">Over $50,000,000</option> -->
-    <!--             </select> -->
-    <!--             <label for="amount">Transaction Amount</label> -->
-    <!--           </div> -->
-    <!--           <div class="d-grid"> -->
-    <!--             <button onclick="clearTradesFilterForms()" type="button" class="btn btn-sm btn-danger">Reset</button> -->
-    <!--           </div> -->
-    <!--         </div> -->
-    <!--       </div> -->
-    <!--     </div> -->
+<!--       <!-1- Filter options -1-> -->
+<!--       <div class="col-xl-3 justify-content-center"> -->
+<!--         <div class="p-3 border light contrast-box"> -->
+<!--           <div class="form-floating mb-1"> -->
+<!--             <select class="form-select form-select-sm" id="yearSelect" aria-label="Default select example"> -->
+<!--               <option selected>All</option> -->
+<!--               <option value="2021">2021</option> -->
+<!--               <option value="2020">2020</option> -->
+<!--               <option value="2019">2019</option> -->
+<!--             </select> -->
+<!--             <label for="yearSelect">Year</label> -->
+<!--           </div> -->
+<!--           <div class="form-floating mb-1"> -->
+<!--             <select class="form-select form-select-sm" id="senatorSelect" aria-label="Default select example"> -->
+<!--               <option value="All" selected>All</option> -->
+<!--             </select> -->
+<!--             <label for="senatorSelect">Senator</label> -->
+<!--           </div> -->
+<!--           <div class="form-floating mb-1"> -->
+<!--             <select class="form-select form-select-sm" id="transaction_type" aria-label="transaction type select"> -->
+<!--               <option value="All" selected>All</option> -->
+<!--               <option value="Purchase">Purchase</option> -->
+<!--               <option value="Sale">Sale</option> -->
+<!--             </select> -->
+<!--             <label for="transaction_type">Transaction Type</label> -->
+<!--           </div> -->
+<!--           <div class="form-floating mb-1"> -->
+<!--             <select class="form-select form-select-sm" id="amount" aria-label"trade amount select"> -->
+<!--               <option value="All" selected>All</option> -->
+<!--               <option value="$1,001 - $15,000">$1,001 - $15,000</option> -->
+<!--               <option value="$15,001 - $50,000">$15,001 - $50,000</option> -->              
+<!--               <option value="$50,001 - $100,000">$50,001 - $100,000</option> -->
+<!--               <option value="$100,001 - $250,000">$100,001 - $250,000</option> -->
+<!--               <option value="$251,001 - $500,000">$251,001 - $500,000</option> -->
+<!--               <option value="$500,001 - $1,000,000">$500,001 - $1,000,000</option> -->
+<!--               <option value="$1,000,001 - 5,000,000">$1,000,001 - 5,000,000</option> -->
+<!--               <option value="$5,000,001 - $25,000,000">$5,000,001 - $25,000,000</option> -->
+<!--               <option value="$25,000,001 - $50,000,000">$25,000,001 - $50,000,000</option> -->
+<!--               <option value="Over $50,000,0000">Over $50,000,000</option> -->
+<!--             </select> -->
+<!--             <label for="amount">Transaction Amount</label> -->
+<!--           </div> -->
+<!--           <div class="d-grid"> -->
+<!--             <button onclick="clearTradesFilterForms()" type="button" class="btn btn-sm btn-danger">Reset</button> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
 
 
-    <!--       <!-1- Table with trades for date selected in heatmap -1-> -->
-    <!--       <div class="selected-trades" id="selected-trades"> -->
-    <!--         <h5 class="mt-5" id="selected-date"></h5> -->
-    <!--         <div class="table-responsive"> -->
-    <!--           <table class= "table table-hover table-sm mt-3"> -->
-    <!--             <thead> -->
-    <!--               <tr> -->
-    <!--                 <th scope="col">Transaction Date</th> -->
-    <!--                 <th scope="col">Senator</th> -->
-    <!--                 <th scope="col">Owner</th> -->
-    <!--                 <th scope="col">Ticker</th> -->
-    <!--                 <th scope="col">Asset Name</th> -->
-    <!--                 <th scope="col">Asset Type</th> -->
-    <!--                 <th scope="col">Transaction Type</th> -->
-    <!--                 <th scope="col">Amount</th> -->
-    <!--                 <th scope="col">Comments</th> -->
-    <!--                 <th scope="col">Original URL</th> -->
-    <!--               </tr> -->
-    <!--             </thead> -->
-    <!--             <tbody id="selected-trades-table"> -->
-    <!--             </tbody> -->
-    <!--           </table> -->
-    <!--         </div> -->
-    <!--         <div id = "no-selected-trades-alert" class="alert alert-danger animated" role="alert">No date selected.</div> -->
-    <!--       </div> -->
-    <!--     </div> -->
-    <!--     <script src='{% static 'js/asset_detail.js' %}'></script> -->
-    <!--     <script>document.getElementById("overview-tab").addEventListener('click', () => createGraph(JSON.parse('{{ stock_history|escapejs }}'),JSON.parse('{{ json_trades|escapejs }}')),{ once:true })</script> -->
+<!--       <!-1- Table with trades for date selected in heatmap -1-> -->
+<!--       <div class="selected-trades" id="selected-trades"> -->
+<!--         <h5 class="mt-5" id="selected-date"></h5> -->
+<!--         <div class="table-responsive"> -->
+<!--           <table class= "table table-hover table-sm mt-3"> -->
+<!--             <thead> -->
+<!--               <tr> -->
+<!--                 <th scope="col">Transaction Date</th> -->
+<!--                 <th scope="col">Senator</th> -->
+<!--                 <th scope="col">Owner</th> -->
+<!--                 <th scope="col">Ticker</th> -->
+<!--                 <th scope="col">Asset Name</th> -->
+<!--                 <th scope="col">Asset Type</th> -->
+<!--                 <th scope="col">Transaction Type</th> -->
+<!--                 <th scope="col">Amount</th> -->
+<!--                 <th scope="col">Comments</th> -->
+<!--                 <th scope="col">Original URL</th> -->
+<!--               </tr> -->
+<!--             </thead> -->
+<!--             <tbody id="selected-trades-table"> -->
+<!--             </tbody> -->
+<!--           </table> -->
+<!--         </div> -->
+<!--         <div id = "no-selected-trades-alert" class="alert alert-danger animated" role="alert">No date selected.</div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--     <script src='{% static 'js/asset_detail.js' %}'></script> -->
+<!--     <script>document.getElementById("overview-tab").addEventListener('click', () => createGraph(JSON.parse('{{ stock_history|escapejs }}'),JSON.parse('{{ json_trades|escapejs }}')),{ once:true })</script> -->
 
-    <!--     <!-1- All Trades tab -1-> -->
-    <!--     <div class="tab-pane fade" id="trades" role="tabpanel" aria-labelledby="trades-tab"> -->
+<!--     <!-1- All Trades tab -1-> -->
+<!--     <div class="tab-pane fade" id="trades" role="tabpanel" aria-labelledby="trades-tab"> -->
 
-    <!--       <!-1- Options to filter trades -1-> -->
-    <!--       <div class="mt-3 p-3 border light contrast-box"> -->
-    <!--         <div class="row align-items-center mx-3"> -->
-    <!--           <div class="col-xl col-lg-4 col-md-3 col-sm-12 mb-1"> -->
-    <!--             <div id="dateRange" class="input-group input-group-sm"> -->
-    <!--               <input type="text" id="dateStartInput" class="form-control form-control-sm resp-form" placeholder="Start" aria-label="search start date"> -->
-    <!--               <span class="input-group-text" id="dateInputLabel">to</span> -->
-    <!--               <input type="text" id="dateEndInput" class="form-control form-control-sm resp-form" placeholder="End" aria-label="search end date"> -->
-    <!--             </div> -->
-    <!--             <script>makeDatePicker("dateRange")</script> -->
-    <!--           </div> -->
-    <!--           <div class="col-xl col-lg-3 col-md-4 col-sm-12 mb-1"> -->
-    <!--             <div class="form-floating"> -->
-    <!--               <select class="form-select form-select-sm resp-form" id="asset_type" aria-label="asset type select"> -->
-    <!--                 <option value="All" selected>All</option> -->
-    <!--                 <option value="Stock">Stock</option> -->
-    <!--                 <option value="Non-Public Stock">Non-Public Stock</option> -->
-    <!--                 <option value="Stock Option">Stock Option</option> -->
-    <!--                 <option value="Corporate Bond">Corporate Bond</option> -->
-    <!--                 <option value="Municipal Security">Municipal Security</option> -->
-    <!--                 <option value="Other Securities">Other Securities</option> -->
-    <!--               </select> -->
-    <!--               <label for="asset_type">Asset Type</label> -->
-    <!--             </div> -->
-    <!--           </div> -->
-    <!--           <div class="col-xl col-lg-4 col-md-4 col-sm-12 mb-1"> -->
-    <!--             <div class="form-floating"> -->
-    <!--               <select class="form-select form-select-sm resp-form" id="transaction_type" aria-label="transaction type select"> -->
-    <!--                 <option value="All" selected>All</option> -->
-    <!--                 <option value="Purchase" selected>Purchase</option> -->
-    <!--                 <option value="Sale (Partial)">Sale (Partial)</option> -->
-    <!--                 <option value="Sale (Full)">Sale (Full)</option> -->
-    <!--               </select> -->
-    <!--               <label for="transaction_type">Transaction Type</label> -->
-    <!--             </div> -->
-    <!--           </div> -->
-    <!--           <div class="col-xl col-lg-4 col-md-4 col-sm-12 mb-1"> -->
-    <!--             <div class="form-floating"> -->
-    <!--               <select class="form-select form-select-sm resp-form" id="amount" aria-label"trade amount select"> -->
-    <!--                 <option value="All" selected>All</option> -->
-    <!--                 <option value="$1,001 - $15,000">$1,001 - $15,000</option> -->
-    <!--                 <option value="$15,001 - $50,000">$15,001 - $50,000</option> -->							
-    <!--                 <option value="$50,000 - $100,000">$50,000 - $100,000</option> -->
-    <!--                 <option value="$100,001 - $250,000">$100,001 - $250,000</option> -->
-    <!--                 <option value="$251,001 - $500,000">$251,001 - $500,000</option> -->
-    <!--                 <option value="$500,001 - $1,000,000">$500,001 - $1,000,000</option> -->
-    <!--                 <option value="$1,000,001 - 5,000,000">$1,000,001 - 5,000,000</option> -->
-    <!--                 <option value="$5,000,001 - $25,000,000">$5,000,001 - $25,000,000</option> -->
-    <!--                 <option value="$25,000,001 - $50,000,000">$25,000,001 - $50,000,000</option> -->
-    <!--                 <option value="Over $50,000,0000">Over $50,000,000</option> -->
-    <!--               </select> -->
-    <!--               <label for="amount">Transaction Amount</label> -->
-    <!--             </div> -->
-    <!--           </div> -->
-    <!--           <div class="col-xl col-lg-2 col-md-2 col-sm-12 mb-1"> -->
-    <!--             <button id="reset-button" type="button" class="btn btn-danger resp-form">Reset</button> -->
-    <!--           </div> -->
-    <!--         </div> -->
-    <!--       </div> -->
-    <!--       <div class="table-responsive"> -->
-    <!--         <table class= "table table-hover table-striped table-sm mt-3"> -->
-    <!--           <thead> -->
-    <!--             <tr> -->
-    <!--               <th scope="col">All Transaction Dates</th> -->
-    <!--               <th scope="col">Senator</th> -->
-    <!--               <th scope="col">Owner</th> -->
-    <!--               <th scope="col">Ticker</th> -->
-    <!--               <th scope="col">Asset Name</th> -->
-    <!--               <th scope="col">Asset Type</th> -->
-    <!--               <th scope="col">Transaction Type</th> -->
-    <!--               <th scope="col">Amount</th> -->
-    <!--               <th scope="col">Comments</th> -->
-    <!--               <th scope="col">Original URL</th> -->
-    <!--             </tr> -->
-    <!--           </thead> -->
-    <!--           <tbody id="allTrades"> -->
-    <!--             <!-1- {% for trade in trades %} -1-> -->
-    <!--             <!-1- <tr> -1-> -->
-    <!--             <!-1-   <th scope="row">{{ trade.transaction_date }}</th> -1-> -->
-    <!--             <!-1-   <td><a href={% url 'senator_detail' trade.senator.id %}>{{ trade.senator }}</a></td> -1-> -->
-    <!--             <!-1-   <td>{{ trade.owner }}</td> -1-> -->
-    <!--             <!-1-   <td>{{ trade.ticker }}</td> -1-> -->
-    <!--             <!-1-   <td><a href="/asset/{{ trade.asset.id }}">{{ trade.asset_name }}</a></td> -1-> -->
-    <!--             <!-1-   <td>{{ trade.asset_type }}</td> -1-> -->
-    <!--             <!-1-   <td>{{ trade.transaction_type }}</td> -1-> -->
-    <!--             <!-1-   <td>{{ trade.amount }}</td> -1-> -->
-    <!--             <!-1-   <td>{{ trade.comments }}</td> -1-> -->
-    <!--             <!-1-   <td><a href={{ trade.url }}>Link</a></td> -1-> -->
-    <!--             <!-1- </tr> -1-> -->
-    <!--             <!-1- {% endfor %} -1-> -->
-    <!--           </tbody> -->
-    <!--         </table> -->
-    <!--       </div> -->
-    <!--       <div id="no-filter-trades-alert" style="visibility:hidden;display:none;" class="alert alert-dark animated" role="alert" >No trades found.</div> -->
-    <!--       <div class="d-grid "> -->
-    <!--         <button id="all-trades-more" class="btn btn-outline-primary btn-sm" type="button">Show More Trades</button> -->
-    <!--       </div> -->
-    <!--     </div> -->
-    <!--   </div> -->
+<!--       <!-1- Options to filter trades -1-> -->
+<!--       <div class="mt-3 p-3 border light contrast-box"> -->
+<!--         <div class="row align-items-center mx-3"> -->
+<!--           <div class="col-xl col-lg-4 col-md-3 col-sm-12 mb-1"> -->
+<!--             <div id="dateRange" class="input-group input-group-sm"> -->
+<!--               <input type="text" id="dateStartInput" class="form-control form-control-sm resp-form" placeholder="Start" aria-label="search start date"> -->
+<!--               <span class="input-group-text" id="dateInputLabel">to</span> -->
+<!--               <input type="text" id="dateEndInput" class="form-control form-control-sm resp-form" placeholder="End" aria-label="search end date"> -->
+<!--             </div> -->
+<!--             <script>makeDatePicker("dateRange")</script> -->
+<!--           </div> -->
+<!--           <div class="col-xl col-lg-3 col-md-4 col-sm-12 mb-1"> -->
+<!--             <div class="form-floating"> -->
+<!--               <select class="form-select form-select-sm resp-form" id="asset_type" aria-label="asset type select"> -->
+<!--                 <option value="All" selected>All</option> -->
+<!--                 <option value="Stock">Stock</option> -->
+<!--                 <option value="Non-Public Stock">Non-Public Stock</option> -->
+<!--                 <option value="Stock Option">Stock Option</option> -->
+<!--                 <option value="Corporate Bond">Corporate Bond</option> -->
+<!--                 <option value="Municipal Security">Municipal Security</option> -->
+<!--                 <option value="Other Securities">Other Securities</option> -->
+<!--               </select> -->
+<!--               <label for="asset_type">Asset Type</label> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="col-xl col-lg-4 col-md-4 col-sm-12 mb-1"> -->
+<!--             <div class="form-floating"> -->
+<!--               <select class="form-select form-select-sm resp-form" id="transaction_type" aria-label="transaction type select"> -->
+<!--                 <option value="All" selected>All</option> -->
+<!--                 <option value="Purchase" selected>Purchase</option> -->
+<!--                 <option value="Sale (Partial)">Sale (Partial)</option> -->
+<!--                 <option value="Sale (Full)">Sale (Full)</option> -->
+<!--               </select> -->
+<!--               <label for="transaction_type">Transaction Type</label> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="col-xl col-lg-4 col-md-4 col-sm-12 mb-1"> -->
+<!--             <div class="form-floating"> -->
+<!--               <select class="form-select form-select-sm resp-form" id="amount" aria-label"trade amount select"> -->
+<!--                 <option value="All" selected>All</option> -->
+<!--                 <option value="$1,001 - $15,000">$1,001 - $15,000</option> -->
+<!--                 <option value="$15,001 - $50,000">$15,001 - $50,000</option> -->							
+<!--                 <option value="$50,000 - $100,000">$50,000 - $100,000</option> -->
+<!--                 <option value="$100,001 - $250,000">$100,001 - $250,000</option> -->
+<!--                 <option value="$251,001 - $500,000">$251,001 - $500,000</option> -->
+<!--                 <option value="$500,001 - $1,000,000">$500,001 - $1,000,000</option> -->
+<!--                 <option value="$1,000,001 - 5,000,000">$1,000,001 - 5,000,000</option> -->
+<!--                 <option value="$5,000,001 - $25,000,000">$5,000,001 - $25,000,000</option> -->
+<!--                 <option value="$25,000,001 - $50,000,000">$25,000,001 - $50,000,000</option> -->
+<!--                 <option value="Over $50,000,0000">Over $50,000,000</option> -->
+<!--               </select> -->
+<!--               <label for="amount">Transaction Amount</label> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="col-xl col-lg-2 col-md-2 col-sm-12 mb-1"> -->
+<!--             <button id="reset-button" type="button" class="btn btn-danger resp-form">Reset</button> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--       <div class="table-responsive"> -->
+<!--         <table class= "table table-hover table-striped table-sm mt-3"> -->
+<!--           <thead> -->
+<!--             <tr> -->
+<!--               <th scope="col">All Transaction Dates</th> -->
+<!--               <th scope="col">Senator</th> -->
+<!--               <th scope="col">Owner</th> -->
+<!--               <th scope="col">Ticker</th> -->
+<!--               <th scope="col">Asset Name</th> -->
+<!--               <th scope="col">Asset Type</th> -->
+<!--               <th scope="col">Transaction Type</th> -->
+<!--               <th scope="col">Amount</th> -->
+<!--               <th scope="col">Comments</th> -->
+<!--               <th scope="col">Original URL</th> -->
+<!--             </tr> -->
+<!--           </thead> -->
+<!--           <tbody id="allTrades"> -->
+<!--             <!-1- {% for trade in trades %} -1-> -->
+<!--             <!-1- <tr> -1-> -->
+<!--             <!-1-   <th scope="row">{{ trade.transaction_date }}</th> -1-> -->
+<!--             <!-1-   <td><a href={% url 'senator_detail' trade.senator.id %}>{{ trade.senator }}</a></td> -1-> -->
+<!--             <!-1-   <td>{{ trade.owner }}</td> -1-> -->
+<!--             <!-1-   <td>{{ trade.ticker }}</td> -1-> -->
+<!--             <!-1-   <td><a href="/asset/{{ trade.asset.id }}">{{ trade.asset_name }}</a></td> -1-> -->
+<!--             <!-1-   <td>{{ trade.asset_type }}</td> -1-> -->
+<!--             <!-1-   <td>{{ trade.transaction_type }}</td> -1-> -->
+<!--             <!-1-   <td>{{ trade.amount }}</td> -1-> -->
+<!--             <!-1-   <td>{{ trade.comments }}</td> -1-> -->
+<!--             <!-1-   <td><a href={{ trade.url }}>Link</a></td> -1-> -->
+<!--             <!-1- </tr> -1-> -->
+<!--             <!-1- {% endfor %} -1-> -->
+<!--           </tbody> -->
+<!--         </table> -->
+<!--       </div> -->
+<!--       <div id="no-filter-trades-alert" style="visibility:hidden;display:none;" class="alert alert-dark animated" role="alert" >No trades found.</div> -->
+<!--       <div class="d-grid "> -->
+<!--         <button id="all-trades-more" class="btn btn-outline-primary btn-sm" type="button">Show More Trades</button> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--   </div> -->
 
-  </div>
+
 
   {% endblock content %}

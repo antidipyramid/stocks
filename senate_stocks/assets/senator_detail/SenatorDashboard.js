@@ -6,13 +6,10 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import SenatorStats from './SenatorStats';
-import AllTrades from '../common/AllTrades';
 import TradeTable from '../common/TradeTable';
 import SenatorTradeExplorer from './SenatorTradeExplorer';
-import useTableData from '../common/hooks/useTableData';
 import useApiData from '../common/hooks/useApiData';
 import useMapData from '../common/hooks/useMapData';
-import useTable from 'react-table';
 import { SelectColumnFilter } from '../common/TradeTable';
 import {
   amounts,
@@ -21,7 +18,6 @@ import {
   states,
   parties,
   transactionTypes,
-  columns,
 } from '../common/Constants';
 
 require('datejs');
@@ -83,6 +79,18 @@ function SenatorDashboard() {
             accessor: 'senator',
             disableSortBy: true,
             disableFilters: true,
+          },
+          {
+            Header: 'Asset',
+            accessor: 'asset_name',
+            disableSortBy: true,
+            filter: 'fuzzyText',
+          },
+          {
+            Header: 'Ticker',
+            accessor: 'ticker',
+            disableSortBy: true,
+            filter: 'fuzzyText',
           },
           {
             Header: 'Owner',

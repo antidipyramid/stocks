@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Container from 'react-bootstrap/Container';
+import Col from 'react-bootstrap/Col';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Stats from './Stats';
@@ -8,6 +9,8 @@ import AllTrades from '../common/AllTrades';
 import useTableData from '../common/hooks/useTableData';
 import useApiData from '../common/hooks/useApiData';
 import useMapData from '../common/hooks/useMapData';
+import TradeTable from '../common/TradeTable';
+import { SelectColumnFilter } from '../common/TradeTable';
 import {
   amounts,
   owners,
@@ -15,10 +18,87 @@ import {
   states,
   parties,
   transactionTypes,
-  columns,
 } from '../common/Constants';
 
+require('datejs');
+
 function App() {
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Name',
+        columns: [
+          {
+            Header: 'Date',
+            accessor: (row) => {
+              let arr = row.transaction_date.split('-'),
+                date_string = arr[1] + '/' + arr[2] + '/' + arr[0];
+
+              return Date.parse(date_string);
+            },
+            disableFilters: true,
+            Cell: ({ value }) => value.toString('M/d/yy'),
+          },
+          {
+            Header: 'Senator',
+            accessor: 'senator',
+            disableSortBy: true,
+            disableFilters: true,
+          },
+          {
+            Header: 'Asset',
+            accessor: 'asset_name',
+            disableSortBy: true,
+            disableFilters: true,
+          },
+          {
+            Header: 'Ticker',
+            accessor: 'ticker',
+            disableSortBy: true,
+            disableFilters: true,
+          },
+          {
+            Header: 'Owner',
+            accessor: 'owner',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+          },
+          {
+            Header: 'Asset Type',
+            accessor: 'asset_type',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+          },
+          {
+            Header: 'Transaction Type',
+            accessor: 'transaction_type',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+          },
+          {
+            Header: 'Amount',
+            accessor: 'amount',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+          },
+          {
+            Header: 'Comments',
+            accessor: 'comments',
+            disableSortBy: true,
+            disableFilters: true,
+          },
+          {
+            Header: 'Link To Original',
+            accessor: 'url',
+            disableSortBy: true,
+            Cell: (value) => <a href={value}>Link</a>,
+            disableFilters: true,
+          },
+        ],
+      },
+    ],
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [assetInfo, setAssetInfo] = useState({});
   const apiData = useApiData(
@@ -43,8 +123,6 @@ function App() {
     [topTraders, setTopTraders] = useMapData('senator', []),
     [allTrades, setAllTrades] = useState([]);
 
-  const [tableData, setTableData] = useTableData(columns, []);
-
   useEffect(() => {
     if (apiData) {
       setTransactionTypeMap(apiData.asset_related_trades);
@@ -68,17 +146,16 @@ function App() {
       partyMap,
       stateMap
     );
-
-    if (apiData) {
-      setTableData(apiData.asset_related_trades);
-    }
   }, [apiData]);
 
   const checkIfLoading = (placeholder, data) =>
     isLoading ? placeholder : data;
 
   return (
-    <Container>
+    <Container
+      fluid
+      style={{ 'padding-left': '10vw', 'padding-right': '10vw' }}
+    >
       <h1>
         {isLoading ? 'Loading' : apiData.name + ' (' + apiData.ticker + ')'}
       </h1>
@@ -105,10 +182,7 @@ function App() {
           <Explorer data={checkIfLoading([], allTrades)} />
         </Tab>
         <Tab eventKey="all" title="All Trades">
-          <AllTrades
-            tableInfo={checkIfLoading([], tableData)}
-            title="All Trades"
-          />
+          <TradeTable data={allTrades} columns={columns} />
         </Tab>
       </Tabs>
     </Container>

@@ -29,10 +29,14 @@ export default function SenatorTradeExplorer({ data }) {
           {
             Header: 'Date',
             accessor: 'transaction_date',
+            disableSortBy: true,
+            disableFilters: true,
           },
           {
             Header: 'Senator',
             accessor: 'senator',
+            disableSortBy: true,
+            disableFilters: true,
           },
           {
             Header: 'Owner',
@@ -53,10 +57,14 @@ export default function SenatorTradeExplorer({ data }) {
           {
             Header: 'Comments',
             accessor: 'comments',
+            disableSortBy: true,
+            disableFilters: true,
           },
           {
             Header: 'Link To Original',
             accessor: 'url',
+            disableSortBy: true,
+            disableFilters: true,
             Cell: (value) => <a href={value}>Link</a>,
           },
         ],

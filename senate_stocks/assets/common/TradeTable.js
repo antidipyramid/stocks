@@ -8,6 +8,13 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import Row from 'react-bootstrap/Row';
+import matchSorter from 'match-sorter';
+
+export function fuzzyTextFilterFn(rows, id, filterValue) {
+  return matchSorter(rows, filterValue, { keys: [(row) => row.values[id]] });
+}
+
+fuzzyTextFilterFn.autoRemove = (val) => !val;
 
 export function SelectColumnFilter({
   column: { filterValue, setFilter, preFilteredRows, id },
@@ -41,9 +48,28 @@ export function SelectColumnFilter({
   );
 }
 
+// Define a default UI for filtering
+function DefaultColumnFilter({
+  column: { filterValue, preFilteredRows, setFilter },
+}) {
+  return (
+    <Form.Control
+      style={{ width: '100%' }}
+      size="sm"
+      value={filterValue || ''}
+      onChange={(e) => {
+        setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+      }}
+      placeholder="Search..."
+    />
+  );
+}
+
 export default function TradeTable({ columns, data }) {
   const filterTypes = React.useMemo(
     () => ({
+      // Add a new fuzzyTextFilterFn filter type.
+      fuzzyText: fuzzyTextFilterFn,
       // Or, override the default text filter to use
       // "startWith"
       text: (rows, id, filterValue) => {
@@ -63,7 +89,7 @@ export default function TradeTable({ columns, data }) {
   const defaultColumn = React.useMemo(
     () => ({
       // Let's set up our default Filter UI
-      Filter: SelectColumnFilter,
+      Filter: DefaultColumnFilter,
     }),
     []
   );
