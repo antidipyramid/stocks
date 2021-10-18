@@ -12,6 +12,14 @@ import {
   Paging,
   Sorting,
 } from '@elastic/react-search-ui';
+
+import Pagination from 'react-bootstrap/Pagination';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import SearchForm from './SearchForm';
+
+import { v4 as uuidv4 } from 'uuid';
+
 import { Layout, SingleSelectFacet } from '@elastic/react-search-ui-views';
 import '@elastic/react-search-ui-views/lib/styles/styles.css';
 
@@ -22,18 +30,28 @@ const config = {
     /* Not implemented */
   },
   onSearch: async (state) => {
-    const { resultsPerPage, current } = state;
-    return fetch('/api/assets')
+    const { resultsPerPage, searchTerm, current, sortField, sortDirection } =
+      state;
+    const pageNumber = current + 1;
+    return fetch(
+      '/api/assets/?search=' +
+        searchTerm +
+        '&page=' +
+        (pageNumber - 1) +
+        '&order=' +
+        (sortDirection === 'asc' ? sortField : '-' + sortField)
+    )
       .then((response) => response.json())
       .then((jsonResponse) => {
         return {
-          results: jsonResponse.map((result) =>
+          results: jsonResponse.results.map((result) =>
+            // results array needs to be in format Search UI can understand
             Object.keys(result).reduce((acc, key) => {
               return { ...acc, [key]: { raw: result[key] } };
             }, {})
           ),
-          totalResults: jsonResponse.length,
-          totalPages: Math.ceil(jsonResponse.length / resultsPerPage),
+          totalResults: jsonResponse.count,
+          totalPages: Math.ceil(jsonResponse.count / resultsPerPage),
         };
       });
   },
@@ -47,7 +65,21 @@ export default function Search() {
           <div className="App">
             <ErrorBoundary>
               <Layout
-                header={<SearchBox />}
+                header={
+                  <>
+                    <SearchBox
+                      view={({ value, onSubmit, onChange }) => {
+                        return (
+                          <SearchForm
+                            value={value}
+                            onSubmit={onSubmit}
+                            onChange={onChange}
+                          />
+                        );
+                      }}
+                    />
+                  </>
+                }
                 sideContent={
                   <div>
                     <Sorting
@@ -59,9 +91,24 @@ export default function Search() {
                           direction: '',
                         },
                         {
-                          name: 'Title',
-                          value: 'title',
+                          name: 'Name (A-Z)',
+                          value: 'name',
                           direction: 'asc',
+                        },
+                        {
+                          name: 'Name (Z-A)',
+                          value: 'name',
+                          direction: 'dec',
+                        },
+                        {
+                          name: 'Number of Trades (ascending)',
+                          value: 'count',
+                          direction: 'asc',
+                        },
+                        {
+                          name: 'Number of Trades (descending)',
+                          value: 'count',
+                          direction: 'dec',
                         },
                       ]}
                     />
@@ -84,7 +131,11 @@ export default function Search() {
                   </div>
                 }
                 bodyContent={
-                  <Results titleField="name" shouldTrackClickThrough={true} />
+                  <Results
+                    titleField="name"
+                    shouldTrackClickThrough={true}
+                    urlField="url"
+                  />
                 }
                 bodyHeader={
                   <React.Fragment>
@@ -92,7 +143,41 @@ export default function Search() {
                     <ResultsPerPage />
                   </React.Fragment>
                 }
-                bodyFooter={<Paging />}
+                bodyFooter={
+                  <Paging
+                    view={({ current, totalPages, onChange }) => (
+                      <Pagination>
+                        <Pagination.First
+                          onClick={() => onChange(1)}
+                          disabled={current === 1}
+                        />
+                        <Pagination.Prev
+                          disabled={current === 1}
+                          onClick={() => onChange(current - 1)}
+                        />
+                        {[...Array(totalPages + 1).keys()]
+                          .slice(1)
+                          .map((number) => (
+                            <Pagination.Item
+                              key={uuidv4()}
+                              active={number === current}
+                              onClick={() => onChange(number)}
+                            >
+                              {number}
+                            </Pagination.Item>
+                          ))}
+                        <Pagination.Next
+                          onClick={() => onChange(current + 1)}
+                          disabled={current === totalPages}
+                        />
+                        <Pagination.Last
+                          onClick={() => onChange(totalPages)}
+                          disabled={current === totalPages}
+                        />
+                      </Pagination>
+                    )}
+                  />
+                }
               />
             </ErrorBoundary>
           </div>

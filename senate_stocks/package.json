@@ -20,9 +20,11 @@
     "eslint": "^7.32.0",
     "eslint-plugin-react": "^7.26.0",
     "prettier": "2.4.1",
+    "sass": "^1.43.2",
+    "sass-loader": "^12.2.0",
     "style-loader": "^3.3.0",
     "ts-loader": "^9.2.6",
-    "webpack": "^5.53.0",
+    "webpack": "^5.58.2",
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
@@ -40,6 +42,7 @@
     "react-bootstrap": "^2.0.0-rc.0",
     "react-dom": "^17.0.2",
     "react-table": "^7.7.0",
-    "topojson-client": "^3.1.0"
+    "topojson-client": "^3.1.0",
+    "uuid": "^8.3.2"
   }
 }

@@ -48,15 +48,17 @@ class AssetDetailSerializer(serializers.ModelSerializer):
     def get_last_senator(self, obj):
         return str(obj.asset_related_trades.latest('transaction_date').senator)
 
+
 class AssetSerializer(serializers.ModelSerializer):
     # asset_related_trades = TradeSerializer(many=True)
     count = serializers.SerializerMethodField()
     latest = serializers.SerializerMethodField()
     last_senator = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Asset
-        fields = ('id','ticker', 'name', 'count', 'latest', 'last_senator')
+        fields = ('id','ticker', 'name', 'count', 'latest', 'url', 'last_senator')
 
     def get_count(self, obj):
         return obj.asset_related_trades.count()
@@ -77,6 +79,9 @@ class AssetSerializer(serializers.ModelSerializer):
             return 'None'
 
         return str(obj.asset_related_trades.latest('transaction_date').senator)
+
+    def get_url(self, obj):
+        return f'/asset/{obj.id}'
 
 class SenatorSerializer(serializers.ModelSerializer):
     # related_trades = TradeSerializer(many=True,read_only=True)
