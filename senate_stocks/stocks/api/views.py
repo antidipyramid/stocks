@@ -9,7 +9,7 @@ from stocks.models import Trade, Senator, Asset
 from .serializers import AssetDetailSerializer, SenatorDetailSerializer, TradeSerializer, SearchSerializer, SenatorSerializer, AssetSerializer
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db.models import Count
+from django.db.models import Count, Max
 import django_filters as filters
 
 from collections import namedtuple
@@ -55,6 +55,7 @@ class AssetViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Override to account for ordering (sorting)"""
         queryset = Asset.objects.annotate(count=Count('asset_related_trades'))
+        queryset = Asset.objects.annotate(latest=Max('asset_related_trades__transaction_date'))
         order = self.request.query_params.get('order');
 
         if order not in (None, '-'):
