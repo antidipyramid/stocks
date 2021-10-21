@@ -139,11 +139,7 @@ export default function TradeTable({ columns, data }) {
                   <span {...column.getSortByToggleProps()}>
                     {column.render('Header')}
                     <span>
-                      {column.isSorted
-                        ? column.isSortedDesc
-                          ? 'Up'
-                          : 'Down'
-                        : ''}
+                      {column.isSorted ? (column.isSortedDesc ? '↑' : '↓') : ''}
                     </span>
                   </span>
                   <div>{column.canFilter ? column.render('Filter') : null}</div>

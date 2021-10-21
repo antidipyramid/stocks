@@ -19,7 +19,7 @@ class Senator(models.Model):
 
     party = models.CharField(max_length=4,choices=PartyChoices.choices,default=PartyChoices.INDEPENDENT)
 
-    photo_url = models.URLField(default="")
+    photo_url = models.URLField(default="", blank=True)
 
     @property
     def trades():

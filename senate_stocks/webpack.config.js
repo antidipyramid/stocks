@@ -5,6 +5,7 @@ module.exports = {
     asset_detail: './assets/asset_detail/index.js',
     senator_detail: './assets/senator_detail/index.js',
     asset_search: './assets/asset_search/index.js',
+    senator_search: './assets/senator_search/index.js',
   },
   output: {
     filename: '[name]_bundle.js', // output bundle file name

@@ -7,6 +7,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from stocks.models import Trade, Senator, Asset
 from .serializers import AssetDetailSerializer, SenatorDetailSerializer, TradeSerializer, SearchSerializer, SenatorSerializer, AssetSerializer
+from .paginations import SenatorPagination
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Count, Max
@@ -14,6 +15,7 @@ import django_filters as filters
 
 from collections import namedtuple
 from datetime import date, timedelta
+from functools import reduce
 
 
 class TradeListApiView(APIView):
@@ -54,8 +56,9 @@ class AssetViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Override to account for ordering (sorting)"""
-        queryset = Asset.objects.annotate(count=Count('asset_related_trades'))
-        queryset = Asset.objects.annotate(latest=Max('asset_related_trades__transaction_date'))
+        queryset = Asset.objects.all()
+        # queryset = Asset.objects.annotate(count=Count('asset_related_trades'))
+        # queryset = Asset.objects.annotate(latest=Max('asset_related_trades__transaction_date'))
         order = self.request.query_params.get('order');
 
         if order not in (None, '-'):
@@ -91,17 +94,46 @@ class SenatorViewSet(viewsets.ModelViewSet):
     """
     A viewset for viewing the senator models.
     """
-    queryset = Senator.objects.all()
+    # queryset = Senator.objects.all()
     serializer_class = SenatorSerializer
     filterset_class = SenatorFilter
+    filter_backends = [SearchFilter]
+    search_fields = ['first_name','last_name']
     detail_serializer_class = SenatorDetailSerializer
+    pagination_class = SenatorPagination
 
-    def filter_queryset(self,queryset):
-        filter_backends = [DjangoFilterBackend]
-        for backend in list(filter_backends):
-            queryset = backend().filter_queryset(self.request,queryset,view=self)
+    # def get_queryset(self):
+    #     queryset = Senator.objects.annotate()
 
-        return queryset
+    def get_queryset(self):
+        queryset = Senator.objects.all()
+        states = self.request.query_params.get('state', '')
+        parties = self.request.query_params.get('party', '')
+
+        if not states and not parties:
+            return queryset
+
+        if not states:
+            # we need a Q statement that is always true
+            # so if there's no query for this field, we can 
+            # just move on
+            state_query = ~Q(pk=None)
+        else:
+            state_query = Q(state__in=states.split('|'))
+
+        if not parties:
+            party_query = ~Q(pk=None)
+        else:
+            party_query = Q(party__in=parties.split('|'))
+
+        return queryset.filter(state_query | party_query)
+
+    # def filter_queryset(self,queryset):
+    #     filter_backends = [DjangoFilterBackend]
+    #     for backend in list(filter_backends):
+    #         queryset = backend().filter_queryset(self.request,queryset,view=self)
+
+    #     return queryset
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
