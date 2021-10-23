@@ -20,6 +20,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 
+import { states, parties } from '../common/Constants';
+
 import { v4 as uuidv4 } from 'uuid';
 
 import SearchForm from '../common/SearchForm';
@@ -27,6 +29,8 @@ import SearchPagination from '../common/SearchPagination';
 import fetchAPIResults from '../common/fetchAPIResults';
 import SearchResultsInfo from '../common/SearchResultsInfo';
 import SearchSortOptions from '../common/SearchSortOptions';
+import SenatorResult from './SenatorResult';
+import CheckboxFilter from '../common/CheckboxFilter';
 import ResultsPerPageSelect from '../common/ResultsPerPageSelect';
 import applyDisjunctiveFaceting from '../common/disjuctive';
 
@@ -104,8 +108,13 @@ export default function SenatorSearch() {
   return (
     <Container>
       <SearchProvider config={config}>
-        <WithSearch mapContextToProps={({ wasSearched }) => ({ wasSearched })}>
-          {({ wasSearched }) => (
+        <WithSearch
+          mapContextToProps={({ results, wasSearched }) => ({
+            results,
+            wasSearched,
+          })}
+        >
+          {({ results, wasSearched }) => (
             <div className="App">
               <ErrorBoundary>
                 <Row className="mb-3">
@@ -155,31 +164,46 @@ export default function SenatorSearch() {
                       sortOptions={resultsSortOptions}
                       view={({ value, options, onChange }) => (
                         <SearchSortOptions
+                          mapping={parties}
                           value={value}
                           options={options}
                           onChange={onChange}
                         />
                       )}
                     />
+
                     <Facet
                       field="state"
                       label="State"
-                      view={MultiCheckboxFacet}
+                      view={({ options, onRemove, onSelect }) => (
+                        <CheckboxFilter
+                          mapping={states}
+                          options={options}
+                          onRemove={onRemove}
+                          onSelect={onSelect}
+                        />
+                      )}
                       filterType="any"
                     />
                     <Facet
                       field="party"
                       label="Party"
-                      view={MultiCheckboxFacet}
+                      view={({ options, onRemove, onSelect }) => (
+                        <CheckboxFilter
+                          attrName="party"
+                          options={options}
+                          onRemove={onRemove}
+                          onSelect={onSelect}
+                        />
+                      )}
                       filterType="any"
                     />
                   </Col>
                   <Col>
-                    <Results
-                      titleField="name"
-                      shouldTrackClickThrough={true}
-                      urlField="url"
-                    />
+                    {results &&
+                      results.map((result) => (
+                        <SenatorResult key={uuidv4()} result={result} />
+                      ))}
                   </Col>
                 </Row>
                 <Row className="justify-content-center">

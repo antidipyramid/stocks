@@ -126,7 +126,7 @@ class SenatorViewSet(viewsets.ModelViewSet):
         else:
             party_query = Q(party__in=parties.split('|'))
 
-        return queryset.filter(state_query | party_query)
+        return queryset.filter(state_query & party_query)
 
     # def filter_queryset(self,queryset):
     #     filter_backends = [DjangoFilterBackend]

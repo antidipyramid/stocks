@@ -68,7 +68,19 @@ const config = {
   onResultClick: () => {
     /* Not implemented */
   },
-  onSearch: (state) => fetchAPIResults(state, '/api/assets/?search='),
+  onSearch: (state) =>
+    fetchAPIResults(state, '/api/assets/?search=').then((jsonResponse) => {
+      return {
+        totalResults: jsonResponse.count,
+        totalPages: Math.ceil(jsonResponse.count / state.resultsPerPage),
+        results: jsonResponse.results.map((result) =>
+          // results array needs to be in format Search UI can understand
+          Object.keys(result).reduce((acc, key) => {
+            return { ...acc, [key]: { raw: result[key] } };
+          }, {})
+        ),
+      };
+    }),
 };
 
 export default function Search() {
