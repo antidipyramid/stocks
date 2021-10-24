@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { mouseover, mousemove, mouseleave } from './Tooltip';
+require('datejs');
 
 function getVolume(amount) {
   let bounds = amount.split('-');
@@ -104,7 +105,7 @@ class D3Chart {
           .line()
           .curve(d3.curveBundle)
           .x((d) => x(d3.timeParse('%Y-%m-%d')(d[0])))
-          .y((d) => y(d[1]['5. adjusted close']))
+          .y((d) => y(d[1]))
       );
 
     var bubbles = svg
@@ -115,11 +116,22 @@ class D3Chart {
       .enter()
       .append('circle')
       .attr('class', 'bubble')
+      .attr('fill', (d) => {
+        switch (d.transaction_type) {
+          case 'Purchase':
+            return 'pink';
+          case 'Sale (Full)':
+          case 'Sale (Partial)':
+            return 'lightgreen';
+          default:
+            return 'lightblue';
+        }
+      })
       .attr('cx', function (d) {
         return x(d3.timeParse('%Y-%m-%d')(d.transaction_date));
       })
       .attr('cy', function (d) {
-        return y(priceMap[d.transaction_date]['5. adjusted close']);
+        return y(priceMap[d.transaction_date]);
       })
       .attr('r', function (d) {
         return 10;
@@ -130,9 +142,9 @@ class D3Chart {
         mousemove(
           e,
           d,
-          d.transaction_date +
-            ': ' +
-            priceMap[d.transaction_date]['5. adjusted close'],
+          Date.parse(d.transaction_date).toString('MMM d, yyyy') +
+            ': $' +
+            Number.parseFloat(priceMap[d.transaction_date]).toFixed(2),
           tooltip
         )
       )

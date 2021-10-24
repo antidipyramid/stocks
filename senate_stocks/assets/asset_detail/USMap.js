@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { mouseover, mousemove, mouseleave } from '../common/Tooltip';
+import { states } from '../common/Constants';
 
 export default function USMap({ data, dimensions }) {
   const svgRef = useRef(null),
@@ -56,17 +57,22 @@ export default function USMap({ data, dimensions }) {
         .attr('d', geoGenerator)
         .attr('class', 'state')
         .style('fill', (d) => {
-          if (data.get(d.properties.NAME) == 0) {
+          if (data.get(states[d.properties.NAME]) == 0) {
             return '#c0c0c0';
           } else {
-            return color(data.get(d.properties.NAME));
+            return color(data.get(states[d.properties.NAME]));
           }
         })
         .style('stroke', '#000')
         .style('stroke-width', '0.5px')
         .on('mouseover', (e, d) => mouseover(e, d, tooltip))
         .on('mousemove', (e, d) =>
-          mousemove(e, d, data.get(d.properties.NAME) + ' trades', tooltip)
+          mousemove(
+            e,
+            d,
+            data.get(states[d.properties.NAME]) + ' trades',
+            tooltip
+          )
         )
         .on('mouseleave', (e, d) => mouseleave(e, d, tooltip));
     });

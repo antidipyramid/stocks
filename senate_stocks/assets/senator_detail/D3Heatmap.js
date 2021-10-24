@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { mouseover, mousemove, mouseleave } from '../common/Tooltip';
 
-let d = require('datejs');
+require('datejs');
 
 class D3Heatmap {
   constructor(ref, data, selectFunction, dimensions) {
@@ -91,7 +91,9 @@ class D3Heatmap {
         }
       })
       .on('mouseover', (e, d) => mouseover(e, d, tooltip))
-      .on('mousemove', (e, d) => mousemove(e, d, d, tooltip))
+      .on('mousemove', (e, d) =>
+        mousemove(e, d, Date.parse(d).toString('MMM d, yyyy'), tooltip)
+      )
       .on('mouseleave', (e, d) => mouseleave(e, d, tooltip))
       .on('click', (e, d) =>
         this.selectFunction(data.get(d.toString('yyyy-MM-dd')))

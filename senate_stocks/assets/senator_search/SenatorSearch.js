@@ -175,26 +175,32 @@ export default function SenatorSearch() {
                     <Facet
                       field="state"
                       label="State"
-                      view={({ options, onRemove, onSelect }) => (
-                        <CheckboxFilter
-                          mapping={states}
-                          options={options}
-                          onRemove={onRemove}
-                          onSelect={onSelect}
-                        />
+                      view={({ label, options, onRemove, onSelect }) => (
+                        <div className="mt-3 mb-3">
+                          <div className="text-muted">{label} Filter</div>
+                          <CheckboxFilter
+                            mapping={states}
+                            options={options}
+                            onRemove={onRemove}
+                            onSelect={onSelect}
+                          />
+                        </div>
                       )}
                       filterType="any"
                     />
                     <Facet
                       field="party"
                       label="Party"
-                      view={({ options, onRemove, onSelect }) => (
-                        <CheckboxFilter
-                          attrName="party"
-                          options={options}
-                          onRemove={onRemove}
-                          onSelect={onSelect}
-                        />
+                      view={({ label, options, onRemove, onSelect }) => (
+                        <div className="mb-3">
+                          <div className="text-muted">{label} Filter</div>
+                          <CheckboxFilter
+                            attrName="party"
+                            options={options}
+                            onRemove={onRemove}
+                            onSelect={onSelect}
+                          />
+                        </div>
                       )}
                       filterType="any"
                     />
