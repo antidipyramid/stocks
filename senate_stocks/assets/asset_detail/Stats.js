@@ -27,12 +27,12 @@ function Stats({
   return (
     <div>
       <Row>
-        <Col md={3} className="d-flex align-items-flex">
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Total Trades" width="100%">
             <p className="dashboard-number text-center">{count}</p>
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-flex">
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Buy Vs. Sell" width="100%">
             <DonutChart
               data={transactionTypeMap}
@@ -40,7 +40,7 @@ function Stats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-flex">
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Trades By Amount" width="100%">
             <DonutChart
               data={transactionAmountMap}
@@ -48,14 +48,18 @@ function Stats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-flex">
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Party Spread" width="100%">
             <DonutChart data={partyMap} dimensions={donutChartDimensions} />
           </DashboardCard>
         </Col>
       </Row>
       <Row>
-        <Col md={3}>
+        <Col
+          md={3}
+          style={{ 'flex-wrap': 'wrap' }}
+          className="d-flex align-items-stretch"
+        >
           <DashboardCard title="Recent Trades" width="100%">
             <Carousel variant="dark">
               {recentTrades.map((t, i) => (
@@ -72,15 +76,13 @@ function Stats({
             </Table>
           </DashboardCard>
         </Col>
-        <Col md={9}>
-          <Row>
-            <DashboardCard title="Map" width="100%">
-              <USMap
-                data={stateMap}
-                dimensions={{ height: 400, width: 800, margin: 0 }}
-              />
-            </DashboardCard>
-          </Row>
+        <Col md={9} className="d-flex align-items-stretch">
+          <DashboardCard title="Map" width="100%">
+            <USMap
+              data={stateMap}
+              dimensions={{ height: 400, width: 800, margin: 0 }}
+            />
+          </DashboardCard>
         </Col>
       </Row>
     </div>

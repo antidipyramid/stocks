@@ -26,12 +26,12 @@ function SenatorStats({
   return (
     <div>
       <Row>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Total Trades" width="100%">
             <p className="dashboard-number text-center">{count}</p>
           </DashboardCard>
         </Col>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Buy Vs. Sell" width="100%">
             <DonutChart
               data={transactionTypeMap}
@@ -39,7 +39,7 @@ function SenatorStats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Trades By Amount" width="100%">
             <DonutChart
               data={transactionAmountMap}
@@ -47,7 +47,7 @@ function SenatorStats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Ownership" width="100%">
             <DonutChart
               data={transactionOwnerMap}
@@ -57,7 +57,7 @@ function SenatorStats({
         </Col>
       </Row>
       <Row>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Recent Trades" width="100%">
             <Carousel variant="dark">
               {recentTrades.map((t, i) => (
@@ -68,7 +68,7 @@ function SenatorStats({
             </Carousel>
           </DashboardCard>
         </Col>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Most Traded Assets" width="100%">
             <Table borderless size="sm">
               <TableHeader headings={['#', 'Asset', '# of Trades']} />

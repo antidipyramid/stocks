@@ -146,11 +146,13 @@ export default function Search() {
                   />
                 </Col>
               </Row>
-              <Results
-                titleField="name"
-                shouldTrackClickThrough={true}
-                urlField="url"
-              />
+              <Col>
+                <Results
+                  titleField="name"
+                  shouldTrackClickThrough={true}
+                  urlField="url"
+                />
+              </Col>
               <Row className="justify-content-center">
                 <Col className="align-self-center" sm="auto">
                   <Paging

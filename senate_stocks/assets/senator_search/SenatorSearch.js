@@ -210,19 +210,19 @@ export default function SenatorSearch() {
                       results.map((result) => (
                         <SenatorResult key={uuidv4()} result={result} />
                       ))}
-                  </Col>
-                </Row>
-                <Row className="justify-content-center">
-                  <Col className="align-self-center" sm="auto">
-                    <Paging
-                      view={({ current, totalPages, onChange }) => (
-                        <SearchPagination
-                          current={current}
-                          totalPages={totalPages}
-                          onChange={onChange}
+                    <Row className="justify-content-center">
+                      <Col className="align-self-center" sm="auto">
+                        <Paging
+                          view={({ current, totalPages, onChange }) => (
+                            <SearchPagination
+                              current={current}
+                              totalPages={totalPages}
+                              onChange={onChange}
+                            />
+                          )}
                         />
-                      )}
-                    />
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               </ErrorBoundary>
