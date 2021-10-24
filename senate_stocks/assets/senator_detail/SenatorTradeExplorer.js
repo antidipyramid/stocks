@@ -78,6 +78,7 @@ export default function SenatorTradeExplorer({ data }) {
       <Row>
         <DashboardCard title="Heatmap" width="100%">
           <Heatmap
+            containerID="senator-heatmap"
             data={data}
             selectFunction={setSelectedDate}
             dimensions={{ width: 600, height: 300, margin: 10 }}

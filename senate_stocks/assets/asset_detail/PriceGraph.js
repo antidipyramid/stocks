@@ -4,7 +4,13 @@ import * as d3 from 'd3';
 import D3Chart from '../common/D3Chart';
 require('datejs');
 
-export default function PriceGraph({ data, dimensions, selectFunction, year }) {
+export default function PriceGraph({
+  containerID,
+  data,
+  dimensions,
+  selectFunction,
+  year,
+}) {
   const [priceData, setPriceData] = useState(null);
   const svgRef = useRef(null),
     figureRef = useRef(null),
@@ -54,7 +60,7 @@ export default function PriceGraph({ data, dimensions, selectFunction, year }) {
   // }, [year]);
 
   return (
-    <figure ref={figureRef}>
+    <figure id="trade-explorer" ref={figureRef}>
       <svg ref={svgRef} width={svgWidth} height={svgHeight} />
     </figure>
   );

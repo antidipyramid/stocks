@@ -2,9 +2,10 @@ import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { mouseover, mousemove, mouseleave } from '../common/Tooltip';
+import responsivefy from '../common/responsivefy';
 import { states } from '../common/Constants';
 
-export default function USMap({ data, dimensions }) {
+export default function USMap({ containerID, data, dimensions }) {
   const svgRef = useRef(null),
     figureRef = useRef(null),
     { width, height, margin } = dimensions,
@@ -33,7 +34,8 @@ export default function USMap({ data, dimensions }) {
     const svgElement = figureElement
       .append('svg')
       .attr('height', svgHeight)
-      .attr('width', svgWidth);
+      .attr('width', svgWidth)
+      .call(responsivefy);
 
     const svg = svgElement.append('g');
 

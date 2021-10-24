@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { mouseover, mousemove, mouseleave } from './Tooltip';
+import responsivefy from '../common/responsivefy';
 require('datejs');
 
 function getVolume(amount) {
@@ -27,6 +28,7 @@ class D3Chart {
       .append('svg')
       .attr('width', this.dimensions.width + this.dimensions.margin)
       .attr('height', this.dimensions.height + this.dimensions.margin)
+      .call(responsivefy)
       .append('g')
       .attr(
         'transform',

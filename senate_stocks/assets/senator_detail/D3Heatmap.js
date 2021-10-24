@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { mouseover, mousemove, mouseleave } from '../common/Tooltip';
+import responsivefy from '../common/responsivefy';
 
 require('datejs');
 
@@ -32,7 +33,8 @@ class D3Heatmap {
       .data([2021])
       .join('svg')
       .attr('width', WIDTH)
-      .attr('height', HEIGHT);
+      .attr('height', HEIGHT)
+      .call(responsivefy);
 
     // console.log(heatSvg);
     // heatSvg = d3

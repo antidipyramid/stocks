@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import D3Heatmap from './D3Heatmap';
 
-export default function Heatmap({ data, selectFunction, dimensions }) {
+export default function Heatmap({
+  containerID,
+  data,
+  selectFunction,
+  dimensions,
+}) {
   const svgRef = useRef(null),
     figureRef = useRef(null),
     graphRef = useRef(null);
@@ -30,13 +35,14 @@ export default function Heatmap({ data, selectFunction, dimensions }) {
   // }, [year]);
 
   return (
-    <figure ref={figureRef}>
+    <figure id={containerID} ref={figureRef}>
       <svg ref={svgRef} width={svgWidth} height={svgHeight} />
     </figure>
   );
 }
 
 Heatmap.propTypes = {
+  containerID: PropTypes.string,
   data: PropTypes.map,
   selectFunction: PropTypes.function,
   dimensions: PropTypes.object,

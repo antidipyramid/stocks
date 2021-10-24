@@ -35,6 +35,7 @@ function Stats({
         <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Buy Vs. Sell" width="100%">
             <DonutChart
+              containerID="transaction-type-graph"
               data={transactionTypeMap}
               dimensions={donutChartDimensions}
             />
@@ -43,6 +44,7 @@ function Stats({
         <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Trades By Amount" width="100%">
             <DonutChart
+              containerID="amount-graph"
               data={transactionAmountMap}
               dimensions={donutChartDimensions}
             />
@@ -50,7 +52,11 @@ function Stats({
         </Col>
         <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Party Spread" width="100%">
-            <DonutChart data={partyMap} dimensions={donutChartDimensions} />
+            <DonutChart
+              containerID="party-graph"
+              data={partyMap}
+              dimensions={donutChartDimensions}
+            />
           </DashboardCard>
         </Col>
       </Row>
@@ -79,6 +85,7 @@ function Stats({
         <Col md={9} className="d-flex align-items-stretch">
           <DashboardCard title="Map" width="100%">
             <USMap
+              containerID="state-map"
               data={stateMap}
               dimensions={{ height: 400, width: 800, margin: 0 }}
             />

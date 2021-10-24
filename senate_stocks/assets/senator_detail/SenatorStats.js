@@ -34,6 +34,7 @@ function SenatorStats({
         <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Buy Vs. Sell" width="100%">
             <DonutChart
+              containerID="transaction-type-graph"
               data={transactionTypeMap}
               dimensions={donutChartDimensions}
             />
@@ -42,6 +43,7 @@ function SenatorStats({
         <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Trades By Amount" width="100%">
             <DonutChart
+              containerID="amount-graph"
               data={transactionAmountMap}
               dimensions={donutChartDimensions}
             />
@@ -50,6 +52,7 @@ function SenatorStats({
         <Col md={3} className="d-flex align-items-stretch">
           <DashboardCard title="Ownership" width="100%">
             <DonutChart
+              containerID="owner-graph"
               data={transactionOwnerMap}
               dimensions={donutChartDimensions}
             />

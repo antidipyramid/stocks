@@ -2,8 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { mouseover, mousemove, mouseleave } from './Tooltip';
+import responsivefy from '../common/responsivefy';
 
-export default function DonutChart({ data, dimensions }) {
+export default function DonutChart({ containerID, data, dimensions }) {
   const svgRef = useRef(null),
     figureRef = useRef(null);
   const { width, height, margin } = dimensions;
@@ -33,7 +34,8 @@ export default function DonutChart({ data, dimensions }) {
     const svgElement = figureElement
       .append('svg')
       .attr('height', svgHeight / 2)
-      .attr('width', svgWidth);
+      .attr('width', svgWidth)
+      .call(responsivefy);
 
     const tooltip = figureElement.append('div').attr('class', 'tooltip');
 
@@ -67,13 +69,14 @@ export default function DonutChart({ data, dimensions }) {
   }, [data]);
 
   return (
-    <figure ref={figureRef}>
+    <figure id={containerID} ref={figureRef}>
       <svg ref={svgRef} width={svgWidth} height={svgHeight / 2} />
     </figure>
   );
 }
 
 DonutChart.propTypes = {
+  containerID: PropTypes.string,
   data: PropTypes.map,
   dimensions: PropTypes.object,
 };

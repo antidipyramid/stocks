@@ -68,6 +68,7 @@ export default function Explorer({ data }) {
           options={<GraphOptions options={graphOptions} />}
         >
           <PriceGraph
+            containerID="trade-explorer"
             data={data}
             dimensions={{ height: 300, width: 700, margin: 100 }}
             selectFunction={setSelectedTrade}
