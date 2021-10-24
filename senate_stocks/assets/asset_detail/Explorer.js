@@ -4,11 +4,14 @@ import { D3Chart } from '../common/D3Chart';
 import DashboardCard from '../common/DashboardCard';
 import PriceGraph from './PriceGraph';
 import GraphOptions from '../common/GraphOptions';
+import Alert from 'react-bootstrap/Alert';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
+require('datejs');
+
 export default function Explorer({ data }) {
-  const [selectedTrade, setSelectedTrade] = useState({}),
+  const [selectedTrade, setSelectedTrade] = useState(null),
     [selectedYear, setSelectedYear] = useState(2021),
     [selectedTransactionType, setSelectedTransactionType] = useState(null),
     [selectedTransactionAmount, setSelectedTransactionAmount] = useState(null);
@@ -58,7 +61,7 @@ export default function Explorer({ data }) {
 
   return (
     <Row>
-      <Col md={9}>
+      <Col md={9} className="d-flex align-items-stretch">
         <DashboardCard
           title="Trade Explorer"
           width="100%"
@@ -72,15 +75,57 @@ export default function Explorer({ data }) {
           />
         </DashboardCard>
       </Col>
-      <Col md={3}>
-        <DashboardCard title="Selected Trades" width="100%">
-          <div>
-            {Object.entries(selectedTrade).map((val, i) => (
-              <p key={'selected-trade-' + i}>
-                {val[0]} : {val[1]}
+      <Col md={3} className="d-flex align-items-stretch">
+        <DashboardCard
+          className="senator-trade"
+          title="Selected Trades"
+          width="100%"
+        >
+          {!selectedTrade && (
+            <Alert className="align-self-center" variant="secondary">
+              Select a trade on the graph.
+            </Alert>
+          )}
+          {selectedTrade && (
+            <div>
+              <p>
+                <b>Date:</b>{' '}
+                {Date.parse(selectedTrade.transaction_date).toString(
+                  'MMMM d, yyyy'
+                )}
               </p>
-            ))}
-          </div>
+              <p>
+                <b>Senator:</b> {selectedTrade.senator}
+              </p>
+              <p>
+                <b>State:</b> {selectedTrade.senator_state}
+              </p>
+              <p>
+                <b>Party:</b> {selectedTrade.senator_party}
+              </p>
+              <p>
+                <b>Owner: </b> {selectedTrade.owner}
+              </p>
+              <p>
+                <b>Asset:</b> {selectedTrade.asset_name}
+              </p>
+              <p>
+                <b>Ticker:</b> {selectedTrade.ticker}
+              </p>
+              <p>
+                <b>Transaction Type:</b> {selectedTrade.transaction_type}
+              </p>
+              <p>
+                <b>Amount:</b> {selectedTrade.amount}
+              </p>
+              <p>
+                <b>Comments:</b> {selectedTrade.comments}
+              </p>
+              <p>
+                <b>URL:</b> <a href={selectedTrade.url}>Link</a>
+              </p>
+            </div>
+          )}
         </DashboardCard>
       </Col>
     </Row>

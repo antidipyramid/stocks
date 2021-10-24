@@ -27,12 +27,12 @@ function Stats({
   return (
     <div>
       <Row>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-flex">
           <DashboardCard title="Total Trades" width="100%">
             <p className="dashboard-number text-center">{count}</p>
           </DashboardCard>
         </Col>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-flex">
           <DashboardCard title="Buy Vs. Sell" width="100%">
             <DonutChart
               data={transactionTypeMap}
@@ -40,7 +40,7 @@ function Stats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-flex">
           <DashboardCard title="Trades By Amount" width="100%">
             <DonutChart
               data={transactionAmountMap}
@@ -48,7 +48,7 @@ function Stats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3}>
+        <Col md={3} className="d-flex align-items-flex">
           <DashboardCard title="Party Spread" width="100%">
             <DonutChart data={partyMap} dimensions={donutChartDimensions} />
           </DashboardCard>
