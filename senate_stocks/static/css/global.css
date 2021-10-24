@@ -25,6 +25,21 @@ body {
 	font-size: small;
 }
 
+footer {
+	margin-top: 50px;
+	padding: 50px;
+	width: 100%;
+	left: 0;
+	bottom: 0;
+	font-family: 'Lato' sans-serif;
+	background-color: rgba(43,47,51,1);
+	color: white;
+}
+
+.footer-nav {
+	margin-left: 200px;
+}
+
 .card-link {
 	text-decoration: none;
 }
