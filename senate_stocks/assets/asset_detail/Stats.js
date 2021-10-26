@@ -66,14 +66,8 @@ function Stats({
           style={{ 'flex-wrap': 'wrap' }}
           className="d-flex align-items-stretch"
         >
-          <DashboardCard title="Recent Trades" width="100%">
-            <Carousel variant="dark">
-              {recentTrades.map((t, i) => (
-                <Carousel.Item key={'recent-trade-' + i}>
-                  <RecentTrade trade={t} />
-                </Carousel.Item>
-              ))}
-            </Carousel>
+          <DashboardCard title="Most Recent Trade" width="100%">
+            {recentTrades.length > 0 && <RecentTrade trade={recentTrades[0]} />}
           </DashboardCard>
           <DashboardCard title="Top Senators" width="100%">
             <Table borderless size="sm">

@@ -61,14 +61,8 @@ function SenatorStats({
       </Row>
       <Row>
         <Col md={3} className="d-flex align-items-stretch">
-          <DashboardCard title="Recent Trades" width="100%">
-            <Carousel variant="dark">
-              {recentTrades.map((t, i) => (
-                <Carousel.Item key={'recent-trade-' + i}>
-                  <RecentTrade trade={t} />
-                </Carousel.Item>
-              ))}
-            </Carousel>
+          <DashboardCard title="Most Recent Trade" width="100%">
+            {recentTrades.length > 0 && <RecentTrade trade={recentTrades[0]} />}
           </DashboardCard>
         </Col>
         <Col md={3} className="d-flex align-items-stretch">
