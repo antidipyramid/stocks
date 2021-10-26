@@ -68,7 +68,7 @@ const resultsSortOptions = [
 const config = {
   debug: true,
   hasA11yNotifications: true,
-  initialState: { searchTerm: '' },
+  initialState: { searchTerm: '', resultsPerPage: 20 },
   alwaysSearchOnInitialLoad: true,
   onSearch: (state) =>
     fetchAPIResults(state, '/api/assets/?search=').then((jsonResponse) => {

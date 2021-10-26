@@ -65,6 +65,8 @@ class D3Heatmap {
       .append('rect')
       .attr('width', CELLSIZE - CELLMARGIN)
       .attr('height', CELLSIZE - CELLMARGIN)
+      .attr('stroke', 'black')
+      .attr('stroke-width', '0.5px')
       .attr('rx', 1.5)
       .attr('ry', 1.5)
       .style('opacity', 1)
@@ -83,23 +85,28 @@ class D3Heatmap {
         let date = d.toString('yyyy-MM-dd');
         if (this.data.has(date)) {
           return COLOR(this.data.get(date).length);
+        } else {
+          return 'gray';
         }
 
-        if (d.getDay() == 1) {
-          d3.select('#month-' + d.getMonth()).attr(
-            'x',
-            d.getDay() * (CELLSIZE + CELLMARGIN)
-          );
-        }
+        // if (d.getDay() == 1) {
+        //   d3.select('#month-' + d.getMonth()).attr(
+        //     'x',
+        //     d.getDay() * (CELLSIZE + CELLMARGIN)
+        // );
+        // }
       })
       .on('mouseover', (e, d) => mouseover(e, d, tooltip))
       .on('mousemove', (e, d) =>
         mousemove(e, d, Date.parse(d).toString('MMM d, yyyy'), tooltip)
       )
       .on('mouseleave', (e, d) => mouseleave(e, d, tooltip))
-      .on('click', (e, d) =>
-        this.selectFunction(data.get(d.toString('yyyy-MM-dd')))
-      );
+      .on('click', (e, d) => {
+        let date = d.toString('yyyy-MM-dd');
+        if (data.has(date)) {
+          this.selectFunction(data.get(date));
+        }
+      });
   }
 }
 

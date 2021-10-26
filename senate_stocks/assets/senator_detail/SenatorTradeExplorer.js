@@ -17,6 +17,10 @@ import {
   columns,
 } from '../common/Constants';
 
+import { dateRowAccessor } from '../common/utilities';
+
+require('datejs');
+
 export default function SenatorTradeExplorer({ data }) {
   const [selectedDate, setSelectedDate] = useState([]);
   const [tableData, setTableData] = useTableData(columns, []);
@@ -28,13 +32,26 @@ export default function SenatorTradeExplorer({ data }) {
         columns: [
           {
             Header: 'Date',
-            accessor: 'transaction_date',
+            accessor: (row) => dateRowAccessor(row),
             disableSortBy: true,
             disableFilters: true,
+            Cell: ({ value }) => value.toString('M/d/yy'),
           },
           {
             Header: 'Senator',
             accessor: 'senator',
+            disableSortBy: true,
+            disableFilters: true,
+          },
+          {
+            Header: 'Asset',
+            accessor: 'asset_name',
+            disableSortBy: true,
+            disableFilters: true,
+          },
+          {
+            Header: 'Ticker',
+            accessor: 'ticker',
             disableSortBy: true,
             disableFilters: true,
           },

@@ -14,6 +14,8 @@ export default async function fetchAPIResults(state, urlBase) {
     searchTerm +
     '&page=' +
     (pageNumber - 1) +
+    '&page_size=' +
+    resultsPerPage +
     '&order=' +
     (sortDirection === 'asc' ? sortField : '-' + sortField) +
     '&' +

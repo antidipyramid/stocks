@@ -44,12 +44,12 @@ const resultsSortOptions = [
   },
   {
     name: 'Name (A-Z)',
-    value: 'name',
+    value: 'last_name',
     direction: 'asc',
   },
   {
     name: 'Name (Z-A)',
-    value: 'name',
+    value: 'last_name',
     direction: 'desc',
   },
   {
@@ -77,7 +77,7 @@ const resultsSortOptions = [
 const config = {
   debug: true,
   hasA11yNotifications: true,
-  initialState: { searchTerm: '' },
+  initialState: { searchTerm: '', resultsPerPage: 10 },
   alwaysSearchOnInitialLoad: true,
   onResultClick: () => {
     /* Not implemented */
@@ -150,6 +150,7 @@ export default function SenatorSearch() {
                   </Col>
                   <Col sm="auto">
                     <ResultsPerPage
+                      options={[10, 20, 50]}
                       view={({ value, options, onChange }) => (
                         <ResultsPerPageSelect
                           value={value}
@@ -167,7 +168,6 @@ export default function SenatorSearch() {
                       sortOptions={resultsSortOptions}
                       view={({ value, options, onChange }) => (
                         <SearchSortOptions
-                          mapping={parties}
                           value={value}
                           options={options}
                           onChange={onChange}

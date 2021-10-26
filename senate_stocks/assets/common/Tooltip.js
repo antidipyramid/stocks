@@ -1,7 +1,6 @@
 import * as d3 from 'd3';
 
 export function mouseover(e, d, tooltip) {
-  console.log(e);
   tooltip.style('opacity', 1).style('visibility', 'visible');
   d3.select(e.target).style('stroke', 'yellow').style('stroke-width', '2px');
 }

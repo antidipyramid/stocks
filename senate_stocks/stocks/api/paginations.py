@@ -1,7 +1,12 @@
 from collections import defaultdict
 from rest_framework.pagination import PageNumberPagination
 
+class AssetPagination(PageNumberPagination):
+    page_size_query_param = 'page_size'
+
 class SenatorPagination(PageNumberPagination):
+    page_size_query_param = 'page_size'
+
     def paginate_queryset(self, queryset, request, view=None):
         fields = ('state', 'party')
         self.aggregations = {}
@@ -19,9 +24,6 @@ class SenatorPagination(PageNumberPagination):
                     field_counts[val] = {'value': val, 'count': 1}
 
             self.aggregations[field] = {'field': field, 'type':'value', 'data': field_counts.values()}
-
-
-
 
         return super(SenatorPagination, self).paginate_queryset(queryset, request, view)
 
