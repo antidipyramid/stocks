@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import SenatorCard from './SenatorCard';
 import SenatorStats from './SenatorStats';
 import TradeTable from '../common/TradeTable';
 import SenatorTradeExplorer from './SenatorTradeExplorer';
@@ -150,37 +151,13 @@ function SenatorDashboard() {
     }
   }, [apiData]);
 
-  useEffect(() => {
-    console.log(
-      apiData,
-      transactionTypeMap,
-      transactionAmountMap,
-      recentTrades,
-      transactionDateMap
-    );
-  }, [isLoading]);
-
   const checkIfLoading = (placeholder, data) =>
     isLoading ? placeholder : data;
 
   return (
     <Row className="justify-content-center mt-3 mx-5">
       <Col md="auto">
-        <Card style={{ width: '15vw' }}>
-          <Card.Img variant="top" src="holder.js/100px180" />
-          <Card.Body>
-            <Card.Title>
-              {isLoading
-                ? 'Loading'
-                : apiData.first_name + ' ' + apiData.last_name}
-            </Card.Title>
-            <Card.Text>
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </Card.Text>
-            <Button variant="primary">Go somewhere</Button>
-          </Card.Body>
-        </Card>
+        {isLoading ? 'Loading' : <SenatorCard senator={apiData} />}
       </Col>
       <Col>
         <Tabs
