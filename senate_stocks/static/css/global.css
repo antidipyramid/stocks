@@ -21,8 +21,18 @@ h1, h2, h3, h4, h5, h6, .navbar {
 body {
 	background-color: #f2f2f2;
 	/* color: #ffffff; */
-	font-family: 'Roboto Mono', serif;
-	font-size: small;
+	/* font-family: 'Roboto Mono', serif; */
+	/* font-size: small; */
+}
+
+.site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  flex: 1;
 }
 
 footer {
@@ -31,9 +41,22 @@ footer {
 	width: 100%;
 	left: 0;
 	bottom: 0;
-	font-family: 'Lato' sans-serif;
 	background-color: rgba(43,47,51,1);
 	color: white;
+}
+
+.result-title {
+	font-size: 1.3rem;
+}
+
+.result-info {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.result-key {
+	font-family: monospace;
 }
 
 .footer-nav {
@@ -48,23 +71,9 @@ footer {
 	cursor: pointer;
 }
 
-.sen-card {
-	opacity: .7;
-	transition: opacity 0.1s ease;
-	width: 25vw;
-}
-
-.body-font {
-    font-family: 'Roboto Mono', serif !important;
-}
-
 .sen-card:hover, .asset-card:hover {
 	opacity: 1;
 }
-
-/* .bg-secondary { */
-/*     background-color: #DFE2E5 !important; */
-/* } */
 
 .form-select-sm, .input-group-sm, .form-control-sm, .input-group-text {
     font-size: .8rem !important;

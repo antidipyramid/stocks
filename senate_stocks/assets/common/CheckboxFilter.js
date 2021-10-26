@@ -10,14 +10,14 @@ export default function CheckboxFilter({
   mapping,
 }) {
   return options.map((option) => {
-    const checked = option.checked;
+    const checked = option.selected;
 
     return (
       <Form.Check
         key={uuidv4()}
         type="checkbox"
         label={mapping ? mapping[option.value] : option.value}
-        checked={option.checked}
+        checked={option.selected}
         onChange={(e) => {
           if (checked) {
             e.target.checked = false;

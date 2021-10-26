@@ -77,6 +77,8 @@ const resultsSortOptions = [
 const config = {
   debug: true,
   hasA11yNotifications: true,
+  initialState: { searchTerm: '' },
+  alwaysSearchOnInitialLoad: true,
   onResultClick: () => {
     /* Not implemented */
   },
@@ -109,12 +111,13 @@ export default function SenatorSearch() {
     <Container>
       <SearchProvider config={config}>
         <WithSearch
-          mapContextToProps={({ results, wasSearched }) => ({
+          mapContextToProps={({ results, totalPages, wasSearched }) => ({
             results,
+            totalPages,
             wasSearched,
           })}
         >
-          {({ results, wasSearched }) => (
+          {({ results, totalPages, wasSearched }) => (
             <div className="App">
               <ErrorBoundary>
                 <Row className="mb-3">
@@ -178,12 +181,14 @@ export default function SenatorSearch() {
                       view={({ label, options, onRemove, onSelect }) => (
                         <div className="mt-3 mb-3">
                           <div className="text-muted">{label} Filter</div>
-                          <CheckboxFilter
-                            mapping={states}
-                            options={options}
-                            onRemove={onRemove}
-                            onSelect={onSelect}
-                          />
+                          <Form>
+                            <CheckboxFilter
+                              mapping={states}
+                              options={options}
+                              onRemove={onRemove}
+                              onSelect={onSelect}
+                            />
+                          </Form>
                         </div>
                       )}
                       filterType="any"
@@ -212,15 +217,17 @@ export default function SenatorSearch() {
                       ))}
                     <Row className="justify-content-center">
                       <Col className="align-self-center" sm="auto">
-                        <Paging
-                          view={({ current, totalPages, onChange }) => (
-                            <SearchPagination
-                              current={current}
-                              totalPages={totalPages}
-                              onChange={onChange}
-                            />
-                          )}
-                        />
+                        {totalPages > 1 && (
+                          <Paging
+                            view={({ current, totalPages, onChange }) => (
+                              <SearchPagination
+                                current={current}
+                                totalPages={totalPages}
+                                onChange={onChange}
+                              />
+                            )}
+                          />
+                        )}
                       </Col>
                     </Row>
                   </Col>

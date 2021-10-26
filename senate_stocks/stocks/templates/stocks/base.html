@@ -23,7 +23,7 @@
   </head>
 
 
-  <body>
+  <body class="site">
     <nav id="navbar" class="navbar navbar-expand-lg navbar-dark fixed-top ">
       <script src="{% static 'js/navbar.js' %}"></script>
       <script src="{% static 'js/search.js' %}"></script>
@@ -80,10 +80,6 @@
 
     {% endblock content %}
 
-
-
-    <!-- <script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script> -->
-
   </body>	
 
   <footer>
@@ -94,10 +90,12 @@
           the data.</p>
       </div>
       <div class="d-flex flex-nowrap footer-nav">
-        <a href="/">About</a>
-        <a href='/'>FAQ</a>
-        <a href='/'>Contact</a>
-        <a href='/'>Github</a>
+        <nav>
+          <a href="/">About</a>
+          <a href='/'>FAQ</a>
+          <a href='/'>Contact</a>
+          <a href='/'>Github</a>
+        </nav>
         
       </div>
     </div>

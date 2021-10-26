@@ -21,6 +21,9 @@ import fetchAPIResults from './fetchAPIResults';
 import SearchResultsInfo from './SearchResultsInfo';
 import SearchSortOptions from './SearchSortOptions';
 import ResultsPerPageSelect from './ResultsPerPageSelect';
+import AssetResult from '../asset_search/AssetResult';
+
+import { v4 as uuidv4 } from 'uuid';
 
 import '@elastic/react-search-ui-views/lib/styles/styles.css';
 
@@ -65,9 +68,8 @@ const resultsSortOptions = [
 const config = {
   debug: true,
   hasA11yNotifications: true,
-  onResultClick: () => {
-    /* Not implemented */
-  },
+  initialState: { searchTerm: '' },
+  alwaysSearchOnInitialLoad: true,
   onSearch: (state) =>
     fetchAPIResults(state, '/api/assets/?search=').then((jsonResponse) => {
       return {
@@ -86,8 +88,14 @@ const config = {
 export default function Search() {
   return (
     <SearchProvider config={config}>
-      <WithSearch mapContextToProps={({ wasSearched }) => ({ wasSearched })}>
-        {({ wasSearched }) => (
+      <WithSearch
+        mapContextToProps={({ results, totalPages, wasSearched }) => ({
+          results,
+          totalPages,
+          wasSearched,
+        })}
+      >
+        {({ results, totalPages, wasSearched }) => (
           <div className="App">
             <ErrorBoundary>
               <Row className="mb-3">
@@ -147,23 +155,24 @@ export default function Search() {
                 </Col>
               </Row>
               <Col>
-                <Results
-                  titleField="name"
-                  shouldTrackClickThrough={true}
-                  urlField="url"
-                />
+                {results &&
+                  results.map((result) => (
+                    <AssetResult key={uuidv4()} result={result} />
+                  ))}
               </Col>
               <Row className="justify-content-center">
                 <Col className="align-self-center" sm="auto">
-                  <Paging
-                    view={({ current, totalPages, onChange }) => (
-                      <SearchPagination
-                        current={current}
-                        totalPages={totalPages}
-                        onChange={onChange}
-                      />
-                    )}
-                  />
+                  {totalPages > 1 && (
+                    <Paging
+                      view={({ current, totalPages, onChange }) => (
+                        <SearchPagination
+                          current={current}
+                          totalPages={totalPages}
+                          onChange={onChange}
+                        />
+                      )}
+                    />
+                  )}
                 </Col>
               </Row>
             </ErrorBoundary>
