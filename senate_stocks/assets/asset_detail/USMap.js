@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { mouseover, mousemove, mouseleave } from '../common/Tooltip';
@@ -14,13 +14,17 @@ export default function USMap({ containerID, data, dimensions }) {
 
   // we need the max and min of the data to
   // make a color gradient for map
-  const dataValues = Array.from(data.values()).sort((a, b) => {
-    if (a < b) {
-      return -1;
-    } else if (a > b) {
-      return 1;
-    } else return 0;
-  });
+  const dataValues = useMemo(
+    () =>
+      Array.from(data.values()).sort((a, b) => {
+        if (a < b) {
+          return -1;
+        } else if (a > b) {
+          return 1;
+        } else return 0;
+      }),
+    [data]
+  );
 
   const [minValue, maxValue] = [
     dataValues[0],
@@ -28,6 +32,10 @@ export default function USMap({ containerID, data, dimensions }) {
   ];
 
   useEffect(() => {
+    if (data.size < 1) {
+      return;
+    }
+
     const figureElement = d3.select(figureRef.current);
     figureElement.selectAll('*').remove();
 
@@ -72,7 +80,10 @@ export default function USMap({ containerID, data, dimensions }) {
           mousemove(
             e,
             d,
-            data.get(states[d.properties.NAME]) + ' trades',
+            d.properties.NAME +
+              ': ' +
+              data.get(states[d.properties.NAME]) +
+              ' trades',
             tooltip
           )
         )

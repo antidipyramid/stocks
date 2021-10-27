@@ -175,8 +175,14 @@ function App() {
             stateMap={checkIfLoading(new Map(), stateMap)}
           />
         </Tab>
-        <Tab eventKey="explorer" title="Trade Explorer">
-          <Explorer data={checkIfLoading([], allTrades)} />
+        <Tab
+          eventKey="explorer"
+          title="Trade Explorer"
+          disabled={apiData && apiData.ticker === '--'}
+        >
+          {apiData && apiData.ticker !== '--' && (
+            <Explorer data={checkIfLoading([], allTrades)} />
+          )}
         </Tab>
         <Tab eventKey="all" title="All Trades">
           <TradeTable data={allTrades} columns={columns} />
