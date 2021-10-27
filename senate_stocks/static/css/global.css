@@ -71,6 +71,10 @@ footer {
 	cursor: pointer;
 }
 
+.card-img-top {
+	object-fit: cover;
+}
+
 .sen-card:hover, .asset-card:hover {
 	opacity: 1;
 }

@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
+    home: './assets/home/index.js',
     asset_detail: './assets/asset_detail/index.js',
     senator_detail: './assets/senator_detail/index.js',
     asset_search: './assets/asset_search/index.js',
@@ -30,6 +31,12 @@ module.exports = {
           // Translates CSS into CommonJS
           'css-loader',
         ],
+      },
+      {
+        test: /\.(jpg|png|mp4)$/,
+        use: {
+          loader: 'url-loader',
+        },
       },
     ],
   },
