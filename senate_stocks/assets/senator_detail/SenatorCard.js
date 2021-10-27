@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 
 export default function SenatorCard({ senator }) {
   return (
-    <Card style={{ width: '15vw' }}>
+    <Card className="senator-dashboard-card">
       <Card.Img variant="top" src={senator.photo_url} />
       <Card.Body>
         <Card.Title>

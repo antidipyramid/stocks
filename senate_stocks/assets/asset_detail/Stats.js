@@ -27,12 +27,12 @@ function Stats({
   return (
     <div>
       <Row>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Total Trades" width="100%">
             <p className="dashboard-number text-center">{count}</p>
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Buy Vs. Sell" width="100%">
             <DonutChart
               containerID="transaction-type-graph"
@@ -41,8 +41,8 @@ function Stats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-stretch">
-          <DashboardCard title="Trades By Amount" width="100%">
+        <Col xs={12} sm={6} xl={3} className="d-flex align-items-stretch">
+          <DashboardCard title="Amount" width="100%">
             <DonutChart
               containerID="amount-graph"
               data={transactionAmountMap}
@@ -50,7 +50,7 @@ function Stats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Party Spread" width="100%">
             <DonutChart
               containerID="party-graph"
@@ -62,7 +62,7 @@ function Stats({
       </Row>
       <Row>
         <Col
-          md={3}
+          xl={3}
           style={{ 'flex-wrap': 'wrap' }}
           className="d-flex align-items-stretch"
         >
@@ -76,7 +76,7 @@ function Stats({
             </Table>
           </DashboardCard>
         </Col>
-        <Col md={9} className="d-flex align-items-stretch">
+        <Col xl={9} className="d-flex align-items-stretch">
           <DashboardCard title="Map" width="100%">
             <USMap
               containerID="state-map"

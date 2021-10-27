@@ -44,3 +44,16 @@
 	stroke-opacity: 0.3;
 	stroke-dasharray: 4 4;
 }
+
+.senator-dashboard-card {
+    width: 15vw;
+    visibility: visible;
+    display: inline-block;
+}
+
+@media screen and (max-width: 992px) {
+	.senator-dashboard-card {
+        visibility: hidden;
+        display: none;
+	}
+}

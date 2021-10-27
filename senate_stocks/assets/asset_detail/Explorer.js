@@ -61,7 +61,7 @@ export default function Explorer({ data }) {
 
   return (
     <Row>
-      <Col md={9} className="d-flex align-items-stretch">
+      <Col xl={9} className="d-flex align-items-stretch">
         <DashboardCard
           title="Trade Explorer"
           width="100%"
@@ -76,7 +76,7 @@ export default function Explorer({ data }) {
           />
         </DashboardCard>
       </Col>
-      <Col md={3} className="d-flex align-items-stretch">
+      <Col xl={3} className="d-flex align-items-stretch">
         <DashboardCard
           className="senator-trade"
           title="Selected Trades"

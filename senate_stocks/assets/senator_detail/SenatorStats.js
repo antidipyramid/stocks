@@ -26,12 +26,12 @@ function SenatorStats({
   return (
     <div>
       <Row>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xxl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Total Trades" width="100%">
             <p className="dashboard-number text-center">{count}</p>
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xxl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Buy Vs. Sell" width="100%">
             <DonutChart
               containerID="transaction-type-graph"
@@ -40,7 +40,7 @@ function SenatorStats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xxl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Trades By Amount" width="100%">
             <DonutChart
               containerID="amount-graph"
@@ -49,7 +49,7 @@ function SenatorStats({
             />
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xxl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Ownership" width="100%">
             <DonutChart
               containerID="owner-graph"
@@ -60,12 +60,12 @@ function SenatorStats({
         </Col>
       </Row>
       <Row>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xxl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Most Recent Trade" width="100%">
             {recentTrades.length > 0 && <RecentTrade trade={recentTrades[0]} />}
           </DashboardCard>
         </Col>
-        <Col md={3} className="d-flex align-items-stretch">
+        <Col xs={12} sm={6} xxl={3} className="d-flex align-items-stretch">
           <DashboardCard title="Most Traded Assets" width="100%">
             <Table borderless size="sm">
               <TableHeader headings={['#', 'Asset', '# of Trades']} />
