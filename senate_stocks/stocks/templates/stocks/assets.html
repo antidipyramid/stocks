@@ -3,52 +3,11 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/assets.css' %}">
+
 <div class="site-content container body-container">
-<div id="root"></div>
-<script src="{% static 'js/asset_search_bundle.js' %}"></script>
-
-  
-
-  <!-- <div class="d-flex align-items-center mt-3 mb-3 p-3"> -->
-  <!--   <div class="text-nowrap"><b>Filter by:</b></div> -->
-  <!--   <div class="input-group input-group-sm me-3 ms-1 w-auto"> -->
-  <!--     <span class="input-group-text" id="nameInputLabel">Name</span> -->
-  <!--     <input type="text" id="name" class="form-control form-control-sm w-auto" placeholder="All" aria-label="asset name search" maxlength="100"> -->
-  <!--   </div> -->
-  <!--   <div class="input-group input-group-sm me-3 ms-1 w-auto"> -->
-  <!--     <span class="input-group-text" id="nameInputLabel">Ticker</span> -->
-  <!--     <input type="text" id="ticker" class="form-control form-control-sm" placeholder="All" aria-label="asset ticker search" maxlength="5"> -->
-  <!--   </div> -->
-  <!--   <div class="text-nowrap ms-auto">Sort by:</div> -->
-  <!--   <select id="sort" class="form-select w-auto form-select-sm ms-1" aria-label="sort select"> -->
-  <!--     <option value="Last trade (newest to oldest)" selected>Last trade (newest to oldest)</option> -->
-  <!--     <option value="Last trade (oldest to newest)">Last trade (oldest to newest)</option> -->
-  <!--     <option value="Trades (most to least)">Trades (most to least)</option> -->
-  <!--     <option value="Trades (least to most)">Trades (least to most)</option> -->
-  <!--   </select> -->
-  <!-- </div> -->
-
-  <!-- <!-1- Start of list of assets -1-> -->
-  <!-- <h3 id="loading-assets" class="body-font">Loading assets...</h3> -->
-  <!-- <h3 id="found" class="body-font" hidden>Found <span id="num-results"></span> assets:</h3> -->
-  <!-- <div id="asset-cards" class="row me-3"></div> -->
-
-  <!-- <div id="loading" class="d-flex justify-content-center"> -->
-  <!--   <div class="spinner-border" role="status"> -->
-  <!--     <span class="visually-hidden">Loading...</span> -->
-  <!--   </div> -->
-  <!-- </div> -->
-
- <!-- <!-1- Pagination -1-> -->
-  <!-- <nav aria-label="Assets search results pagination"> -->
-  <!--   <ul id="pages" class="pagination flex-wrap justify-content-center mt-5" hidden> -->
-  <!--     <li class="page-item" id="prev-page"><a class="page-link" >Previous</a></li> -->
-  <!--     <li class="page-item" id="next-page"><a class="page-link" >Next</a></li> -->
-  <!--   </ul> -->
-  <!-- </nav> -->
+  <div id="root"></div>
+  <script src="{% static 'js/asset_search_bundle.js' %}"></script>
 </div>
 
-  <script src="{% static 'js/datejs/date-en-US.js' %}"></script>
-  <script src="{% static 'js/assets.js' %}"></script>
-  {% endblock %}
+{% endblock %}
 
