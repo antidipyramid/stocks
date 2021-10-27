@@ -16,20 +16,6 @@ export default function Explorer({ data }) {
     [selectedTransactionType, setSelectedTransactionType] = useState(null),
     [selectedTransactionAmount, setSelectedTransactionAmount] = useState(null);
 
-  useEffect(() => {
-    console.log(
-      selectedYear,
-      selectedTransactionType,
-      selectedTransactionAmount,
-      selectedTrade
-    );
-  }, [
-    selectedTrade,
-    selectedTransactionAmount,
-    selectedYear,
-    selectedTransactionType,
-  ]);
-
   const graphOptions = [
     {
       title: 'Year',

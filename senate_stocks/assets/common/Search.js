@@ -66,8 +66,8 @@ const resultsSortOptions = [
 ];
 
 const config = {
-  debug: true,
-  hasA11yNotifications: true,
+  debug: false,
+  hasA11yNotifications: false,
   initialState: { searchTerm: '', resultsPerPage: 20 },
   alwaysSearchOnInitialLoad: true,
   onSearch: (state) =>

@@ -134,17 +134,6 @@ function App() {
     }
   }, [apiData]);
 
-  useEffect(() => {
-    console.log(
-      apiData,
-      transactionTypeMap,
-      transactionAmountMap,
-      recentTrades,
-      partyMap,
-      stateMap
-    );
-  }, [apiData]);
-
   const checkIfLoading = (placeholder, data) =>
     isLoading ? placeholder : data;
 

@@ -4,12 +4,10 @@ import fetchAPIResults from './fetchAPIResults';
 
 function combineAggregationsFromResponses(initialAggregations, responses) {
   const acc = { ...initialAggregations };
-  console.log(acc);
   for (const response of responses) {
     for (const key in response.aggregations) {
       if (key in acc) {
         acc[key].data = acc[key].data.concat(response.aggregations[key].data);
-        console.log(key, acc[key].data);
         acc[key].data = acc[key].data.filter(function (field) {
           return !this[field.value] && (this[field.value] = true);
         }, Object.create(null));
@@ -18,7 +16,6 @@ function combineAggregationsFromResponses(initialAggregations, responses) {
       }
     }
   }
-  console.log(acc);
   return acc;
 }
 

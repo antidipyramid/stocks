@@ -17,7 +17,6 @@ export default function Heatmap({
   const svgHeight = height + margin;
 
   useEffect(() => {
-    console.log(data);
     if (data) {
       graphRef.current = new D3Heatmap(
         figureRef.current,
