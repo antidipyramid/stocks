@@ -32,6 +32,9 @@ def index(request):
 def about(request):
     return render(request, 'stocks/about.html', {'page_title': 'About | Stock Tracker'})
 
+def faq(request):
+    return render(request, 'stocks/faq.html', {'page_title': 'FAQ | Stock Tracker'})
+
 def senators(request):
     return render(request, 'stocks/senators.html', {'page_title': 'Senators | Stock Tracker'})
 

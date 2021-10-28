@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/', include('stocks.api.urls')),
     path('assets/', views.assets, name='assets'),
     path('asset/<int:asset_id>', views.asset_detail, name='asset_detail'),
+    path('faq/', views.faq, name='faq'),
 ]

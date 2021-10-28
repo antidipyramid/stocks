@@ -3,6 +3,7 @@ const path = require('path');
 module.exports = {
   entry: {
     home: './assets/home/index.js',
+    faq: './assets/faq/index.js',
     asset_detail: './assets/asset_detail/index.js',
     senator_detail: './assets/senator_detail/index.js',
     asset_search: './assets/asset_search/index.js',

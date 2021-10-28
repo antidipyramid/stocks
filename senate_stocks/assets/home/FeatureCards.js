@@ -8,7 +8,7 @@ export function FeaturedSenator({ senator, img }) {
     return 'Loading';
   } else {
     return (
-      <Card style={{ width: '20rem' }}>
+      <Card className="mb-3 mx-3" style={{ width: '20rem' }}>
         <Card.Img variant="top" src={img} height="300" />
         <Card.Body>
           <Card.Title>
@@ -52,7 +52,7 @@ export function FeaturedAsset({ asset, img }) {
     return 'Loading';
   } else {
     return (
-      <Card style={{ width: '20rem' }}>
+      <Card className="mb-3 mx-3" style={{ width: '20rem' }}>
         <Card.Img variant="top" src={img} height="300" />
         <Card.Body>
           <Card.Title>
