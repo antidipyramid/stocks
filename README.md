@@ -16,7 +16,8 @@ By law, members of the United States Senate are required to disclose certain sto
 * BeautifulSoup and Pandas to scrape and parse the data
 * DjangoREST to implement the API
 * D3.js to create the visualizations
-* Bootstrap to handle the front-end styling
+* Webpack to bundle modules that Django serves to the browser
+* React and Bootstrap to handle the front-end state and styling
 
 ## How It Works
 1. The scraper is implemented as a custom `django-admin` command. The Python script scrapes the public disclosures site and then cleans up the raw data.
@@ -25,6 +26,6 @@ By law, members of the United States Senate are required to disclose certain sto
 4. There are two main ways to explore the data, by senator and by asset (e.g. Apple, Wells Fargo, Google, etc.).
 
 ## Status
-Unfortunately, the front-end was written entirely in vanilla Javascript (yikes!). My goal is to make this app actually usable for the public so the next steps are to gradually move over to a modern framework, most likely React, for ease of development. 
+With some work, I've been able to transition from vanilla Javascript (yikes!) to using React to render the front-end of the application. This will make future updates much easier.
 
-Also, there's an interesting challenge: this app is possible because most of the disclosures are uploaded in plain-text HTML tables. However, a small but non-trivial of the disclosures are uploaded as PDFs, which makes scraping the data therein near impossible. But since these PDFs all follow the same template, it seems as though computer vision could be used to extract the data. That would be much easier than having to manually enter the data into the database!
+This app is possible because most of the disclosures are uploaded in plain-text HTML tables. However, a small but non-trivial of the disclosures are uploaded as PDFs, which makes scraping the data therein near impossible. But since these PDFs all follow the same template, it seems as though computer vision could be used to extract the data. That would be much easier than having to manually enter the data into the database!
